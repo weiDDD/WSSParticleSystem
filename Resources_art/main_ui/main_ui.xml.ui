@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<UIProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectDir>F:\wss-study\WSParticleEditor\Resources_art\main_ui</ProjectDir>
+  <Version>1.4.0.1</Version>
+  <Resources>F:\wss-study\WSParticleEditor\Resources_art\main_ui\Resources</Resources>
+  <Name>main_ui</Name>
+  <JsonFileName>main_ui.json</JsonFileName>
+  <JsonFolder>F:\wss-study\WSParticleEditor\Resources_art\main_ui\Json</JsonFolder>
+  <JsonList>
+    <string>main_ui.json</string>
+  </JsonList>
+  <CanvasSize>
+    <Width>1600</Width>
+    <Height>1000</Height>
+  </CanvasSize>
+  <filePath>F:\wss-study\WSParticleEditor\Resources_art\main_ui\main_ui.xml.ui</filePath>
+  <ProjectType>UIProject</ProjectType>
+  <ResRelativePath />
+  <imageFileList>
+    <string>main_ui0.plist</string>
+  </imageFileList>
+  <imagePngList>
+    <string>main_ui0.png</string>
+  </imagePngList>
+  <JsonSuffix>.json</JsonSuffix>
+  <CurrentUIJson>main_ui.json</CurrentUIJson>
+</UIProject>

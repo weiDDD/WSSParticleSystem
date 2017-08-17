@@ -1,0 +1,30 @@
+﻿  AppEvent.cpp
+  AppLang.cpp
+  PlayerMenuServiceProtocol.cpp
+  PlayerProtocol.cpp
+  PlayerTaskServiceProtocol.cpp
+  ProjectConfig.cpp
+  SimulatorConfig.cpp
+  CCHTTPRequest.cpp
+  PlayerEditBoxServiceWin.cpp
+  PlayerFileDialogServiceWin.cpp
+  PlayerMenuServiceWin.cpp
+  PlayerMessageBoxServiceWin.cpp
+  PlayerTaskServiceWin.cpp
+  PlayerWin.cpp
+  ConfigParser.cpp
+  ConnectWaitLayer.cpp
+..\lib\runtime\ConfigParser.cpp(123): warning C4018: “<”: 有符号/无符号不匹配
+  ConsoleCommand.cpp
+  FileServer.cpp
+  Runtime.cpp
+  RuntimeCCSImpl.cpp
+  RuntimeProtocol.cpp
+  VisibleRect.cpp
+  Runtime_win32.cpp
+PlayDisable_png.obj : warning LNK4221: 此对象文件未定义任何之前未定义的公共符号，因此任何耗用此库的链接操作都不会使用此文件
+atomicops_internals_x86_gcc.obj : warning LNK4221: 此对象文件未定义任何之前未定义的公共符号，因此任何耗用此库的链接操作都不会使用此文件
+PlayerUtils.obj : warning LNK4221: 此对象文件未定义任何之前未定义的公共符号，因此任何耗用此库的链接操作都不会使用此文件
+PlayerSettings.obj : warning LNK4221: 此对象文件未定义任何之前未定义的公共符号，因此任何耗用此库的链接操作都不会使用此文件
+PlayerServiceProtocol.obj : warning LNK4221: 此对象文件未定义任何之前未定义的公共符号，因此任何耗用此库的链接操作都不会使用此文件
+  libsimulator.vcxproj -> E:\BowShoot\BowShoot_client\source_code\frameworks\runtime-src\proj.win32\Debug.win32\libsimulator.lib
