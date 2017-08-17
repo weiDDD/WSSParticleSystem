@@ -33,7 +33,7 @@ WSSParticleSystem
          
         local par = pp.ParticleEmitter:create()   
         par:setPosition( cc.p(500,500) )   
-        par:readJsonDataFromFile("res/image/test1.par");   
+        par:readJsonDataFromFile("res/image/test1.par")   
         self:addChild(par)   
          
 •PS:   
