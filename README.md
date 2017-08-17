@@ -1,17 +1,17 @@
 WSSParticleSystem
-一个基于cocos2dx开发的粒子系统
-
-•是什么:
-      1.一套 源自cocos2dx 服务cocos2dx 的粒子系统代码.
-      2.一款 粒子系统编辑器.
+一个基于cocos2dx开发的粒子系统  
+  
+•是什么:  
+      1.一套 源自cocos2dx 服务cocos2dx 的粒子系统代码.  
+      2.一款 粒子系统编辑器.  
       
-•怎么玩:
-      1.源码  位于 Classes 文件夹下.
-      2.编辑器程序  位于 runtime/win32/debug下.
-      3.粒子系统所用纹理  位于 runtime/win32/debug/texture下.
-      4.导出粒子文件  位于 runtime/win32/debug/json下.
-      5.编辑器中的参考图  位于  runtime/win32/debug/refSprite文件夹下.
-      6.拖尾纹理  位于 runtime/win32/debug/tail文件夹下.
+•怎么玩:  
+      1.源码  位于 Classes 文件夹下.  
+      2.编辑器程序  位于 runtime/win32/debug下.   
+      3.粒子系统所用纹理  位于 runtime/win32/debug/texture下.   
+      4.导出粒子文件  位于 runtime/win32/debug/json下.   
+      5.编辑器中的参考图  位于  runtime/win32/debug/refSprite文件夹下.   
+      6.拖尾纹理  位于 runtime/win32/debug/tail文件夹下.   
       
 •应用到自己项目:
       1.添加源码到自己的工程中编译:
