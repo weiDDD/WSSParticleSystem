@@ -21,6 +21,7 @@ WSSParticleSystem
           在合适的地方(一般是工程开始的地方，如 appDelegate 文件的 applicationDidFinishLaunching 函数中)，调用 lua_particle_system_auto.cpp 中的register_all_particle_system 函数将C++绑定到lua.   
           
       3.代码使用:     
+          
          C++:   
          
         auto par = ParticleEmitter::create();   
