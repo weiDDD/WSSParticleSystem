@@ -22,14 +22,14 @@ WSSParticleSystem
           
       3.代码使用:   
         C++:   
-         
-	        auto par = ParticleEmitter::create();   
-	        par->readJsonDataFromFile("json/test1.par");   
-	        par->setPosition(Vec2(800, 500));   
-	        this->addChild(par);   
-            
-        lua:   
-           
+            
+	  auto par = ParticleEmitter::create();   
+	  par->readJsonDataFromFile("json/test1.par");   
+	  par->setPosition(Vec2(800, 500));   
+	  this->addChild(par);   
+               
+        lua:     
+              
          local par = pp.ParticleEmitter:create()   
          par:setPosition( cc.p(500,500) )   
          par:readJsonDataFromFile("res/image/test1.par");   
