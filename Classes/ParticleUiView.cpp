@@ -255,7 +255,8 @@ bool ParticleUiView::init() {
 	// -- 加载列表的第一个文件
 	nowFileName = "json/" + fileNames.at(0);
 
-	singlePar->readJsonData(FileCenter::getInstance()->readJsonData(nowFileName));
+	singlePar->readJsonDataFromFile(nowFileName);
+
 	//nowEditingSignalPar->readJsonData(FileCenter::getInstance()->readJsonData(nowFileName));
 	
 
@@ -674,7 +675,7 @@ void ParticleUiView::initUi() {
 				singlePar->stopSystem();
 				singlePar->clearData();
 				this->clearMoreParPanel();
-				singlePar->readJsonData(FileCenter::getInstance()->readJsonData(nowFileName));
+				singlePar->readJsonDataFromFile(nowFileName);
 				nowEditingSignalPar = singlePar->getFirstFirePro();
 				this->initMoreParPanel();
 				singlePar->resetSystem();
@@ -5176,7 +5177,7 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 			this->clearMoreParPanel();
 			//nowEditingSignalPar->resetData();
 			//nowEditingSignalPar->readJsonData( FileCenter::getInstance()->readJsonData(nowFileName) );
-			singlePar->readJsonData(FileCenter::getInstance()->readJsonData(nowFileName));
+			singlePar->readJsonDataFromFile(nowFileName);
 			nowEditingSignalPar = singlePar->getFirstFirePro();
 			this->initMoreParPanel();
 			singlePar->resetSystem();

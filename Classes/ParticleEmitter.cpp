@@ -2026,6 +2026,7 @@ void ParticleEmitter::readJsonDataFromFile(std::string filename) {
 	if (start > -1) {
 		std::string path = filename.substr(0, start + 1);
 		ParticleEmitter::sourcePath = path;
+		CCLOG("-------------------ParticleEmitter::sourcePath :%s", ParticleEmitter::sourcePath);
 	}
 }
 
