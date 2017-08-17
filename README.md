@@ -21,19 +21,19 @@ WSSParticleSystem
           在合适的地方(一般是工程开始的地方，如 appDelegate 文件的 applicationDidFinishLaunching 函数中)，调用 lua_particle_system_auto.cpp 中的register_all_particle_system 函数将C++绑定到lua.   
           
       3.代码使用:   
-        C++:   
+     C++:   
             
-	  auto par = ParticleEmitter::create();   
-	  par->readJsonDataFromFile("json/test1.par");   
-	  par->setPosition(Vec2(800, 500));   
-	  this->addChild(par);   
-               
-        lua:     
-              
-         local par = pp.ParticleEmitter:create()   
-         par:setPosition( cc.p(500,500) )   
-         par:readJsonDataFromFile("res/image/test1.par");   
-         self:addChild(par)   
+	auto par = ParticleEmitter::create();   
+	par->readJsonDataFromFile("json/test1.par");   
+	par->setPosition(Vec2(800, 500));   
+	this->addChild(par);   
+
+     lua:     
+         
+        local par = pp.ParticleEmitter:create()   
+        par:setPosition( cc.p(500,500) )   
+        par:readJsonDataFromFile("res/image/test1.par");   
+        self:addChild(par)   
          
 •PS:   
       1.本人联系方式:QQ:1139454623  有什么bug或建议可以给我说.   
