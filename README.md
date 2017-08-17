@@ -10,7 +10,7 @@ WSSParticleSystem
       2.编辑器程序  位于 runtime/win32/debug下.   
       3.粒子系统所用纹理  位于 runtime/win32/debug/texture下.   
       4.导出粒子文件  位于 runtime/win32/debug/json下.   
-      5.编辑器中的参考图  位于  runtime/win32/debug/refSprite文件夹下.   
+      5.编辑器中的参考图  位于  runtime/win32/debug/refSprite文件夹下.   
       6.拖尾纹理  位于 runtime/win32/debug/tail文件夹下.   
       
 •应用到自己项目:   
@@ -20,7 +20,7 @@ WSSParticleSystem
       2.注册C++到lua:(如果是lua工程)   
           在合适的地方(一般是工程开始的地方，如 appDelegate 文件的 applicationDidFinishLaunching 函数中)，调用 lua_particle_system_auto.cpp 中的register_all_particle_system 函数将C++绑定到lua.   
           
-      3.代码使用:   
+      3.代码使用:     
      C++:   
          
         auto par = ParticleEmitter::create();   
