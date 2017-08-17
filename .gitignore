@@ -649,7 +649,6 @@ proj.win32/.vs/particleProject/v14/.suo
 proj.win32/Debug.win32/particleProject.vcxprojResolveAssemblyReference.cache
 cocos2d/cocos/2d/Debug.win32/libcocos2d.tlog/CL.write.1.tlog
 proj.win32/particleProject.sdf
-runtime/
 proj.win32/Debug.win32/particleProject.tlog/unsuccessfulbuild
 proj.win32/Debug.win32/ParticleEmitterAdapter.obj
 proj.win32/Debug.win32/particleProject.tlog/link.command.1.tlog
