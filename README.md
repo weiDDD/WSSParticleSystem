@@ -1,0 +1,3 @@
+WSSParticleSystem
+一个基于cocos2dx开发的粒子系统
+
