@@ -1,4 +1,4 @@
-#include "ParticleEmitter.h"
+﻿#include "ParticleEmitter.h"
 #include "UpdateHelper.h"
 #include "FileCenter.h"
 
@@ -212,7 +212,7 @@ void tailPro::refreshTailData() {
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::string ParticleEmitter::sourcePath = "json/";
+std::string ParticleEmitter::sourcePath = "";
 void ParticleEmitter::setSourcePath(std::string path) {
 	ParticleEmitter::sourcePath = path;
 }
@@ -2021,6 +2021,12 @@ void ParticleEmitter::readJsonDataFromFile(std::string filename) {
 	//this->setPosition(Vec2::ZERO);
 	//CocosApiFactory::getInstance()->setPosition( this , Vec2::ZERO );
 	this->readJsonData(FileCenter::getInstance()->readJsonData(filename));
+
+	float start = filename.rfind("\/", filename.size());
+	if (start > -1) {
+		std::string path = filename.substr(0, start + 1);
+		ParticleEmitter::sourcePath = path;
+	}
 }
 
 //////////////////////////////////////
