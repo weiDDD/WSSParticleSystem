@@ -2,7 +2,7 @@ WSSParticleSystem
 一个基于cocos2dx开发的粒子系统   
    
 •是什么:  
-      1.一套 源自cocos2dx 服务cocos2dx 的粒子系统代码.(比cocos2dx自带粒子系统功能更强大)    
+      1.一套 源自cocos2dx 服务cocos2dx 的粒子系统代码.(比cocos2dx自带粒子系统功能更强大)    
       2.一款 粒子系统编辑器.  
       
 •怎么玩:  
