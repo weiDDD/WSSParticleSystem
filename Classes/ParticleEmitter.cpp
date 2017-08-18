@@ -774,6 +774,17 @@ void ParticleEmitter::update(float dt) {
 						emitterPar->par->setPosition(Vec2(emitterPar->pro.pos.x - emitterPos.x , emitterPar->pro.pos.y - emitterPos.y));
 					}
 					
+					// 更新旋转
+					float nowTimePrecent = (emitterPar->pro.live - emitterPar->pro.timeToLive) / emitterPar->pro.live * 100;
+					float rotation = emitterPar->pro.rotation.getParticleVarietyValue(nowTimePrecent);
+					if (emitterPar->pro.rotation.pType == particlePropertyType::constValue) {
+						// 旋转速度
+						float rotationSpeed = emitterPar->pro.rotationSpeed.getParticleVarietyValue(nowTimePrecent);
+						emitterPar->pro.rotation.constValue += rotationSpeed * dt;
+					}
+
+					emitterPar->par->setRotation(emitterPar->pro.rotation.constValue);
+
 					parIndex++;
 				}
 				else {

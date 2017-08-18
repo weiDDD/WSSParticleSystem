@@ -273,6 +273,7 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 				//	float angleOff = -angle - _emitterAngle; // 
 				//	newPos = Vec2(dis*cosf(-angleOff / 180 * P_PI), dis*sinf(-angleOff / 180 * P_PI));
 				//}
+	
 			}
 			else if (_positionType == positionType::RELATIVE)
 			{
@@ -682,6 +683,8 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 		float rotationSpeed = particle.rotationSpeed.getParticleVarietyValue(nowTimePrecent);  
 		particle.rotation.constValue += rotationSpeed * dt;
 	}
+
+
 	// 倾斜角X Y
 	float skewX = particle.skewX.getParticleVarietyValue(nowTimePrecent); 
 	float skewY = particle.skewY.getParticleVarietyValue(nowTimePrecent);  

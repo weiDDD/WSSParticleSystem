@@ -776,6 +776,18 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 		particle->startToCenterAngle = 0;
 	}
 
+	if (firePro._positionType == positionType::FREE ) {
+		float rotation = father->getRotation();
+		if (rotation != 0) {
+			Vec2 offsetPos = Vec2(particle->pos.x - emitterPos.x, particle->pos.y - emitterPos.y);
+
+			float angle = offsetPos.getAngle() / P_PI * 180;
+			float dis = offsetPos.getDistance(Vec2(0, 0));
+			Vec2 newPos = Vec2(emitterPos.x + dis*cosf((-rotation + angle) / 180 * M_PI), emitterPos.y + dis*sinf((-rotation + angle) / 180 * M_PI));
+			particle->pos = newPos;
+		}
+	}
+
 	particle->emitterPos = emitterPos;
 
 	float startAngle = Vec2(particle->pos.x - emitterPos.x, particle->pos.y - emitterPos.y).getAngle() / P_PI * 180;
@@ -877,7 +889,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	}
 
 	//////---------------------旋转角度
-	if (firePro._parType == parType::render) {
+	//if (firePro._parType == parType::render) {
 		if (firePro._rotationOfLife.pType == emitterPropertyType::curve && firePro._rotationOfLife.curvePoints.size() >= 2) {
 			this->setParticleVarietyValue(particle->rotation, firePro._rotationOfLife, particle->timeToLive);
 		}
@@ -885,10 +897,10 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 			particle->rotation.pType = particlePropertyType::constValue;
 			particle->rotation.constValue = this->getValueFromEmitterVarietyValue(firePro._startRotation, firePro);
 		}
-	}
+	//}
 
 	//////---------------------旋转角度速度
-	if (firePro._parType == parType::render) {
+	//if (firePro._parType == parType::render) {
 		if (firePro._rotationSpeedOfLife.pType == emitterPropertyType::curve && firePro._rotationSpeedOfLife.curvePoints.size() >= 2) {
 			this->setParticleVarietyValue(particle->rotationSpeed, firePro._rotationSpeedOfLife, particle->timeToLive);
 		}
@@ -896,7 +908,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 			particle->rotationSpeed.pType = particlePropertyType::constValue;
 			particle->rotationSpeed.constValue = this->getValueFromEmitterVarietyValue(firePro._startRotationSpeed, firePro);
 		}
-	}
+	//}
 
 	//////---------------------倾斜角X
 	if (firePro._parType == parType::render) {
@@ -1003,11 +1015,11 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 	//// --- 绘制调试框
 	if (!firePro._debugDrawNode_centerPoint) {
 		firePro._debugDrawNode_centerPoint = DrawNode::create();
-		father->addChild(firePro._debugDrawNode_centerPoint, 310);
+		father->runningLayer->addChild(firePro._debugDrawNode_centerPoint, 600);
 	}
 	if (!firePro._debugDrawNode_fireAreaMode) {
 		firePro._debugDrawNode_fireAreaMode = DrawNode::create();
-		father->addChild(firePro._debugDrawNode_fireAreaMode, 310);
+		father->runningLayer->addChild(firePro._debugDrawNode_fireAreaMode, 600);
 	}
 
 	if (ParticleEmitter::isUseDrawNode == false) {
@@ -1017,6 +1029,14 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 		firePro.nowFireAreaData.inRect.width = -1;
 	}
 	else {
+		Vec2 fatherPos = father->convertToWorldSpace(Vec2::ZERO);
+		fatherPos = father->runningLayer->convertToNodeSpace(fatherPos);
+
+		firePro._debugDrawNode_centerPoint->setPosition(fatherPos);
+		firePro._debugDrawNode_centerPoint->setRotation(father->getRotation());
+		firePro._debugDrawNode_fireAreaMode->setPosition(fatherPos);
+		firePro._debugDrawNode_fireAreaMode->setRotation(father->getRotation());
+
 		firePro._debugDrawNode_centerPoint->clear();
 		firePro._debugDrawNode_centerPoint->drawDot(Vec2(0, 0), 3, Color4F(1, 0, 1, 1));
 		// 绘制发射区域
