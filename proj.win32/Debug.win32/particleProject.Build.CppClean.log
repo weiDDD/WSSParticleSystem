@@ -1,6 +1,9 @@
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\vc120.pdb
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\vc120.idb
+e:\githubproject\wssparticlesystem\proj.win32\debug.win32\particleuiview.obj
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\particleemitter.obj
+e:\githubproject\wssparticlesystem\proj.win32\debug.win32\updatehelper.obj
+e:\githubproject\wssparticlesystem\proj.win32\debug.win32\particlerenderer.obj
 e:\githubproject\wssparticlesystem\runtime\win32\debug\particleproject.exe
 e:\githubproject\wssparticlesystem\runtime\win32\particleproject.pdb
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\particleproject.lib
@@ -12,10 +15,7 @@ e:\githubproject\wssparticlesystem\proj.win32\debug.win32\dropdownlist.obj
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\filecenter.obj
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\helloworldscene.obj
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\main.obj
-e:\githubproject\wssparticlesystem\proj.win32\debug.win32\particlerenderer.obj
-e:\githubproject\wssparticlesystem\proj.win32\debug.win32\particleuiview.obj
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\shadersprite.obj
-e:\githubproject\wssparticlesystem\proj.win32\debug.win32\updatehelper.obj
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\libcocos2d.exp
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\libcocos2d.pdb
 e:\githubproject\wssparticlesystem\proj.win32\debug.win32\particleproject.tlog\cl.command.1.tlog
