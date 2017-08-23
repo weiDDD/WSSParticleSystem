@@ -5504,7 +5504,8 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 // 获取 texture文件下的 .png 纹理图片
 std::vector<std::string> ParticleUiView::getPngFileName() {
 	std::vector<std::string> texList;
-	char pngList[100][100];
+	const int maxNum = 300;
+	char pngList[maxNum][100];
 	int i = 0;
 
 	string path = ""; //FileUtils::getInstance()->getWritablePath();
@@ -5522,7 +5523,7 @@ std::vector<std::string> ParticleUiView::getPngFileName() {
 	do {
 		strcpy(pngList[i], (char*)wfd.cFileName);
 		texList.push_back(pngList[i]);
-		if (++i >= 100) break;
+		if (++i >= maxNum) break;
 	} while (FindNextFileA(hFind, &wfd));
 	FindClose(hFind);
 
@@ -5533,7 +5534,8 @@ std::vector<std::string> ParticleUiView::getPngFileName() {
 // 获取 texture文件下的 .png 纹理图片
 std::vector<std::string> ParticleUiView::getJsonFileName() {
 	std::vector<std::string> texList;
-	char pngList[100][100];
+	const int maxNum = 300;
+	char pngList[maxNum][100];
 	int i = 0;
 
 	string path = ""; //FileUtils::getInstance()->getWritablePath();
@@ -5551,7 +5553,7 @@ std::vector<std::string> ParticleUiView::getJsonFileName() {
 	do {
 		strcpy(pngList[i], (char*)wfd.cFileName);
 		texList.push_back(pngList[i]);
-		if (++i >= 100) break;
+		if (++i >= maxNum) break;
 	} while (FindNextFileA(hFind, &wfd));
 	FindClose(hFind);
 
@@ -5561,7 +5563,8 @@ std::vector<std::string> ParticleUiView::getJsonFileName() {
 
 std::vector<std::string> ParticleUiView::getRefSpriteName() {
 	std::vector<std::string> texList;
-	char pngList[100][100];
+	const int maxNum = 300;
+	char pngList[maxNum][100];
 	int i = 0;
 
 	string path = ""; //FileUtils::getInstance()->getWritablePath();
@@ -5579,7 +5582,7 @@ std::vector<std::string> ParticleUiView::getRefSpriteName() {
 	do {
 		strcpy(pngList[i], (char*)wfd.cFileName);
 		texList.push_back(pngList[i]);
-		if (++i >= 100) break;
+		if (++i >= maxNum) break;
 	} while (FindNextFileA(hFind, &wfd));
 	FindClose(hFind);
 
@@ -5588,7 +5591,8 @@ std::vector<std::string> ParticleUiView::getRefSpriteName() {
 
 std::vector<std::string> ParticleUiView::getTailSpriteName() {
 	std::vector<std::string> texList;
-	char pngList[100][100];
+	const int maxNum = 300;
+	char pngList[maxNum][100];
 	int i = 0;
 
 	string path = ""; //FileUtils::getInstance()->getWritablePath();
@@ -5606,7 +5610,7 @@ std::vector<std::string> ParticleUiView::getTailSpriteName() {
 	do {
 		strcpy(pngList[i], (char*)wfd.cFileName);
 		texList.push_back(pngList[i]);
-		if (++i >= 100) break;
+		if (++i >= maxNum) break;
 	} while (FindNextFileA(hFind, &wfd));
 	FindClose(hFind);
 
