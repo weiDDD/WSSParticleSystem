@@ -692,7 +692,7 @@ class ParticleEmitter : public Node
 
 		childrenPar* getChildrenParById(int id);
 
-
+		void setChildrenParNewId(int oldid, int newid);
 
 		// 创建发射属性的唯一id
 		static int fireProId;

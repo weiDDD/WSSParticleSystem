@@ -407,6 +407,7 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 	idText->setAnchorPoint(Vec2(0.5, 0.5));
 	idText->setPosition(Vec2(0.1 * cSize.width, 0.5*cSize.height));
 	idText->setFontSize(20);
+	idText->setName("idText");
 	item->addChild(idText);
 	char idStr[20];
 	sprintf(idStr , "%d" , id);
@@ -517,7 +518,20 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 
 					for (int i = 0; i < this->moreParWidgetVec.size(); ++i) {
 						this->moreParWidgetVec.at(i)->setPositionY(innerSize.height - (i + 1) * cHeight);
+						// ÐÞ¸Äid
+						int oldid = this->moreParWidgetVec.at(i)->getTag();
+						this->getSignalPar()->getFireProById(oldid)->_id = i + 1;
+						this->moreParWidgetVec.at(i)->setTag(i + 1);
+						char idStr[20];
+						sprintf(idStr, "%d", i + 1);
+						((ui::Text*)this->moreParWidgetVec.at(i)->getChildByName("idText"))->setText(idStr);
+
+						this->getSignalPar()->setChildrenParNewId(oldid, i + 1);
 					}
+
+
+					ParticleEmitter::fireProId = this->moreParWidgetVec.size()+1;
+
 
 					break;
 				}
@@ -5171,6 +5185,8 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 
 		}
 		else if (name == "jsonFileList") {
+			ParticleEmitter::fireProId = 1;
+
 			nowFileName = "json/" + fileNames.at(index);
 			singlePar->stopSystem();
 			singlePar->clearData();

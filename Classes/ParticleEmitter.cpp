@@ -5,7 +5,7 @@
 using namespace pp;
 
 int ParticleEmitter::updatePriority = 200;
-int ParticleEmitter::fireProId = 0;
+int ParticleEmitter::fireProId = 1;
 
 bool ParticleEmitter::isUseDrawNode = false;
 
@@ -581,6 +581,14 @@ childrenPar* ParticleEmitter::getChildrenParById(int id) {
 		return (*map_itor).second;
 	}
 	return nullptr;
+}
+void ParticleEmitter::setChildrenParNewId(int oldid, int newid) {
+	auto map_itor = childrenParMap.find(oldid);
+	if (map_itor != childrenParMap.end()) {
+		childrenPar* cPar = (*map_itor).second;
+		childrenParMap.erase(map_itor);
+		childrenParMap.insert(std::make_pair(newid, cPar));
+	}
 }
 
 void ParticleEmitter::removeFireProById(int id) {
