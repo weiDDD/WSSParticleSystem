@@ -80,9 +80,10 @@
         
 --------------------------------
 -- 
--- @function [parent=#ParticleEmitter] setFirePro_fireArea_clear 
+-- @function [parent=#ParticleEmitter] setFirePro_isLoop 
 -- @param self
 -- @param #int id
+-- @param #bool loop
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
@@ -107,15 +108,29 @@
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
--- 
--- @function [parent=#ParticleEmitter] setFirePro_colorValue_clear 
+-- @overload self, int, string, float, float, float, float, float, float         
+-- @overload self, int, string, float, float, float         
+-- @function [parent=#ParticleEmitter] setFirePro_colorValue
 -- @param self
 -- @param #int id
 -- @param #string valueType
+-- @param #float randcolor1_r
+-- @param #float randcolor1_g
+-- @param #float randcolor1_b
+-- @param #float randcolor2_r
+-- @param #float randcolor2_g
+-- @param #float randcolor2_b
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+
+--------------------------------
+-- 
+-- @function [parent=#ParticleEmitter] setFirePro_fireArea_clear 
+-- @param self
+-- @param #int id
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
--- / ----------------------------------------------------- 提供给外部的修改 firePro 的函数-----------------------------------------------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] setFirePro_ParType 
 -- @param self
 -- @param #int id
@@ -132,20 +147,13 @@
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
--- @overload self, int, string, float, float, float, float, float, float         
--- @overload self, int, string, float, float, float         
--- @function [parent=#ParticleEmitter] setFirePro_colorValue
+-- 
+-- @function [parent=#ParticleEmitter] setChildrenParNewId 
 -- @param self
--- @param #int id
--- @param #string valueType
--- @param #float randcolor1_r
--- @param #float randcolor1_g
--- @param #float randcolor1_b
--- @param #float randcolor2_r
--- @param #float randcolor2_g
--- @param #float randcolor2_b
+-- @param #int oldid
+-- @param #int newid
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
-
+        
 --------------------------------
 -- 
 -- @function [parent=#ParticleEmitter] init 
@@ -245,6 +253,14 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] getVarietyValueByType 
+-- @param self
+-- @param #emitterFirePro firePro
+-- @param #string type
+-- @return emitterVarietyValue#emitterVarietyValue ret (return value: emitterVarietyValue)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] setFirePro_colorValue_pushCurveValue 
 -- @param self
 -- @param #int id
@@ -307,12 +323,12 @@
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
--- 
--- @function [parent=#ParticleEmitter] getVarietyValueByType 
+-- / ----------------------------------------------------- 提供给外部的修改 firePro 的函数-----------------------------------------------------------------------
+-- @function [parent=#ParticleEmitter] setFirePro_LocalZOrder 
 -- @param self
--- @param #emitterFirePro firePro
--- @param #string type
--- @return emitterVarietyValue#emitterVarietyValue ret (return value: emitterVarietyValue)
+-- @param #int id
+-- @param #int localZOrder
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
 -- 
@@ -342,11 +358,8 @@
         
 --------------------------------
 -- 
--- @function [parent=#ParticleEmitter] setFirePro_AnchorPoint 
+-- @function [parent=#ParticleEmitter] clearRender 
 -- @param self
--- @param #int id
--- @param #float x
--- @param #float y
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
@@ -367,10 +380,19 @@
         
 --------------------------------
 -- 
--- @function [parent=#ParticleEmitter] setFirePro_isLoop 
+-- @function [parent=#ParticleEmitter] setFirePro_AnchorPoint 
 -- @param self
 -- @param #int id
--- @param #bool loop
+-- @param #float x
+-- @param #float y
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
+-- @function [parent=#ParticleEmitter] setFirePro_colorValue_clear 
+-- @param self
+-- @param #int id
+-- @param #string valueType
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------

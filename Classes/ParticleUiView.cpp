@@ -686,6 +686,8 @@ void ParticleUiView::initUi() {
 
 				FileCenter::instance->writeJsonData(nowFileName, nullptr);
 
+				ParticleEmitter::fireProId = 1;
+
 				singlePar->stopSystem();
 				singlePar->clearData();
 				this->clearMoreParPanel();

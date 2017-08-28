@@ -785,6 +785,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 			float dis = offsetPos.getDistance(Vec2(0, 0));
 			Vec2 newPos = Vec2(emitterPos.x + dis*cosf((-rotation + angle) / 180 * M_PI), emitterPos.y + dis*sinf((-rotation + angle) / 180 * M_PI));
 			particle->pos = newPos;
+
 		}
 	}
 
@@ -844,6 +845,20 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 		else if (particle->moveAngle.pType == particlePropertyType::curve) {
 			for (int i = 0; i < particle->moveAngle.curvePoints.size(); ++i) {
 				particle->moveAngle.curvePoints[i].y += particle->startToCenterAngle;
+			}
+		}
+	}
+
+	if (firePro._positionType == positionType::FREE) {
+		float rotation = father->getRotation();
+		if (rotation != 0) {
+			if (particle->moveAngle.pType == particlePropertyType::constValue) {
+				particle->moveAngle.constValue -= rotation;
+			}
+			else if (particle->moveAngle.pType == particlePropertyType::curve) {
+				for (int i = 0; i < particle->moveAngle.curvePoints.size(); ++i) {
+					particle->moveAngle.curvePoints[i].y -= rotation;
+				}
 			}
 		}
 	}

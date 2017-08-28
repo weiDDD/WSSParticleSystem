@@ -220,6 +220,7 @@ void ParticleEmitter::setSourcePath(std::string path) {
 
 void ParticleEmitter::setRunningLayer(Node* layer) {
 	this->runningLayer = layer;
+	this->addRender();
 }
 
 ParticleEmitter::ParticleEmitter()
@@ -757,6 +758,9 @@ void ParticleEmitter::update(float dt) {
 		this->addRender();
 	}
 	
+	if (this->getParent()) {
+		this->setRotation(this->getParent()->getRotation());
+	}
 
 	{
 		auto itor = childrenParMap.begin();
@@ -1595,6 +1599,12 @@ void emitterColorValue::readJsonData(rapidjson::Document& doc, char* nameKey) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////----- 提供给外部的接口
+void ParticleEmitter::setFirePro_LocalZOrder(int id, int localZOrder) {
+	auto firePro = this->getFireProById(id);
+	if (firePro) {
+		firePro->_localZorder = localZOrder;
+	}
+}
 
 void ParticleEmitter::setFirePro_ParType(int id, std::string type) {
 	auto firePro = this->getFireProById(id);

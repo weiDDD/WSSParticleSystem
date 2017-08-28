@@ -517,7 +517,7 @@ int lua_particle_system_ParticleEmitter_createEmitter(lua_State* tolua_S)
 
     return 0;
 }
-int lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear(lua_State* tolua_S)
+int lua_particle_system_ParticleEmitter_setFirePro_isLoop(lua_State* tolua_S)
 {
     int argc = 0;
     pp::ParticleEmitter* cobj = nullptr;
@@ -537,32 +537,35 @@ int lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear(lua_State* tol
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_isLoop'", nullptr);
         return 0;
     }
 #endif
 
     argc = lua_gettop(tolua_S)-1;
-    if (argc == 1) 
+    if (argc == 2) 
     {
         int arg0;
+        bool arg1;
 
-        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_fireArea_clear");
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_isLoop");
+
+        ok &= luaval_to_boolean(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_isLoop");
         if(!ok)
         {
-            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear'", nullptr);
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_isLoop'", nullptr);
             return 0;
         }
-        cobj->setFirePro_fireArea_clear(arg0);
+        cobj->setFirePro_isLoop(arg0, arg1);
         lua_settop(tolua_S, 1);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_fireArea_clear",argc, 1);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_isLoop",argc, 2);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_isLoop'.",&tolua_err);
 #endif
 
     return 0;
@@ -717,7 +720,106 @@ int lua_particle_system_ParticleEmitter_clearData(lua_State* tolua_S)
 
     return 0;
 }
-int lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear(lua_State* tolua_S)
+int lua_particle_system_ParticleEmitter_setFirePro_colorValue(lua_State* tolua_S)
+{
+    int argc = 0;
+    pp::ParticleEmitter* cobj = nullptr;
+    bool ok  = true;
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"pp.ParticleEmitter",0,&tolua_err)) goto tolua_lerror;
+#endif
+    cobj = (pp::ParticleEmitter*)tolua_tousertype(tolua_S,1,0);
+#if COCOS2D_DEBUG >= 1
+    if (!cobj)
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue'", nullptr);
+        return 0;
+    }
+#endif
+    argc = lua_gettop(tolua_S)-1;
+    do{
+        if (argc == 8) {
+            int arg0;
+            ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            std::string arg1;
+            ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg2;
+            ok &= luaval_to_number(tolua_S, 4,&arg2, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg3;
+            ok &= luaval_to_number(tolua_S, 5,&arg3, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg4;
+            ok &= luaval_to_number(tolua_S, 6,&arg4, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg5;
+            ok &= luaval_to_number(tolua_S, 7,&arg5, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg6;
+            ok &= luaval_to_number(tolua_S, 8,&arg6, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg7;
+            ok &= luaval_to_number(tolua_S, 9,&arg7, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            cobj->setFirePro_colorValue(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+            lua_settop(tolua_S, 1);
+            return 1;
+        }
+    }while(0);
+    ok  = true;
+    do{
+        if (argc == 5) {
+            int arg0;
+            ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            std::string arg1;
+            ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg2;
+            ok &= luaval_to_number(tolua_S, 4,&arg2, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg3;
+            ok &= luaval_to_number(tolua_S, 5,&arg3, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            double arg4;
+            ok &= luaval_to_number(tolua_S, 6,&arg4, "pp.ParticleEmitter:setFirePro_colorValue");
+
+            if (!ok) { break; }
+            cobj->setFirePro_colorValue(arg0, arg1, arg2, arg3, arg4);
+            lua_settop(tolua_S, 1);
+            return 1;
+        }
+    }while(0);
+    ok  = true;
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n",  "pp.ParticleEmitter:setFirePro_colorValue",argc, 5);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue'.",&tolua_err);
+#endif
+
+    return 0;
+}
+int lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear(lua_State* tolua_S)
 {
     int argc = 0;
     pp::ParticleEmitter* cobj = nullptr;
@@ -737,35 +839,32 @@ int lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear(lua_State* t
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear'", nullptr);
         return 0;
     }
 #endif
 
     argc = lua_gettop(tolua_S)-1;
-    if (argc == 2) 
+    if (argc == 1) 
     {
         int arg0;
-        std::string arg1;
 
-        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue_clear");
-
-        ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue_clear");
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_fireArea_clear");
         if(!ok)
         {
-            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear'", nullptr);
             return 0;
         }
-        cobj->setFirePro_colorValue_clear(arg0, arg1);
+        cobj->setFirePro_fireArea_clear(arg0);
         lua_settop(tolua_S, 1);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_colorValue_clear",argc, 2);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_fireArea_clear",argc, 1);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear'.",&tolua_err);
 #endif
 
     return 0;
@@ -879,101 +978,55 @@ int lua_particle_system_ParticleEmitter_visit(lua_State* tolua_S)
 
     return 0;
 }
-int lua_particle_system_ParticleEmitter_setFirePro_colorValue(lua_State* tolua_S)
+int lua_particle_system_ParticleEmitter_setChildrenParNewId(lua_State* tolua_S)
 {
     int argc = 0;
     pp::ParticleEmitter* cobj = nullptr;
     bool ok  = true;
+
 #if COCOS2D_DEBUG >= 1
     tolua_Error tolua_err;
 #endif
 
+
 #if COCOS2D_DEBUG >= 1
     if (!tolua_isusertype(tolua_S,1,"pp.ParticleEmitter",0,&tolua_err)) goto tolua_lerror;
 #endif
+
     cobj = (pp::ParticleEmitter*)tolua_tousertype(tolua_S,1,0);
+
 #if COCOS2D_DEBUG >= 1
-    if (!cobj)
+    if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setChildrenParNewId'", nullptr);
         return 0;
     }
 #endif
+
     argc = lua_gettop(tolua_S)-1;
-    do{
-        if (argc == 8) {
-            int arg0;
-            ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue");
+    if (argc == 2) 
+    {
+        int arg0;
+        int arg1;
 
-            if (!ok) { break; }
-            std::string arg1;
-            ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue");
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setChildrenParNewId");
 
-            if (!ok) { break; }
-            double arg2;
-            ok &= luaval_to_number(tolua_S, 4,&arg2, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg3;
-            ok &= luaval_to_number(tolua_S, 5,&arg3, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg4;
-            ok &= luaval_to_number(tolua_S, 6,&arg4, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg5;
-            ok &= luaval_to_number(tolua_S, 7,&arg5, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg6;
-            ok &= luaval_to_number(tolua_S, 8,&arg6, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg7;
-            ok &= luaval_to_number(tolua_S, 9,&arg7, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            cobj->setFirePro_colorValue(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
-            lua_settop(tolua_S, 1);
-            return 1;
+        ok &= luaval_to_int32(tolua_S, 3,(int *)&arg1, "pp.ParticleEmitter:setChildrenParNewId");
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setChildrenParNewId'", nullptr);
+            return 0;
         }
-    }while(0);
-    ok  = true;
-    do{
-        if (argc == 5) {
-            int arg0;
-            ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            std::string arg1;
-            ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg2;
-            ok &= luaval_to_number(tolua_S, 4,&arg2, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg3;
-            ok &= luaval_to_number(tolua_S, 5,&arg3, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            double arg4;
-            ok &= luaval_to_number(tolua_S, 6,&arg4, "pp.ParticleEmitter:setFirePro_colorValue");
-
-            if (!ok) { break; }
-            cobj->setFirePro_colorValue(arg0, arg1, arg2, arg3, arg4);
-            lua_settop(tolua_S, 1);
-            return 1;
-        }
-    }while(0);
-    ok  = true;
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n",  "pp.ParticleEmitter:setFirePro_colorValue",argc, 5);
+        cobj->setChildrenParNewId(arg0, arg1);
+        lua_settop(tolua_S, 1);
+        return 1;
+    }
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setChildrenParNewId",argc, 2);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setChildrenParNewId'.",&tolua_err);
 #endif
 
     return 0;
@@ -1617,6 +1670,60 @@ int lua_particle_system_ParticleEmitter_addOneFirePro(lua_State* tolua_S)
 
     return 0;
 }
+int lua_particle_system_ParticleEmitter_getVarietyValueByType(lua_State* tolua_S)
+{
+    int argc = 0;
+    pp::ParticleEmitter* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"pp.ParticleEmitter",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (pp::ParticleEmitter*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_getVarietyValueByType'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 2) 
+    {
+        emitterFirePro* arg0;
+        std::string arg1;
+
+        #pragma warning NO CONVERSION TO NATIVE FOR emitterFirePro*
+		ok = false;
+
+        ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:getVarietyValueByType");
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_getVarietyValueByType'", nullptr);
+            return 0;
+        }
+        emitterVarietyValue* ret = cobj->getVarietyValueByType(arg0, arg1);
+        #pragma warning NO CONVERSION FROM NATIVE FOR emitterVarietyValue*;
+        return 1;
+    }
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:getVarietyValueByType",argc, 2);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_getVarietyValueByType'.",&tolua_err);
+#endif
+
+    return 0;
+}
 int lua_particle_system_ParticleEmitter_setFirePro_colorValue_pushCurveValue(lua_State* tolua_S)
 {
     int argc = 0;
@@ -2023,7 +2130,7 @@ int lua_particle_system_ParticleEmitter_setRunningLayer(lua_State* tolua_S)
 
     return 0;
 }
-int lua_particle_system_ParticleEmitter_getVarietyValueByType(lua_State* tolua_S)
+int lua_particle_system_ParticleEmitter_setFirePro_LocalZOrder(lua_State* tolua_S)
 {
     int argc = 0;
     pp::ParticleEmitter* cobj = nullptr;
@@ -2043,7 +2150,7 @@ int lua_particle_system_ParticleEmitter_getVarietyValueByType(lua_State* tolua_S
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_getVarietyValueByType'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_LocalZOrder'", nullptr);
         return 0;
     }
 #endif
@@ -2051,28 +2158,27 @@ int lua_particle_system_ParticleEmitter_getVarietyValueByType(lua_State* tolua_S
     argc = lua_gettop(tolua_S)-1;
     if (argc == 2) 
     {
-        emitterFirePro* arg0;
-        std::string arg1;
+        int arg0;
+        int arg1;
 
-        #pragma warning NO CONVERSION TO NATIVE FOR emitterFirePro*
-		ok = false;
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_LocalZOrder");
 
-        ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:getVarietyValueByType");
+        ok &= luaval_to_int32(tolua_S, 3,(int *)&arg1, "pp.ParticleEmitter:setFirePro_LocalZOrder");
         if(!ok)
         {
-            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_getVarietyValueByType'", nullptr);
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_LocalZOrder'", nullptr);
             return 0;
         }
-        emitterVarietyValue* ret = cobj->getVarietyValueByType(arg0, arg1);
-        #pragma warning NO CONVERSION FROM NATIVE FOR emitterVarietyValue*;
+        cobj->setFirePro_LocalZOrder(arg0, arg1);
+        lua_settop(tolua_S, 1);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:getVarietyValueByType",argc, 2);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_LocalZOrder",argc, 2);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_getVarietyValueByType'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_LocalZOrder'.",&tolua_err);
 #endif
 
     return 0;
@@ -2111,6 +2217,20 @@ int lua_particle_system_ParticleEmitter_addRender(lua_State* tolua_S)
             return 0;
         }
         cobj->addRender();
+        lua_settop(tolua_S, 1);
+        return 1;
+    }
+    if (argc == 1) 
+    {
+        bool arg0;
+
+        ok &= luaval_to_boolean(tolua_S, 2,&arg0, "pp.ParticleEmitter:addRender");
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_addRender'", nullptr);
+            return 0;
+        }
+        cobj->addRender(arg0);
         lua_settop(tolua_S, 1);
         return 1;
     }
@@ -2255,7 +2375,7 @@ int lua_particle_system_ParticleEmitter_setFirePro_fireArea_pushLinePoint(lua_St
 
     return 0;
 }
-int lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint(lua_State* tolua_S)
+int lua_particle_system_ParticleEmitter_clearRender(lua_State* tolua_S)
 {
     int argc = 0;
     pp::ParticleEmitter* cobj = nullptr;
@@ -2275,38 +2395,29 @@ int lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint(lua_State* tolua_
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_clearRender'", nullptr);
         return 0;
     }
 #endif
 
     argc = lua_gettop(tolua_S)-1;
-    if (argc == 3) 
+    if (argc == 0) 
     {
-        int arg0;
-        double arg1;
-        double arg2;
-
-        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_AnchorPoint");
-
-        ok &= luaval_to_number(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_AnchorPoint");
-
-        ok &= luaval_to_number(tolua_S, 4,&arg2, "pp.ParticleEmitter:setFirePro_AnchorPoint");
         if(!ok)
         {
-            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint'", nullptr);
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_clearRender'", nullptr);
             return 0;
         }
-        cobj->setFirePro_AnchorPoint(arg0, arg1, arg2);
+        cobj->clearRender();
         lua_settop(tolua_S, 1);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_AnchorPoint",argc, 3);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:clearRender",argc, 0);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_clearRender'.",&tolua_err);
 #endif
 
     return 0;
@@ -2417,7 +2528,7 @@ int lua_particle_system_ParticleEmitter_setFirePro_varietyValue_clear(lua_State*
 
     return 0;
 }
-int lua_particle_system_ParticleEmitter_setFirePro_isLoop(lua_State* tolua_S)
+int lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint(lua_State* tolua_S)
 {
     int argc = 0;
     pp::ParticleEmitter* cobj = nullptr;
@@ -2437,7 +2548,63 @@ int lua_particle_system_ParticleEmitter_setFirePro_isLoop(lua_State* tolua_S)
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_isLoop'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 3) 
+    {
+        int arg0;
+        double arg1;
+        double arg2;
+
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_AnchorPoint");
+
+        ok &= luaval_to_number(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_AnchorPoint");
+
+        ok &= luaval_to_number(tolua_S, 4,&arg2, "pp.ParticleEmitter:setFirePro_AnchorPoint");
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint'", nullptr);
+            return 0;
+        }
+        cobj->setFirePro_AnchorPoint(arg0, arg1, arg2);
+        lua_settop(tolua_S, 1);
+        return 1;
+    }
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_AnchorPoint",argc, 3);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint'.",&tolua_err);
+#endif
+
+    return 0;
+}
+int lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear(lua_State* tolua_S)
+{
+    int argc = 0;
+    pp::ParticleEmitter* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"pp.ParticleEmitter",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (pp::ParticleEmitter*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
         return 0;
     }
 #endif
@@ -2446,26 +2613,26 @@ int lua_particle_system_ParticleEmitter_setFirePro_isLoop(lua_State* tolua_S)
     if (argc == 2) 
     {
         int arg0;
-        bool arg1;
+        std::string arg1;
 
-        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_isLoop");
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue_clear");
 
-        ok &= luaval_to_boolean(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_isLoop");
+        ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue_clear");
         if(!ok)
         {
-            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_isLoop'", nullptr);
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
             return 0;
         }
-        cobj->setFirePro_isLoop(arg0, arg1);
+        cobj->setFirePro_colorValue_clear(arg0, arg1);
         lua_settop(tolua_S, 1);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_isLoop",argc, 2);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_colorValue_clear",argc, 2);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_isLoop'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'.",&tolua_err);
 #endif
 
     return 0;
@@ -2930,14 +3097,15 @@ int lua_register_particle_system_ParticleEmitter(lua_State* tolua_S)
         tolua_function(tolua_S,"setFirePro_MaxParticleNum",lua_particle_system_ParticleEmitter_setFirePro_MaxParticleNum);
         tolua_function(tolua_S,"stopSystem",lua_particle_system_ParticleEmitter_stopSystem);
         tolua_function(tolua_S,"createEmitter",lua_particle_system_ParticleEmitter_createEmitter);
-        tolua_function(tolua_S,"setFirePro_fireArea_clear",lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear);
+        tolua_function(tolua_S,"setFirePro_isLoop",lua_particle_system_ParticleEmitter_setFirePro_isLoop);
         tolua_function(tolua_S,"setFirePro_emissionRate",lua_particle_system_ParticleEmitter_setFirePro_emissionRate);
         tolua_function(tolua_S,"removeFireProById",lua_particle_system_ParticleEmitter_removeFireProById);
         tolua_function(tolua_S,"clearData",lua_particle_system_ParticleEmitter_clearData);
-        tolua_function(tolua_S,"setFirePro_colorValue_clear",lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear);
+        tolua_function(tolua_S,"setFirePro_colorValue",lua_particle_system_ParticleEmitter_setFirePro_colorValue);
+        tolua_function(tolua_S,"setFirePro_fireArea_clear",lua_particle_system_ParticleEmitter_setFirePro_fireArea_clear);
         tolua_function(tolua_S,"setFirePro_ParType",lua_particle_system_ParticleEmitter_setFirePro_ParType);
         tolua_function(tolua_S,"visit",lua_particle_system_ParticleEmitter_visit);
-        tolua_function(tolua_S,"setFirePro_colorValue",lua_particle_system_ParticleEmitter_setFirePro_colorValue);
+        tolua_function(tolua_S,"setChildrenParNewId",lua_particle_system_ParticleEmitter_setChildrenParNewId);
         tolua_function(tolua_S,"init",lua_particle_system_ParticleEmitter_init);
         tolua_function(tolua_S,"setFirePro_EmitterFileName",lua_particle_system_ParticleEmitter_setFirePro_EmitterFileName);
         tolua_function(tolua_S,"setIsAutoRemoveOnFinish",lua_particle_system_ParticleEmitter_setIsAutoRemoveOnFinish);
@@ -2950,6 +3118,7 @@ int lua_register_particle_system_ParticleEmitter(lua_State* tolua_S)
         tolua_function(tolua_S,"writeJsonData",lua_particle_system_ParticleEmitter_writeJsonData);
         tolua_function(tolua_S,"setFirePro_TexName",lua_particle_system_ParticleEmitter_setFirePro_TexName);
         tolua_function(tolua_S,"addOneFirePro",lua_particle_system_ParticleEmitter_addOneFirePro);
+        tolua_function(tolua_S,"getVarietyValueByType",lua_particle_system_ParticleEmitter_getVarietyValueByType);
         tolua_function(tolua_S,"setFirePro_colorValue_pushCurveValue",lua_particle_system_ParticleEmitter_setFirePro_colorValue_pushCurveValue);
         tolua_function(tolua_S,"update",lua_particle_system_ParticleEmitter_update);
         tolua_function(tolua_S,"readJsonData",lua_particle_system_ParticleEmitter_readJsonData);
@@ -2957,14 +3126,15 @@ int lua_register_particle_system_ParticleEmitter(lua_State* tolua_S)
         tolua_function(tolua_S,"resetSystem",lua_particle_system_ParticleEmitter_resetSystem);
         tolua_function(tolua_S,"setFirePro_fireArea",lua_particle_system_ParticleEmitter_setFirePro_fireArea);
         tolua_function(tolua_S,"setRunningLayer",lua_particle_system_ParticleEmitter_setRunningLayer);
-        tolua_function(tolua_S,"getVarietyValueByType",lua_particle_system_ParticleEmitter_getVarietyValueByType);
+        tolua_function(tolua_S,"setFirePro_LocalZOrder",lua_particle_system_ParticleEmitter_setFirePro_LocalZOrder);
         tolua_function(tolua_S,"addRender",lua_particle_system_ParticleEmitter_addRender);
         tolua_function(tolua_S,"setFirePro_varietyValue",lua_particle_system_ParticleEmitter_setFirePro_varietyValue);
         tolua_function(tolua_S,"setFirePro_fireArea_pushLinePoint",lua_particle_system_ParticleEmitter_setFirePro_fireArea_pushLinePoint);
-        tolua_function(tolua_S,"setFirePro_AnchorPoint",lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint);
+        tolua_function(tolua_S,"clearRender",lua_particle_system_ParticleEmitter_clearRender);
         tolua_function(tolua_S,"setFirePro_SourceBlend",lua_particle_system_ParticleEmitter_setFirePro_SourceBlend);
         tolua_function(tolua_S,"setFirePro_varietyValue_clear",lua_particle_system_ParticleEmitter_setFirePro_varietyValue_clear);
-        tolua_function(tolua_S,"setFirePro_isLoop",lua_particle_system_ParticleEmitter_setFirePro_isLoop);
+        tolua_function(tolua_S,"setFirePro_AnchorPoint",lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint);
+        tolua_function(tolua_S,"setFirePro_colorValue_clear",lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear);
         tolua_function(tolua_S,"setFirepro_colorValue_pushMoreValue",lua_particle_system_ParticleEmitter_setFirepro_colorValue_pushMoreValue);
         tolua_function(tolua_S,"refreshZorder",lua_particle_system_ParticleEmitter_refreshZorder);
         tolua_function(tolua_S,"setFirePro_tailPro_isActive",lua_particle_system_ParticleEmitter_setFirePro_tailPro_isActive);

@@ -729,6 +729,7 @@ class ParticleEmitter : public Node
 
 	public:
 		///// ----------------------------------------------------- 提供给外部的修改 firePro 的函数-----------------------------------------------------------------------
+		void setFirePro_LocalZOrder(int id, int localZOrder);
 		void setFirePro_ParType(int id, std::string type);
 		void setFirePro_EmitterFileName(int id, std::string name);
 		void setFirePro_TexName(int id, std::string texName);
