@@ -758,9 +758,7 @@ void ParticleEmitter::update(float dt) {
 		this->addRender();
 	}
 	
-	if (this->getParent()) {
-		this->setRotation(this->getParent()->getRotation());
-	}
+	
 
 	{
 		auto itor = childrenParMap.begin();
@@ -795,7 +793,7 @@ void ParticleEmitter::update(float dt) {
 						emitterPar->pro.rotation.constValue += rotationSpeed * dt;
 					}
 
-					emitterPar->par->setRotation(emitterPar->pro.rotation.constValue);
+					emitterPar->par->setRotation(emitterPar->par->getParent()->getRotation() + emitterPar->pro.rotation.constValue);
 
 					parIndex++;
 				}
@@ -857,6 +855,10 @@ void ParticleEmitter::update(float dt) {
 				this->removeFromParent();
 			}
 		}
+	}
+
+	if (this->getParent()) {
+		this->setRotation(this->getParent()->getRotation());
 	}
 
 	//CC_PROFILER_START_CATEGORY(kProfilerCategoryParticles, "NEW ParticleSystem - update");
