@@ -1606,6 +1606,14 @@ void ParticleEmitter::setFirePro_LocalZOrder(int id, int localZOrder) {
 	if (firePro) {
 		firePro->_localZorder = localZOrder;
 	}
+
+	auto cPar = childrenParMap.find(firePro->_id);
+	if (cPar != childrenParMap.end()) {
+		if (cPar->second->_renderer)
+		{
+			cPar->second->_renderer->setLocalZOrder(firePro->_localZorder);
+		}
+	}
 }
 
 void ParticleEmitter::setFirePro_ParType(int id, std::string type) {
@@ -1886,7 +1894,7 @@ void ParticleEmitter::setFirePro_varietyValue(int id, std::string valueType, flo
 		if (vValue) {
 			vValue->pType == emitterPropertyType::randBetweenTwoConst;
 			vValue->randConst1 = randvalue1;
-			vValue->randConst1 = randvalue2;
+			vValue->randConst2 = randvalue2;
 		}
 	}
 }
@@ -2057,7 +2065,7 @@ void ParticleEmitter::readJsonDataFromFile(std::string filename) {
 	if (start > -1) {
 		std::string path = filename.substr(0, start + 1);
 		ParticleEmitter::sourcePath = path;
-		CCLOG("-------------------ParticleEmitter::sourcePath :%s", ParticleEmitter::sourcePath);
+		//CCLOG("-------------------ParticleEmitter::sourcePath :%s", ParticleEmitter::sourcePath);
 	}
 }
 
