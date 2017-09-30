@@ -332,6 +332,14 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] setFirePro_IsFlowCircleRadius 
+-- @param self
+-- @param #int id
+-- @param #bool isFlow
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] addRender 
 -- @param self
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)

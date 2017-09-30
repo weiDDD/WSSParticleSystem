@@ -320,6 +320,9 @@ namespace PRender {
 
 		pp::ParticleEmitter* _emitter;
 
+		bool isFlowCircleRadius;
+		int flowCircleRadiusFireProId;
+
 	private:
 		//////------ 绘制相关
 		/** conforms to CocosNodeTexture protocol */

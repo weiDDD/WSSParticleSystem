@@ -194,6 +194,8 @@ ParticleRenderer::ParticleRenderer()
 , _emitterAngle(0)
 {
 	_positionType = positionType::RELATIVE;
+	isFlowCircleRadius = false;
+	flowCircleRadiusFireProId = 0;
 	// Clear the memory
 	memset(_buffersVBO , 0, sizeof(_buffersVBO));
 }
@@ -279,6 +281,17 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 			{
 				// 因为 render 加到 emitter 上,render的节点位置会跟着emitter的移动而移动，粒子的渲染又是在render节点的基础上
 				newPos = p.pos;
+			}
+
+			if (isFlowCircleRadius) {
+				Vec2 offset = Vec2(0, 0);
+				if (_emitter && _emitter->isRunning() && _emitter->runningLayer) {
+					auto firePro = _emitter->getFireProById(flowCircleRadiusFireProId);
+					if (firePro) {
+						offset = Vec2(firePro->_fireArea.inCircleRadius * cosf(p.startToCenterAngle / 180 * P_PI), firePro->_fireArea.inCircleRadius * sinf(p.startToCenterAngle / 180 * P_PI));
+					}
+				}
+				newPos = Vec2(newPos.x + offset.x, newPos.y + offset.y);
 			}
 
 			this->updateQuadWithParticle(p, newPos ,dt);

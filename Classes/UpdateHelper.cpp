@@ -789,6 +789,12 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 		}
 	}
 
+	// 如果跟随圆形发射区域，位置为0，它的真实位置为 现在内半径*角度 + pos
+	if (firePro._isFlowCircleRadius) {
+		particle->pos.x = particle->pos.x - firePro._fireArea.inCircleRadius * cosf(particle->startToCenterAngle / 180 * P_PI);
+		particle->pos.y = particle->pos.y - firePro._fireArea.inCircleRadius * sinf(particle->startToCenterAngle / 180 * P_PI);
+	}
+
 	particle->emitterPos = emitterPos;
 
 	float startAngle = Vec2(particle->pos.x - emitterPos.x, particle->pos.y - emitterPos.y).getAngle() / P_PI * 180;

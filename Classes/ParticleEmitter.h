@@ -406,6 +406,8 @@ struct emitterFirePro {
 
 	DrawNode* _debugDrawNode_fireAreaMode;
 
+	// 是否跟随圆形发射半径移动，如果发射区域圆形的内半径改变，粒子将会重设到相对新的内半径的位置上去
+	bool _isFlowCircleRadius = false;
 	//// ---------------------其他用来和 发射器数据 进行对比设置 的临时值
 	// 当前的纹理名称
 	std::string nowTexName;
@@ -744,6 +746,8 @@ class ParticleEmitter : public Node
 		void setFirePro_isLoop(int id, bool loop);
 		void setFirePro_preFireDuration(int id, float preFire);
 		void setFirePro_delayTime(int id, float delay);
+
+		void setFirePro_IsFlowCircleRadius(int id, bool isFlow);
 		// -- 发射区域
 		void setFirePro_fireArea(int id, float inRectWidth, float inRectHeight, float outRectWidth, float outRectHeight); // rect
 		void setFirePro_fireArea(int id, float inCirecleRadius, float outCircleRadius); // circle

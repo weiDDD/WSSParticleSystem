@@ -2183,6 +2183,59 @@ int lua_particle_system_ParticleEmitter_setFirePro_LocalZOrder(lua_State* tolua_
 
     return 0;
 }
+int lua_particle_system_ParticleEmitter_setFirePro_IsFlowCircleRadius(lua_State* tolua_S)
+{
+    int argc = 0;
+    pp::ParticleEmitter* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"pp.ParticleEmitter",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (pp::ParticleEmitter*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_IsFlowCircleRadius'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 2) 
+    {
+        int arg0;
+        bool arg1;
+
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_IsFlowCircleRadius");
+
+        ok &= luaval_to_boolean(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_IsFlowCircleRadius");
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_IsFlowCircleRadius'", nullptr);
+            return 0;
+        }
+        cobj->setFirePro_IsFlowCircleRadius(arg0, arg1);
+        lua_settop(tolua_S, 1);
+        return 1;
+    }
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_IsFlowCircleRadius",argc, 2);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_IsFlowCircleRadius'.",&tolua_err);
+#endif
+
+    return 0;
+}
 int lua_particle_system_ParticleEmitter_addRender(lua_State* tolua_S)
 {
     int argc = 0;
@@ -3127,6 +3180,7 @@ int lua_register_particle_system_ParticleEmitter(lua_State* tolua_S)
         tolua_function(tolua_S,"setFirePro_fireArea",lua_particle_system_ParticleEmitter_setFirePro_fireArea);
         tolua_function(tolua_S,"setRunningLayer",lua_particle_system_ParticleEmitter_setRunningLayer);
         tolua_function(tolua_S,"setFirePro_LocalZOrder",lua_particle_system_ParticleEmitter_setFirePro_LocalZOrder);
+        tolua_function(tolua_S,"setFirePro_IsFlowCircleRadius",lua_particle_system_ParticleEmitter_setFirePro_IsFlowCircleRadius);
         tolua_function(tolua_S,"addRender",lua_particle_system_ParticleEmitter_addRender);
         tolua_function(tolua_S,"setFirePro_varietyValue",lua_particle_system_ParticleEmitter_setFirePro_varietyValue);
         tolua_function(tolua_S,"setFirePro_fireArea_pushLinePoint",lua_particle_system_ParticleEmitter_setFirePro_fireArea_pushLinePoint);

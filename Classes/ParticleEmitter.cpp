@@ -638,6 +638,11 @@ void ParticleEmitter::addRender(bool isCreateNew /*= false*/) {
 					if (!cPar->second->_renderer){
 						cPar->second->_renderer = ParticleRenderer::create();
 						cPar->second->_renderer->initWithTotalParticles(1);
+
+						if (firePro->_isFlowCircleRadius) {
+							cPar->second->_renderer->isFlowCircleRadius = true;
+							cPar->second->_renderer->flowCircleRadiusFireProId = firePro->_id;
+						}
 					}
 					cPar->second->_renderer->setIsAutoRemoveOnFinish(false);
 					cPar->second->_renderer->_emitter = this;
@@ -1717,6 +1722,13 @@ void ParticleEmitter::setFirePro_delayTime(int id, float delay) {
 	auto firePro = this->getFireProById(id);
 	if (firePro) {
 		firePro->_delayTime = delay;
+	}
+}
+
+void ParticleEmitter::setFirePro_IsFlowCircleRadius(int id, bool isFlow) {
+	auto firePro = this->getFireProById(id);
+	if (firePro) {
+		firePro->_isFlowCircleRadius = isFlow;
 	}
 }
 
