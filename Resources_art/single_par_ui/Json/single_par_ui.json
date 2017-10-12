@@ -12,7 +12,9 @@
   "textures": [
     "single_par_ui0.plist"
   ],
-  "texturesPng": [],
+  "texturesPng": [
+    "single_par_ui0.png"
+  ],
   "version": "1.4.0.1",
   "widgetTree": {
     "classname": "Panel",

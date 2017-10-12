@@ -19,7 +19,9 @@
   <imageFileList>
     <string>single_par_ui0.plist</string>
   </imageFileList>
-  <imagePngList />
+  <imagePngList>
+    <string>single_par_ui0.png</string>
+  </imagePngList>
   <JsonSuffix>.json</JsonSuffix>
   <CurrentUIJson>single_par_ui.json</CurrentUIJson>
 </UIProject>
