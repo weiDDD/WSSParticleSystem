@@ -690,11 +690,17 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 	float size = particle.size.getParticleVarietyValue(nowTimePrecent);
 
 	// 旋转
-	float rotation = particle.rotation.getParticleVarietyValue(nowTimePrecent); 
-	if (particle.rotation.pType == particlePropertyType::constValue) {
-		// 旋转速度
-		float rotationSpeed = particle.rotationSpeed.getParticleVarietyValue(nowTimePrecent);  
-		particle.rotation.constValue += rotationSpeed * dt;
+	float rotation = 0;
+	if (particle.isLockRotationToMoveAngle) {
+		rotation = -particle.moveAngle.getParticleVarietyValue(nowTimePrecent);
+	}
+	else {
+		rotation = particle.rotation.getParticleVarietyValue(nowTimePrecent);
+		if (particle.rotation.pType == particlePropertyType::constValue) {
+			// 旋转速度
+			float rotationSpeed = particle.rotationSpeed.getParticleVarietyValue(nowTimePrecent);
+			particle.rotation.constValue += rotationSpeed * dt;
+		}
 	}
 
 

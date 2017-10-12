@@ -261,6 +261,14 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] setFirePro_colorValue_clear 
+-- @param self
+-- @param #int id
+-- @param #string valueType
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] setFirePro_colorValue_pushCurveValue 
 -- @param self
 -- @param #int id
@@ -397,10 +405,10 @@
         
 --------------------------------
 -- 
--- @function [parent=#ParticleEmitter] setFirePro_colorValue_clear 
+-- @function [parent=#ParticleEmitter] setFirePro_isLockRotationToMoveAngle 
 -- @param self
 -- @param #int id
--- @param #string valueType
+-- @param #bool isLock
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------

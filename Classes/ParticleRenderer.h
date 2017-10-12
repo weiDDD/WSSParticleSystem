@@ -150,6 +150,7 @@ namespace PRender {
 		particleProperty() {
 			gravitySpeedX = 0;
 			gravitySpeedY = 0;
+			isLockRotationToMoveAngle = false;
 		}
 		void resetData() {
 			gravitySpeedX = 0;
@@ -173,6 +174,9 @@ namespace PRender {
 			alpha.refreshPointer();
 			color.refreshPointer();
 		}
+
+		// 是否锁定旋转角度为移动角度，锁定后，旋转角度和移动角度一致
+		bool isLockRotationToMoveAngle;
 
 		//发射时的 相对于中心点的角度
 		float startToCenterAngle = 0;

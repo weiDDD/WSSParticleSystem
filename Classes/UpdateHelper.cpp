@@ -812,6 +812,9 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	// 处理锚点
 	particle->anchorPoint = firePro._texAnchorPoint;
 
+	// 是否锁定旋转角度到移动角度上
+	particle->isLockRotationToMoveAngle = firePro._isLockRotationToMoveAngle;
+
 	// 生命
 	particle->live = this->getValueFromEmitterVarietyValue(firePro._life, firePro);
 	particle->timeToLive = particle->live;

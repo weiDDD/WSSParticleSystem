@@ -333,6 +333,7 @@ struct emitterFirePro {
 		nowMaxParticleNum = 0;
 		nowPositionType = positionType::positionTypeNone;
 
+		_isLockRotationToMoveAngle = false;
 		_localZorder = 0;
 		_tagName = "";
 		_emitterFileName = "";
@@ -406,6 +407,8 @@ struct emitterFirePro {
 
 	DrawNode* _debugDrawNode_fireAreaMode;
 
+	// 是否锁定旋转到移动角度上
+	bool _isLockRotationToMoveAngle;
 	// 是否跟随圆形发射半径移动，如果发射区域圆形的内半径改变，粒子将会重设到相对新的内半径的位置上去
 	bool _isFlowCircleRadius = false;
 	//// ---------------------其他用来和 发射器数据 进行对比设置 的临时值
@@ -744,6 +747,7 @@ class ParticleEmitter : public Node
 		void setFirePro_emissionRate(int id, float rate);
 		void setFirePro_duration(int id, float duration);
 		void setFirePro_isLoop(int id, bool loop);
+		void setFirePro_isLockRotationToMoveAngle(int id, bool isLock);
 		void setFirePro_preFireDuration(int id, float preFire);
 		void setFirePro_delayTime(int id, float delay);
 

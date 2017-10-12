@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <UIProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <ProjectDir>F:\wss-study\WSParticleEditor\Resources_art\single_par_ui</ProjectDir>
+  <ProjectDir>E:\githubProject\WSSParticleSystem\Resources_art\single_par_ui</ProjectDir>
   <Version>1.4.0.1</Version>
-  <Resources>F:\wss-study\WSParticleEditor\Resources_art\single_par_ui\Resources</Resources>
+  <Resources>E:\githubProject\WSSParticleSystem\Resources_art\single_par_ui\Resources</Resources>
   <Name>single_par_ui</Name>
   <JsonFileName>single_par_ui.json</JsonFileName>
-  <JsonFolder>F:\wss-study\WSParticleEditor\Resources_art\single_par_ui\Json</JsonFolder>
+  <JsonFolder>E:\githubProject\WSSParticleSystem\Resources_art\single_par_ui\Json</JsonFolder>
   <JsonList>
     <string>single_par_ui.json</string>
   </JsonList>
@@ -13,7 +13,7 @@
     <Width>1600</Width>
     <Height>1000</Height>
   </CanvasSize>
-  <filePath>F:\wss-study\WSParticleEditor\Resources_art\single_par_ui\single_par_ui.xml.ui</filePath>
+  <filePath>E:\githubProject\WSSParticleSystem\Resources_art\single_par_ui\single_par_ui.xml.ui</filePath>
   <ProjectType>UIProject</ProjectType>
   <ResRelativePath />
   <imageFileList>
@@ -21,5 +21,5 @@
   </imageFileList>
   <imagePngList />
   <JsonSuffix>.json</JsonSuffix>
-  <CurrentUIJson />
+  <CurrentUIJson>single_par_ui.json</CurrentUIJson>
 </UIProject>

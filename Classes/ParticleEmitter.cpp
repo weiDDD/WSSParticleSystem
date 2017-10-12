@@ -1005,6 +1005,9 @@ bool emitterFirePro::writeJsonData(rapidjson::Document& object, rapidjson::Docum
 	object.AddMember("duration", _duration, allocator);
 	// 是否循环发射
 	object.AddMember("isLoop", _isLoop, allocator);
+	// 是否锁定旋转到移动角度上
+	object.AddMember("isLockRotationToMoveAngle", _isLockRotationToMoveAngle, allocator);
+
 	// 预发射几个周期的粒子
 	object.AddMember("preFireDuration", _preFireDuration, allocator);
 	// 发射开始的延迟
@@ -1117,6 +1120,9 @@ void emitterFirePro::readJsonData(rapidjson::Document& doc) {
 	}
 	if (doc.HasMember("isLoop")) {
 		_isLoop = doc["isLoop"].GetBool();
+	}
+	if (doc.HasMember("isLockRotationToMoveAngle")) {
+		_isLockRotationToMoveAngle = doc["isLockRotationToMoveAngle"].GetBool();
 	}
 	if (doc.HasMember("preFireDuration")) {
 		_preFireDuration = doc["preFireDuration"].GetDouble();
@@ -1711,6 +1717,15 @@ void ParticleEmitter::setFirePro_isLoop(int id, bool loop) {
 		firePro->_isLoop = loop;
 	}
 }
+
+void ParticleEmitter::setFirePro_isLockRotationToMoveAngle(int id, bool isLock) {
+	auto firePro = this->getFireProById(id);
+	if (firePro) {
+		firePro->_isLockRotationToMoveAngle = isLock;
+	}
+}
+
+
 void ParticleEmitter::setFirePro_preFireDuration(int id, float preFire) {
 	auto firePro = this->getFireProById(id);
 	if (firePro) {

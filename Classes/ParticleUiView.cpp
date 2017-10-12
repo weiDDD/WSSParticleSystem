@@ -3827,6 +3827,14 @@ void ParticleUiView::initSingleParUi() {
 	else {
 		((CheckBox*)seekByName(singleRootNode, "isLoopCheckBox"))->setSelectedState(false);
 	}
+	// 是否锁定旋转到移动角度
+	if (nowEditingSignalPar->_isLockRotationToMoveAngle) {
+		((CheckBox*)seekByName(singleRootNode, "lockRotationCheckBox"))->setSelectedState(true); 
+	}
+	else {
+		((CheckBox*)seekByName(singleRootNode, "lockRotationCheckBox"))->setSelectedState(false);
+	}
+
 	// 运动模式
 	if (nowEditingSignalPar->_positionType == positionType::FREE ) {
 		((CheckBox*)seekByName(singleRootNode, "moveMode_free"))->setSelectedState(true);
@@ -5355,6 +5363,15 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 				}
 			}
 		}
+		if (name == "lockRotationCheckBox") {
+			nowEditingSignalPar->_isLockRotationToMoveAngle = true;
+			/*if (editMode == EditMode::single && singlePar && nowEditingSignalPar) {
+				if (!singlePar->getIsActive()) {
+					nowEditingSignalPar->resetData();
+					singlePar->resetSystem();
+				}
+			}*/
+		}
 		if (name == "moveMode_free") {
 			((CheckBox*)seekByName(singleRootNode, "moveMode_relative"))->setSelectedState(false);
 			
@@ -5450,6 +5467,9 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 		}*/
 		if (name == "isLoopCheckBox") {
 			nowEditingSignalPar->_isLoop = false;
+		}
+		if (name == "lockRotationCheckBox") {
+			nowEditingSignalPar->_isLockRotationToMoveAngle = false;
 		}
 		if (name == "moveMode_free") {
 			((CheckBox*)seekByName(singleRootNode, "moveMode_relative"))->setSelectedState(true);

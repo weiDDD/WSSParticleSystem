@@ -1724,6 +1724,59 @@ int lua_particle_system_ParticleEmitter_getVarietyValueByType(lua_State* tolua_S
 
     return 0;
 }
+int lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear(lua_State* tolua_S)
+{
+    int argc = 0;
+    pp::ParticleEmitter* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"pp.ParticleEmitter",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (pp::ParticleEmitter*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 2) 
+    {
+        int arg0;
+        std::string arg1;
+
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue_clear");
+
+        ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue_clear");
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
+            return 0;
+        }
+        cobj->setFirePro_colorValue_clear(arg0, arg1);
+        lua_settop(tolua_S, 1);
+        return 1;
+    }
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_colorValue_clear",argc, 2);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'.",&tolua_err);
+#endif
+
+    return 0;
+}
 int lua_particle_system_ParticleEmitter_setFirePro_colorValue_pushCurveValue(lua_State* tolua_S)
 {
     int argc = 0;
@@ -2637,7 +2690,7 @@ int lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint(lua_State* tolua_
 
     return 0;
 }
-int lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear(lua_State* tolua_S)
+int lua_particle_system_ParticleEmitter_setFirePro_isLockRotationToMoveAngle(lua_State* tolua_S)
 {
     int argc = 0;
     pp::ParticleEmitter* cobj = nullptr;
@@ -2657,7 +2710,7 @@ int lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear(lua_State* t
 #if COCOS2D_DEBUG >= 1
     if (!cobj) 
     {
-        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_particle_system_ParticleEmitter_setFirePro_isLockRotationToMoveAngle'", nullptr);
         return 0;
     }
 #endif
@@ -2666,26 +2719,26 @@ int lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear(lua_State* t
     if (argc == 2) 
     {
         int arg0;
-        std::string arg1;
+        bool arg1;
 
-        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_colorValue_clear");
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "pp.ParticleEmitter:setFirePro_isLockRotationToMoveAngle");
 
-        ok &= luaval_to_std_string(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_colorValue_clear");
+        ok &= luaval_to_boolean(tolua_S, 3,&arg1, "pp.ParticleEmitter:setFirePro_isLockRotationToMoveAngle");
         if(!ok)
         {
-            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'", nullptr);
+            tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setFirePro_isLockRotationToMoveAngle'", nullptr);
             return 0;
         }
-        cobj->setFirePro_colorValue_clear(arg0, arg1);
+        cobj->setFirePro_isLockRotationToMoveAngle(arg0, arg1);
         lua_settop(tolua_S, 1);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_colorValue_clear",argc, 2);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "pp.ParticleEmitter:setFirePro_isLockRotationToMoveAngle",argc, 2);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'lua_particle_system_ParticleEmitter_setFirePro_isLockRotationToMoveAngle'.",&tolua_err);
 #endif
 
     return 0;
@@ -3172,6 +3225,7 @@ int lua_register_particle_system_ParticleEmitter(lua_State* tolua_S)
         tolua_function(tolua_S,"setFirePro_TexName",lua_particle_system_ParticleEmitter_setFirePro_TexName);
         tolua_function(tolua_S,"addOneFirePro",lua_particle_system_ParticleEmitter_addOneFirePro);
         tolua_function(tolua_S,"getVarietyValueByType",lua_particle_system_ParticleEmitter_getVarietyValueByType);
+        tolua_function(tolua_S,"setFirePro_colorValue_clear",lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear);
         tolua_function(tolua_S,"setFirePro_colorValue_pushCurveValue",lua_particle_system_ParticleEmitter_setFirePro_colorValue_pushCurveValue);
         tolua_function(tolua_S,"update",lua_particle_system_ParticleEmitter_update);
         tolua_function(tolua_S,"readJsonData",lua_particle_system_ParticleEmitter_readJsonData);
@@ -3188,7 +3242,7 @@ int lua_register_particle_system_ParticleEmitter(lua_State* tolua_S)
         tolua_function(tolua_S,"setFirePro_SourceBlend",lua_particle_system_ParticleEmitter_setFirePro_SourceBlend);
         tolua_function(tolua_S,"setFirePro_varietyValue_clear",lua_particle_system_ParticleEmitter_setFirePro_varietyValue_clear);
         tolua_function(tolua_S,"setFirePro_AnchorPoint",lua_particle_system_ParticleEmitter_setFirePro_AnchorPoint);
-        tolua_function(tolua_S,"setFirePro_colorValue_clear",lua_particle_system_ParticleEmitter_setFirePro_colorValue_clear);
+        tolua_function(tolua_S,"setFirePro_isLockRotationToMoveAngle",lua_particle_system_ParticleEmitter_setFirePro_isLockRotationToMoveAngle);
         tolua_function(tolua_S,"setFirepro_colorValue_pushMoreValue",lua_particle_system_ParticleEmitter_setFirepro_colorValue_pushMoreValue);
         tolua_function(tolua_S,"refreshZorder",lua_particle_system_ParticleEmitter_refreshZorder);
         tolua_function(tolua_S,"setFirePro_tailPro_isActive",lua_particle_system_ParticleEmitter_setFirePro_tailPro_isActive);
