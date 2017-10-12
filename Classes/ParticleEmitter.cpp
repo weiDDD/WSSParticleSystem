@@ -363,7 +363,7 @@ void ParticleEmitter::onEnter() {
 void ParticleEmitter::onExit() {
 	Node::onExit();
 	//this->unscheduleUpdate();
-	this->stopSystem();
+	//this->stopSystem();
 	//_renderer->_emitter = nullptr;
 	
 }
