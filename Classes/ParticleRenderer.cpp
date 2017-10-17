@@ -360,7 +360,8 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 	// only update gl buffer when visible
 	if (_visible && isHaveParLive)
 	{
-		postStep();
+		// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
+		//postStep();
 	}
 
 }
@@ -409,11 +410,13 @@ bool ParticleRenderer::initWithTotalParticles(int totalParticleNum) {
 	this->initIndices();
 	if (Configuration::getInstance()->supportsShareableVAO())
 	{
-		setupVBOandVAO();
+		// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
+		//setupVBOandVAO();
 	}
 	else
 	{
-		setupVBO();
+		// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
+		//setupVBO();
 	}
 
 	setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
@@ -435,7 +438,7 @@ void ParticleRenderer::setupVBOandVAO() {
 	GL::bindVAO(_VAOname);
 
 #define kQuadSize sizeof(_quads[0].bl)
-
+	// 创建VBO顶点缓存对象
 	glGenBuffers(2, &_buffersVBO[0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
@@ -916,11 +919,13 @@ void ParticleRenderer::setTotalParticles(int tp) {
 		this->initIndices();
 		if (Configuration::getInstance()->supportsShareableVAO())
 		{
-			setupVBOandVAO();
+			// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
+			//setupVBOandVAO();
 		}
 		else
 		{
-			setupVBO();
+			// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
+			//setupVBO();
 		}
 
 		// fixed http://www.cocos2d-x.org/issues/3990
