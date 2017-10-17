@@ -523,10 +523,13 @@ void ParticleRenderer::postStep() {
 
 	// Option 1: Sub Data
 	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_totalParticles, _quads);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_particleCount, _quads);
+	
+	// new 使用这一句 ,ios上会出现 opengl error 0x0501
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_particleCount, _quads);
 
 	// Option 2: Data
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
+	// 使用这一句不会出现 opengl error 0x0501 
+	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
 
 	// Option 3: Orphaning + glMapBuffer
 	 /*glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0])*_totalParticles, nullptr, GL_STREAM_DRAW);
