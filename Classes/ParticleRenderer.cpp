@@ -3,6 +3,9 @@
 #include "UpdateHelper.h"
 using namespace pp;
 
+// 渲染是否由本类来渲染，TRUE 就是本类来渲染, false交给cocos
+static bool render_by_this_class = false;
+
 int ParticleRenderer::updatePriority = 0;
 
 static size_t vec2xOffset = offsetof(Vec2 , x);
@@ -361,7 +364,9 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 	if (_visible && isHaveParLive)
 	{
 		// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
-		//postStep();
+		if (render_by_this_class) {
+			postStep();
+		}
 	}
 
 }
@@ -411,12 +416,16 @@ bool ParticleRenderer::initWithTotalParticles(int totalParticleNum) {
 	if (Configuration::getInstance()->supportsShareableVAO())
 	{
 		// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
-		//setupVBOandVAO();
+		if (render_by_this_class) {
+			setupVBOandVAO();
+		}
 	}
 	else
 	{
 		// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
-		//setupVBO();
+		if (render_by_this_class) {
+			setupVBO();
+		}
 	}
 
 	setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
@@ -527,12 +536,12 @@ void ParticleRenderer::postStep() {
 	// Option 1: Sub Data
 	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_totalParticles, _quads);
 	
-	// new 使用这一句 ,ios上会出现 opengl error 0x0501
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_particleCount, _quads);
+	// new 使用这一句 ,ios上会出现 opengl error 0x0501 , 这种情况出现在渲染交给cocos的情况下
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_quads[0])*_particleCount, _quads);
 
 	// Option 2: Data
-	// 使用这一句不会出现 opengl error 0x0501 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
+	// 使用这一句不会出现 opengl error 0x0501 , 这种情况出现在渲染交给cocos的情况下
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
 
 	// Option 3: Orphaning + glMapBuffer
 	 /*glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0])*_totalParticles, nullptr, GL_STREAM_DRAW);
@@ -547,11 +556,16 @@ void ParticleRenderer::postStep() {
 
 void ParticleRenderer::draw(Renderer* renderer, const Mat4 &transform, uint32_t flags) {
 	//CCASSERT(_particleIdx == 0 || _particleIdx == _particleCount, "Abnormal error in particle quad");
-	//quad command
-	if (_particleIdx > 0)
-	{
-		_quadCommand.init(_globalZOrder, _texture->getName(), getGLProgramState(), _blendFunc, _quads, _particleIdx, transform, flags);
-		renderer->addCommand(&_quadCommand);
+	if (render_by_this_class) {
+		this->onDraw(transform, flags);
+	}
+	else {
+		//quad command
+		if (_particleIdx > 0)
+		{
+			_quadCommand.init(_globalZOrder, _texture->getName(), getGLProgramState(), _blendFunc, _quads, _particleIdx, transform, flags);
+			renderer->addCommand(&_quadCommand);
+		}
 	}
 
 	/*_customCommand.init(_globalZOrder);
@@ -562,7 +576,41 @@ void ParticleRenderer::draw(Renderer* renderer, const Mat4 &transform, uint32_t 
 }
 
 void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
+	///获取shaderstate
+	auto glProgramState = getGLProgramState();
+
+	glProgramState->apply(transform);
+
+	//
+
+	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+
+	GL::bindTexture2D(_texture->getName());
+	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
+
+#define quadSize sizeof(_quads[0].bl)
+	// vertices
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, vertices));
+
+	// colors
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, colors));
+
+	// tex coords
+	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, texCoords));
+
 	
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, _particleCount * 4);
+
+	glDrawElements(GL_TRIANGLES, (GLsizei)_particleCount*6, GL_UNSIGNED_SHORT, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	GL::bindTexture2D(0);
+	
+
 }
 
 void ParticleRenderer::setTexture(Texture2D* texture) {
@@ -920,12 +968,16 @@ void ParticleRenderer::setTotalParticles(int tp) {
 		if (Configuration::getInstance()->supportsShareableVAO())
 		{
 			// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
-			//setupVBOandVAO();
+			if (render_by_this_class) {
+				setupVBOandVAO();
+			}
 		}
 		else
 		{
 			// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
-			//setupVBO();
+			if (render_by_this_class) {
+				setupVBO();
+			}
 		}
 
 		// fixed http://www.cocos2d-x.org/issues/3990
