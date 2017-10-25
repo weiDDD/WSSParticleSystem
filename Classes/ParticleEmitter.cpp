@@ -216,7 +216,11 @@ std::string ParticleEmitter::sourcePath = "";
 void ParticleEmitter::setSourcePath(std::string path) {
 	ParticleEmitter::sourcePath = path;
 }
-
+// 纹理的路径
+std::string ParticleEmitter::texturePath = "";
+void ParticleEmitter::setTexturePath(std::string path) {
+	ParticleEmitter::texturePath = path;
+}
 
 void ParticleEmitter::setRunningLayer(Node* layer) {
 	this->runningLayer = layer;
@@ -1080,6 +1084,14 @@ void emitterFirePro::readJsonData(m_rapidjson::Document& doc) {
 
 	if (doc.HasMember("texName")) { 
 		_texName = doc["texName"].GetString();
+
+		float start = _texName.rfind("\/", _texName.size());
+		if (start > -1) {
+			std::string name = _texName.substr(start + 1, _texName.size());
+			_texName = name;
+		}
+
+		_texName = ParticleEmitter::texturePath + _texName;
 	}
 	if (doc.HasMember("texAnchorPoint")) {
 		_texAnchorPoint.x = doc["texAnchorPoint"]["x"].GetDouble();

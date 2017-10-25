@@ -217,7 +217,7 @@ bool ParticleUiView::init() {
 	// 设置随机数种子
 	std::srand((unsigned int)time(0));
 
-	
+	ParticleEmitter::setTexturePath("texture/");
 
 	// 主菜单 面板
 	mainRootNode = GUIReader::getInstance()->widgetFromJsonFile("main_ui.ExportJson");
