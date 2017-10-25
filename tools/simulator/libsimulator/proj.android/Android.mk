@@ -34,7 +34,7 @@ LOCAL_SRC_FILES := \
 ../lib/runtime/VisibleRect.cpp \
 ../lib/ProjectConfig/ProjectConfig.cpp \
 ../lib/ProjectConfig/SimulatorConfig.cpp \
-hellolua/Runtime_android.cpp \
+hellolua/Runtime_android.cpp
 
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../lib $(LOCAL_PATH)/../lib/protobuf-lite

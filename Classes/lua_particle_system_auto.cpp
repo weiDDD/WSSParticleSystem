@@ -4,7 +4,6 @@
 #include "LuaBasicConversions.h"
 
 
-
 int lua_particle_system_ParticleEmitter_getFirstFirePro(lua_State* tolua_S)
 {
     int argc = 0;
@@ -954,7 +953,7 @@ int lua_particle_system_ParticleEmitter_visit(lua_State* tolua_S)
         cocos2d::Mat4 arg1;
         unsigned int arg2;
 
-        ok &= luaval_to_object<cocos2d::Renderer>(tolua_S, 2, "cc.Renderer",&arg0);
+        ok &= luaval_to_object<cocos2d::Renderer>(tolua_S, 2, "cc.Renderer",&arg0, "pp.ParticleEmitter:visit");
 
         ok &= luaval_to_mat4(tolua_S, 3, &arg1, "pp.ParticleEmitter:visit");
 
@@ -1536,12 +1535,12 @@ int lua_particle_system_ParticleEmitter_writeJsonData(lua_State* tolua_S)
     argc = lua_gettop(tolua_S)-1;
     if (argc == 2) 
     {
-        rapidjson::GenericDocument<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> > arg0;
-        rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> arg1;
+        m_rapidjson::GenericDocument<m_rapidjson::UTF8<char>, m_rapidjson::MemoryPoolAllocator<m_rapidjson::CrtAllocator> > arg0;
+        m_rapidjson::MemoryPoolAllocator<m_rapidjson::CrtAllocator> arg1;
 
-        ok &= luaval_to_object<rapidjson::GenericDocument<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> >>(tolua_S, 2, "rj.GenericDocument<rj.UTF8<char>, rj.MemoryPoolAllocator<rj.CrtAllocator> >",&arg0);
+        ok &= luaval_to_object<m_rapidjson::GenericDocument<m_rapidjson::UTF8<char>, m_rapidjson::MemoryPoolAllocator<m_rapidjson::CrtAllocator> >>(tolua_S, 2, "m_rapidjson.GenericDocument<m_rapidjson.UTF8<char>, m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator> >",&arg0, "pp.ParticleEmitter:writeJsonData");
 
-        ok &= luaval_to_object<rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>>(tolua_S, 3, "rj.MemoryPoolAllocator<rj.CrtAllocator>",&arg1);
+        ok &= luaval_to_object<m_rapidjson::MemoryPoolAllocator<m_rapidjson::CrtAllocator>>(tolua_S, 3, "m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator>",&arg1, "pp.ParticleEmitter:writeJsonData");
         if(!ok)
         {
             tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_writeJsonData'", nullptr);
@@ -1929,9 +1928,9 @@ int lua_particle_system_ParticleEmitter_readJsonData(lua_State* tolua_S)
     argc = lua_gettop(tolua_S)-1;
     if (argc == 1) 
     {
-        rapidjson::GenericDocument<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> > arg0;
+        m_rapidjson::GenericDocument<m_rapidjson::UTF8<char>, m_rapidjson::MemoryPoolAllocator<m_rapidjson::CrtAllocator> > arg0;
 
-        ok &= luaval_to_object<rapidjson::GenericDocument<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> >>(tolua_S, 2, "rj.GenericDocument<rj.UTF8<char>, rj.MemoryPoolAllocator<rj.CrtAllocator> >",&arg0);
+        ok &= luaval_to_object<m_rapidjson::GenericDocument<m_rapidjson::UTF8<char>, m_rapidjson::MemoryPoolAllocator<m_rapidjson::CrtAllocator> >>(tolua_S, 2, "m_rapidjson.GenericDocument<m_rapidjson.UTF8<char>, m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator> >",&arg0, "pp.ParticleEmitter:readJsonData");
         if(!ok)
         {
             tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_readJsonData'", nullptr);
@@ -2163,7 +2162,7 @@ int lua_particle_system_ParticleEmitter_setRunningLayer(lua_State* tolua_S)
     {
         cocos2d::Node* arg0;
 
-        ok &= luaval_to_object<cocos2d::Node>(tolua_S, 2, "cc.Node",&arg0);
+        ok &= luaval_to_object<cocos2d::Node>(tolua_S, 2, "cc.Node",&arg0, "pp.ParticleEmitter:setRunningLayer");
         if(!ok)
         {
             tolua_error(tolua_S,"invalid arguments in function 'lua_particle_system_ParticleEmitter_setRunningLayer'", nullptr);

@@ -230,8 +230,8 @@
 -- 
 -- @function [parent=#ParticleEmitter] writeJsonData 
 -- @param self
--- @param #rj.GenericDocument<rj.UTF8<char>, rj.MemoryPoolAllocator<rj.CrtAllocator> > object
--- @param #rj.MemoryPoolAllocator<rj.CrtAllocator> allocator
+-- @param #m_rapidjson.GenericDocument<m_rapidjson.UTF8<char>, m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator> > object
+-- @param #m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator> allocator
 -- @return bool#bool ret (return value: bool)
         
 --------------------------------
@@ -293,7 +293,7 @@
 -- 
 -- @function [parent=#ParticleEmitter] readJsonData 
 -- @param self
--- @param #rj.GenericDocument<rj.UTF8<char>, rj.MemoryPoolAllocator<rj.CrtAllocator> > doc
+-- @param #m_rapidjson.GenericDocument<m_rapidjson.UTF8<char>, m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator> > doc
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------

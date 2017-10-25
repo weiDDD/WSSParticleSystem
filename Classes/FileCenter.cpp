@@ -12,10 +12,10 @@ FileCenter* FileCenter::getInstance() {
 
 
 bool FileCenter::writeJsonData(std::string fileName, pp::ParticleEmitter* fireData) {
-	rapidjson::Document* writedoc;
+	m_rapidjson::Document* writedoc;
 
 
-	writedoc = new rapidjson::Document();
+	writedoc = new m_rapidjson::Document();
 	writedoc->SetArray();
 	
 	auto itor = jsonCacheData.find(fileName);
@@ -27,7 +27,7 @@ bool FileCenter::writeJsonData(std::string fileName, pp::ParticleEmitter* fireDa
 	//rapidjson::Document writedoc;
 	//
 	
-	rapidjson::Document::AllocatorType allocator = writedoc->GetAllocator();
+	m_rapidjson::Document::AllocatorType allocator = writedoc->GetAllocator();
 
 	//rapidjson::Value object(rapidjson::kObjectType);
 
@@ -39,7 +39,7 @@ bool FileCenter::writeJsonData(std::string fileName, pp::ParticleEmitter* fireDa
 	//writedoc.AddMember("data", object, allocator);
 
 	StringBuffer buffer;
-	rapidjson::Writer<StringBuffer> writer(buffer);
+	m_rapidjson::Writer<StringBuffer> writer(buffer);
 	writedoc->Accept(writer);
 
 	auto path = FileUtils::getInstance()->getWritablePath();
@@ -58,7 +58,7 @@ bool FileCenter::writeJsonData(std::string fileName, pp::ParticleEmitter* fireDa
 	return true;
 }
 
-rapidjson::Document& FileCenter::readJsonData(std::string fileName) {
+m_rapidjson::Document& FileCenter::readJsonData(std::string fileName) {
 	//auto path = FileUtils::getInstance()->getWritablePath();
 	//path.append(fileName);
 
@@ -67,7 +67,7 @@ rapidjson::Document& FileCenter::readJsonData(std::string fileName) {
 	//////¶ÁÈ¡jsonÎÄ¼þ
 	//static rapidjson::Document readdoc;
 	
-	rapidjson::Document* readdoc = nullptr;
+	m_rapidjson::Document* readdoc = nullptr;
 
 	auto itor = jsonCacheData.find(fileName);
 	if (itor != jsonCacheData.end()) {
@@ -81,7 +81,7 @@ rapidjson::Document& FileCenter::readJsonData(std::string fileName) {
 		}
 	}
 	else{
-		readdoc = new rapidjson::Document();
+		readdoc = new m_rapidjson::Document();
 		fileCacheValue cacheValue;
 		cacheValue.value = readdoc;
 		jsonCacheData.insert(std::make_pair(fileName, cacheValue));

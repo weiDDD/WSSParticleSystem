@@ -731,11 +731,11 @@ void ParticleUiView::initUi() {
 			else if (((CheckBox*)seekByName(mainRootNode, "addEmitterFireProCheckBox"))->getSelectedState() == true) {
 				if (nowAddFireProJsonFileName != "") {
 					// 判断 这个要添加的文件里面是否有 emitter 的发射类型。如果有则不能添加
-					rapidjson::Document& readDoc = FileCenter::instance->readJsonData("json/" + nowAddFireProJsonFileName);
+					m_rapidjson::Document& readDoc = FileCenter::instance->readJsonData("json/" + nowAddFireProJsonFileName);
 					
 					bool isEmitter = false;
 					if (readDoc.IsArray()) {
-						rapidjson::Value& array = readDoc;
+						m_rapidjson::Value& array = readDoc;
 						for (int i = 0; i < array.Size(); i++) {
 							std::string str = array[i]["parType"].GetString();
 							if (str == "emitter") {

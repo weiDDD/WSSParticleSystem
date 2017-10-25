@@ -9,10 +9,9 @@
 // Lua
 #include "ide-support/RuntimeLuaImpl.h"
 
-#if ((CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC))
-#include "DeviceEx.h"
-#include "network/CCHTTPRequest.h"
-#endif
+// Js
+#include "ide-support/RuntimeJsImpl.h"
+
 
 using namespace CocosDenshion;
 
@@ -50,11 +49,17 @@ bool AppDelegate::applicationDidFinishLaunching()
     auto runtimeEngine = RuntimeEngine::getInstance();
     runtimeEngine->setEventTrackingEnable(true);
     runtimeEngine->addRuntime(RuntimeLuaImpl::create(), kRuntimeEngineLua);
+    auto jsRuntime = RuntimeJsImpl::create();
+    runtimeEngine->addRuntime(jsRuntime, kRuntimeEngineJs);
     runtimeEngine->start();
     
-    //
-    trackLaunchEvent();
-    
+    // js need special debug port
+    if (runtimeEngine->getProjectConfig().getDebuggerType() != kCCRuntimeDebuggerNone)
+    {
+        jsRuntime->startWithDebugger();
+    }
+
+
     // Runtime end
     cocos2d::log("iShow!");
     return true;
@@ -74,22 +79,4 @@ void AppDelegate::applicationWillEnterForeground()
     Director::getInstance()->startAnimation();
 
     SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-}
-
-void AppDelegate::trackLaunchEvent()
-{
-#if ((CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC))
-    const char *trackUrl = nullptr;
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
-    trackUrl = "http://c.kp747.com/k.js?id=c19010907080b2d7";
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
-    trackUrl = "http://c.kp747.com/k.js?id=c1e060d0a0e0e207";
-#endif
-    
-    if (trackUrl)
-    {
-        auto request = extra::HTTPRequest::createWithUrl(NULL, trackUrl, kCCHTTPRequestMethodGET);
-        request->start();
-    }
-#endif // #if ((CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC))
 }

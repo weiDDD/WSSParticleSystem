@@ -16,11 +16,7 @@ conversions:
     "@std::vector<std::basic_string.*>.>.>": "std::vector<std::string>"
     "@std::vector<int.*>.>": "std::vector<int>"
     "@cocos2d::Map<std::basic_string.*,": "cocos2d::Map<std::string,"
-
-    # (Modified by LongYuanxian !2015-09-17 18:22:01)
-    "@std::unordered_map<std::basic_string<char>, cocos2d::Value.*>.>.>": "cocos2d::ValueMap"
-
-
+    "@std::map<std::basic_string.*,\\s*std::basic_string.*>": "std::map<std::string, std::string>"
   ns_map:
     "cocos2d::experimental::ui::": "ccexp."
     "cocos2d::experimental::": "ccexp."
@@ -32,10 +28,10 @@ conversions:
     "cocostudio::": "ccs."
     "cocosbuilder::": "cc."
     "CocosDenshion::": "cc."
-    "rapidjson::": "rj."
-    "dreamgame::": "dg."
+    "cocos2d::tweenfunc::": "cc."
     "pp::": "pp."
-
+    "m_rapidjson::": "m_rapidjson."
+    
   to_native:
     # lua to native
     int: "ok &= luaval_to_int32(tolua_S, ${arg_idx},(int *)&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
@@ -44,7 +40,7 @@ conversions:
     short: "ok &= luaval_to_int32(tolua_S, ${arg_idx},&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "unsigned short": "ok &= luaval_to_ushort(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     char: "ok &= luaval_to_int32(tolua_S, ${arg_idx},&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
-    bool: "ok &= luaval_to_boolean(tolua_S, ${arg_idx},&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")" 
+    bool: "ok &= luaval_to_boolean(tolua_S, ${arg_idx},&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     float: "ok &= luaval_to_number(tolua_S, ${arg_idx},&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     double: "ok &= luaval_to_number(tolua_S, ${arg_idx},&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     long: "ok &= luaval_to_long(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
@@ -70,6 +66,7 @@ conversions:
     "FontDefinition":  "ok &= luaval_to_fontdefinition(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "@Vector<.*>": "ok &= luaval_to_ccvector(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "@Map<std::basic_string.*>": "ok &= luaval_to_ccmap_string_key(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
+    "@map<std::basic_string.*,\\s*std::basic_string.*>": "ok &= luaval_to_std_map_string_string(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "Value": "ok &= luaval_to_ccvalue(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "ValueMap": "ok &= luaval_to_ccvaluemap(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "ValueMapIntKey": "ok &= luaval_to_ccvaluemapintkey(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
@@ -84,11 +81,11 @@ conversions:
     "@vector<float.*>": "ok &= luaval_to_std_vector_float(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "@vector<unsigned short.*>": "ok &= luaval_to_std_vector_ushort(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
     "AnimationInfo": "ok &= luaval_to_animationInfo(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
-    #"@std::unordered_map<std::basic_string<char>, cocos2d::Value.*>.>.>": "ok &= luaval_to_ccvaluemap(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
+    "TexParams": "ok &= luaval_to_texparams(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
+    "NavMeshAgentParam": "ok &= luaval_to_navmeshagentparam(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
+    "OffMeshLinkData": "ok &= luaval_to_offmeshlinkdata(tolua_S, ${arg_idx}, &${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
 
-    "void*": "ok &= luaval_to_object<${arg.to_string($generator).replace(\"*\", \"\")}>(tolua_S, ${arg_idx}, \"${scriptname}\",&${out_value})"
-
-    object: "ok &= luaval_to_object<${arg.to_string($generator).replace(\"*\", \"\")}>(tolua_S, ${arg_idx}, \"${scriptname}\",&${out_value})"
+    object: "ok &= luaval_to_object<${arg.to_string($generator).replace(\"*\", \"\")}>(tolua_S, ${arg_idx}, \"${scriptname}\",&${out_value}, \"${lua_namespaced_class_name}:${func_name}\")"
   from_native:
     # native to lua
     int: "tolua_pushnumber(tolua_S,(lua_Number)${in_value})"
@@ -125,6 +122,7 @@ conversions:
     "FontDefinition": "fontdefinition_to_luaval(tolua_S, ${in_value})"
     "@Vector<.*>": "ccvector_to_luaval(tolua_S, ${in_value})"
     "@Map<std::basic_string.*>": "ccmap_string_key_to_luaval(tolua_S, ${in_value})"
+    "@map<std::basic_string.*,\\s*std::basic_string.*>": "${out_value} = std_map_string_string_to_luaval(tolua_S, ${in_value})"
     "Value": "ccvalue_to_luaval(tolua_S, ${in_value})"
     "ValueMap": "ccvaluemap_to_luaval(tolua_S, ${in_value})"
     "ValueMapIntKey": "ccvaluemapintkey_to_luaval(tolua_S, ${in_value})"
@@ -138,9 +136,9 @@ conversions:
     "@vector<float.*>": "ccvector_float_to_luaval(tolua_S, ${in_value})"
     "@vector<unsigned short.*>": "ccvector_ushort_to_luaval(tolua_S, ${in_value})"
     "AnimationInfo": "animationInfo_to_luaval(tolua_S, ${in_value})"
-
-    #"@vector<cocos2d::MotionFactory.*>": "object_to_luaval<${ntype.replace(\"const \", \"\")}>(tolua_S, \"${scriptname}\",(${ntype.replace(\"const \", \"\")})${in_value})"
-    "@vector<cocos2d::Vec2.*>": "pointvector_to_luaval(tolua_S, \"std::vector<cocos2d::Vec2>\",${in_value})"
+    "TexParams": "texParams_to_luaval(tolua_S, ${in_value})"
+    "NavMeshAgentParam": "navmeshagentparam_to_luaval(tolua_S, ${in_value})"
+    "OffMeshLinkData": "offmeshlinkdata_to_luaval(tolua_S, ${in_value})"
 
     object: "object_to_luaval<${ntype.replace(\"*\", \"\").replace(\"const \", \"\")}>(tolua_S, \"${scriptname}\",(${ntype.replace(\"const \", \"\")})${in_value})"
 

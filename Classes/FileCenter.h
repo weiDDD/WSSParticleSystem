@@ -3,14 +3,14 @@
 #define __FILE_CENTER_H__
 
 #include "cocos2d.h"
-#include "json/rapidjson.h"
-#include "json/document.h"
-#include "json/writer.h"
-#include "json/stringbuffer.h"
+#include "mjson/rapidjson.h"
+#include "mjson/document.h"
+#include "mjson/writer.h"
+#include "mjson/stringbuffer.h"
 
 #include "ParticleEmitter.h"
 
-using namespace rapidjson;
+using namespace m_rapidjson;
 using namespace pp;
 
 struct fileCacheValue {
@@ -19,7 +19,7 @@ struct fileCacheValue {
 		isAgainWrited = false;
 	}
 
-	rapidjson::Document* value;
+	m_rapidjson::Document* value;
 	bool isAgainWrited;
 };
 
@@ -28,7 +28,7 @@ public:
 	static FileCenter* instance;
 	static FileCenter* getInstance();
 	bool writeJsonData(std::string fileName , pp::ParticleEmitter* fireData);
-	rapidjson::Document& readJsonData(std::string fileName);
+	m_rapidjson::Document& readJsonData(std::string fileName);
 
 	std::map<std::string, fileCacheValue> jsonCacheData;
 

@@ -51,7 +51,7 @@ void ConfigParser::readConfig(const string &filepath)
         return;
     
     if (_docRootjson.Parse<0>(fileContent.c_str()).HasParseError()) {
-        cocos2d::log("read json file %s failed because of %s", fullPathFile.c_str(), _docRootjson.GetParseError());
+        cocos2d::log("read json file %s failed because of %d", fullPathFile.c_str(), _docRootjson.GetParseError());
         return;
     }
     
@@ -72,13 +72,6 @@ void ConfigParser::readConfig(const string &filepath)
                 }
                 
             }
-
-			//£¨Modified by LongYuanxian£¡2015-09-22 13:51:04£©
-			if (objectInitView.HasMember("scale"))
-				_scale = (float)objectInitView["scale"].GetDouble();
-			else
-				_scale = 1.f;
-
             if (objectInitView.HasMember("name") && objectInitView["name"].IsString())
             {
                 _viewName = objectInitView["name"].GetString();
@@ -107,13 +100,7 @@ void ConfigParser::readConfig(const string &filepath)
             {
                 _isWindowTop= objectInitView["isWindowTop"].GetBool();
             }
-
-			// by lyx
-			if (objectInitView.HasMember("disableConsole") && objectInitView["disableConsole"].IsBool())
-			{
-				_disableConsole = objectInitView["disableConsole"].GetBool();
-			}
-		}
+        }
     }
     if (_docRootjson.HasMember("simulator_screen_size"))
     {
@@ -141,8 +128,7 @@ _debugPort(kProjectConfigDebugger),
 _viewName("simulator"),
 _entryfile(""),
 _initViewSize(ProjectConfig::DEFAULT_HEIGHT, ProjectConfig::DEFAULT_WIDTH),
-_bindAddress(""),
-_disableConsole(false)
+_bindAddress("")
 {
 }
 
@@ -175,12 +161,6 @@ bool ConfigParser::isWindowTop()
 {
     return _isWindowTop;
 }
-
-bool ConfigParser::isDisableConsole()
-{
-	return _disableConsole;
-}
-
 void ConfigParser::setConsolePort(int port)
 {
     if (port > 0)

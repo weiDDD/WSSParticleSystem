@@ -900,12 +900,12 @@ void ParticleEmitter::resetSystem() {
 	//firePro._emitCounter = 0;
 }
 
-bool ParticleEmitter::writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator) {
+bool ParticleEmitter::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator) {
 	auto itor = fireProVec.begin();
 	while (itor != fireProVec.end()) {
-		rapidjson::Value cObject(rapidjson::kObjectType);
+		m_rapidjson::Value cObject(m_rapidjson::kObjectType);
 
-		(*itor)->writeJsonData((rapidjson::Document&)cObject, allocator);
+		(*itor)->writeJsonData((m_rapidjson::Document&)cObject, allocator);
 
 		object.PushBack(cObject, allocator);
 		itor++;
@@ -913,13 +913,13 @@ bool ParticleEmitter::writeJsonData(rapidjson::Document& object, rapidjson::Docu
 
 	return true;
 }
-void ParticleEmitter::readJsonData(rapidjson::Document& doc) {
+void ParticleEmitter::readJsonData(m_rapidjson::Document& doc) {
 	//this->clearData();
 	this->runningLayer = nullptr;
 
 	/////
 	if (doc.IsArray()) {
-		rapidjson::Value& array = doc;
+		m_rapidjson::Value& array = doc;
 		for (int i = 0; i < array.Size(); i++) {
 
 			std::string str = array[i]["parType"].GetString();
@@ -943,7 +943,7 @@ void ParticleEmitter::readJsonData(rapidjson::Document& doc) {
 			}
 
 			auto firePro = this->addOneFirePro(id , ptype, emitterFile);
-			firePro->readJsonData((rapidjson::Document&)array[i]);
+			firePro->readJsonData((m_rapidjson::Document&)array[i]);
 
 			
 		}
@@ -957,7 +957,7 @@ void ParticleEmitter::readJsonData(rapidjson::Document& doc) {
 //***********************************************************************************---- 结构体的读写文件 ----*****************************************************************
 
 // 写数据到json文件
-bool emitterFirePro::writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator) {
+bool emitterFirePro::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator) {
 	// id
 	object.AddMember("id", _id, allocator);
 	
@@ -975,7 +975,7 @@ bool emitterFirePro::writeJsonData(rapidjson::Document& object, rapidjson::Docum
 	// 纹理
 	object.AddMember("texName", _texName.c_str(), allocator);
 	// 锚点
-	rapidjson::Value texAnchorPointObject(rapidjson::kObjectType);
+	m_rapidjson::Value texAnchorPointObject(m_rapidjson::kObjectType);
 	texAnchorPointObject.AddMember("x" , _texAnchorPoint.x , allocator);
 	texAnchorPointObject.AddMember("y" , _texAnchorPoint.y, allocator);
 	object.AddMember("texAnchorPoint", texAnchorPointObject, allocator);
@@ -1053,7 +1053,7 @@ bool emitterFirePro::writeJsonData(rapidjson::Document& object, rapidjson::Docum
 	return true;
 }
 
-void emitterFirePro::readJsonData(rapidjson::Document& doc) {
+void emitterFirePro::readJsonData(m_rapidjson::Document& doc) {
 	if (doc.HasMember("id")) {
 		_id = doc["id"].GetInt();
 	}
@@ -1171,8 +1171,8 @@ void emitterFirePro::readJsonData(rapidjson::Document& doc) {
 }
 ////---------------------------------------------------------------------------------------------------------------------------------------
 
-void tailPro::writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator, char* nameKey) {
-	rapidjson::Value cObject(rapidjson::kObjectType);
+void tailPro::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator, char* nameKey) {
+	m_rapidjson::Value cObject(m_rapidjson::kObjectType);
 
 	cObject.AddMember("isActive", isActive, allocator);
 	cObject.AddMember("tailName", tailName.c_str(), allocator);
@@ -1180,7 +1180,7 @@ void tailPro::writeJsonData(rapidjson::Document& object, rapidjson::Document::Al
 	cObject.AddMember("minSeg", minSeg, allocator);
 	cObject.AddMember("stroke", stroke, allocator);
 
-	rapidjson::Value colorObj(rapidjson::kObjectType);
+	m_rapidjson::Value colorObj(m_rapidjson::kObjectType);
 	colorObj.AddMember("r", color.r, allocator);
 	colorObj.AddMember("g", color.g, allocator);
 	colorObj.AddMember("b", color.b, allocator);
@@ -1190,10 +1190,10 @@ void tailPro::writeJsonData(rapidjson::Document& object, rapidjson::Document::Al
 	object.AddMember(nameKey, cObject, allocator);
 }
 
-void tailPro::readJsonData(rapidjson::Document& doc, char* nameKey) {
+void tailPro::readJsonData(m_rapidjson::Document& doc, char* nameKey) {
 	if (doc.HasMember(nameKey)) {
 		if (doc[nameKey].IsObject()) {
-			rapidjson::Value& object = doc[nameKey];
+			m_rapidjson::Value& object = doc[nameKey];
 			if (object.HasMember("isActive")) {
 				isActive = object["isActive"].GetBool();
 			}
@@ -1217,18 +1217,18 @@ void tailPro::readJsonData(rapidjson::Document& doc, char* nameKey) {
 }
 
 ////---------------------------------------------------------------------------------------------------------------------------------------
-void varietyFireAreaValue::writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator , char* nameKey) {
-	rapidjson::Value cObject(rapidjson::kObjectType);
+void varietyFireAreaValue::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator , char* nameKey) {
+	m_rapidjson::Value cObject(m_rapidjson::kObjectType);
 
 	if (fAreaType == fireAreaType::rect) {
 		cObject.AddMember("fAreaType", "rect", allocator);
 
-		rapidjson::Value inRectObject(rapidjson::kObjectType);
+		m_rapidjson::Value inRectObject(m_rapidjson::kObjectType);
 		inRectObject.AddMember("width", inRect.width, allocator);
 		inRectObject.AddMember("height", inRect.height, allocator);
 		cObject.AddMember("inRect", inRectObject, allocator);
 
-		rapidjson::Value outRectObject(rapidjson::kObjectType);
+		m_rapidjson::Value outRectObject(m_rapidjson::kObjectType);
 		outRectObject.AddMember("width", outRect.width, allocator);
 		outRectObject.AddMember("height", outRect.height, allocator);
 		cObject.AddMember("outRect", outRectObject, allocator);
@@ -1241,11 +1241,11 @@ void varietyFireAreaValue::writeJsonData(rapidjson::Document& object, rapidjson:
 	else if (fAreaType == fireAreaType::polygon) {
 		cObject.AddMember("fAreaType", "polygon", allocator);
 		// 创建一个数组保存多边形的点
-		rapidjson::Value pPointsArray(rapidjson::kArrayType);
+		m_rapidjson::Value pPointsArray(m_rapidjson::kArrayType);
 
 		auto itor = polygonPoints.begin();
 		while (itor != polygonPoints.end()) {
-			rapidjson::Value pPointObject(rapidjson::kObjectType);
+			m_rapidjson::Value pPointObject(m_rapidjson::kObjectType);
 
 			pPointObject.AddMember("x" , (*itor).x, allocator);
 			pPointObject.AddMember("y" , (*itor).y, allocator);
@@ -1261,11 +1261,11 @@ void varietyFireAreaValue::writeJsonData(rapidjson::Document& object, rapidjson:
 		cObject.AddMember("fAreaType", "lines", allocator);
 
 		// 创建一个数组保存 自定义线条 的点
-		rapidjson::Value lPointsArray(rapidjson::kArrayType);
+		m_rapidjson::Value lPointsArray(m_rapidjson::kArrayType);
 
 		auto itor = linePoints.begin();
 		while (itor != linePoints.end()) {
-			rapidjson::Value lPointObject(rapidjson::kObjectType);
+			m_rapidjson::Value lPointObject(m_rapidjson::kObjectType);
 
 			lPointObject.AddMember("x", (*itor).x, allocator);
 			lPointObject.AddMember("y", (*itor).y, allocator);
@@ -1283,14 +1283,14 @@ void varietyFireAreaValue::writeJsonData(rapidjson::Document& object, rapidjson:
 	object.AddMember ( nameKey , cObject , allocator);
 }
 
-void varietyFireAreaValue::readJsonData(rapidjson::Document& doc, char* nameKey) {
+void varietyFireAreaValue::readJsonData(m_rapidjson::Document& doc, char* nameKey) {
 	polygonPoints.clear();
 	isChangePolygonToTriangleVec = false;
 	linePoints.clear();
 
 	if (doc.HasMember(nameKey)) {
 		if (doc[nameKey].IsObject()) {
-			rapidjson::Value& object = doc[nameKey];
+			m_rapidjson::Value& object = doc[nameKey];
 			std::string typeStr = object["fAreaType"].GetString();
 			if (typeStr == "rect") {
 				fAreaType = fireAreaType::rect;
@@ -1310,9 +1310,9 @@ void varietyFireAreaValue::readJsonData(rapidjson::Document& doc, char* nameKey)
 			else if (typeStr == "polygon") {
 				fAreaType = fireAreaType::polygon;
 				
-				rapidjson::Value& array = object["polygonPoints"];
+				m_rapidjson::Value& array = object["polygonPoints"];
 				for (int i = 0; i < array.Size(); ++i) {
-					rapidjson::Value& item = array[i];
+					m_rapidjson::Value& item = array[i];
 					float x = item["x"].GetDouble();
 					float y = item["y"].GetDouble();
 
@@ -1323,9 +1323,9 @@ void varietyFireAreaValue::readJsonData(rapidjson::Document& doc, char* nameKey)
 			else if (typeStr == "lines") {
 				fAreaType = fireAreaType::lines;
 				
-				rapidjson::Value& array = object["linePoints"];
+				m_rapidjson::Value& array = object["linePoints"];
 				for (int i = 0; i < array.Size(); ++i) {
-					rapidjson::Value& item = array[i];
+					m_rapidjson::Value& item = array[i];
 					float x = item["x"].GetDouble();
 					float y = item["y"].GetDouble();
 
@@ -1346,8 +1346,8 @@ void varietyFireAreaValue::readJsonData(rapidjson::Document& doc, char* nameKey)
 
 
 ////---------------------------------------------------------------------------------------------------------------------------------------
-void emitterVarietyValue::writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator, char* nameKey) {
-	rapidjson::Value cObject(rapidjson::kObjectType);
+void emitterVarietyValue::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator, char* nameKey) {
+	m_rapidjson::Value cObject(m_rapidjson::kObjectType);
 
 	if (pType == emitterPropertyType::oneConstant) {
 		cObject.AddMember("pType", "oneConstant", allocator);
@@ -1362,7 +1362,7 @@ void emitterVarietyValue::writeJsonData(rapidjson::Document& object, rapidjson::
 		cObject.AddMember("pType", "moreConstant", allocator);
 
 		// 创建一个数组
-		rapidjson::Value moreConstantArray(rapidjson::kArrayType);
+		m_rapidjson::Value moreConstantArray(m_rapidjson::kArrayType);
 
 		auto itor = constValues.begin();
 		while (itor != constValues.end()) {
@@ -1380,11 +1380,11 @@ void emitterVarietyValue::writeJsonData(rapidjson::Document& object, rapidjson::
 		}
 
 		// 创建一个数组
-		rapidjson::Value curvePointsArray(rapidjson::kArrayType);
+		m_rapidjson::Value curvePointsArray(m_rapidjson::kArrayType);
 		auto itor = curvePoints.begin();
 		while (itor != curvePoints.end()) {
 			
-			rapidjson::Value curvePointObject(rapidjson::kObjectType);
+			m_rapidjson::Value curvePointObject(m_rapidjson::kObjectType);
 
 			curvePointObject.AddMember("x", (*itor).x, allocator);
 			curvePointObject.AddMember("y", (*itor).y, allocator);
@@ -1403,7 +1403,7 @@ void emitterVarietyValue::writeJsonData(rapidjson::Document& object, rapidjson::
 	object.AddMember(nameKey, cObject, allocator);
 }
 
-void emitterVarietyValue::readJsonData(rapidjson::Document& doc, char* nameKey) {
+void emitterVarietyValue::readJsonData(m_rapidjson::Document& doc, char* nameKey) {
 	pType = emitterPropertyType::oneConstant;
 	constValues.clear();
 	curvePoints.clear();
@@ -1411,7 +1411,7 @@ void emitterVarietyValue::readJsonData(rapidjson::Document& doc, char* nameKey) 
 
 	if (doc.HasMember(nameKey)) {
 		if (doc[nameKey].IsObject()) {
-			rapidjson::Value& object = doc[nameKey];
+			m_rapidjson::Value& object = doc[nameKey];
 			std::string typeStr = object["pType"].GetString();
 			if (typeStr == "oneConstant") {
 				pType = emitterPropertyType::oneConstant;
@@ -1426,7 +1426,7 @@ void emitterVarietyValue::readJsonData(rapidjson::Document& doc, char* nameKey) 
 				pType = emitterPropertyType::moreConstant;
 				constValues.clear();
 
-				rapidjson::Value& array = object["constValues"];
+				m_rapidjson::Value& array = object["constValues"];
 				for (int i = 0; i < array.Size(); ++i) {
 					constValues.push_back(array[i].GetDouble());
 				}
@@ -1435,9 +1435,9 @@ void emitterVarietyValue::readJsonData(rapidjson::Document& doc, char* nameKey) 
 				pType = emitterPropertyType::curve;
 				curvePoints.clear();
 
-				rapidjson::Value& array = object["curvePoints"];
+				m_rapidjson::Value& array = object["curvePoints"];
 				for (int i = 0; i < array.Size(); ++i) {
-					rapidjson::Value& item = array[i];
+					m_rapidjson::Value& item = array[i];
 					float x = item["x"].GetDouble();
 					float y = item["y"].GetDouble();
 					float z = item["z"].GetDouble();
@@ -1450,13 +1450,13 @@ void emitterVarietyValue::readJsonData(rapidjson::Document& doc, char* nameKey) 
 }
 
 ////---------------------------------------------------------------------------------------------------------------------------------------
-void emitterColorValue::writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator, char* nameKey) {
-	rapidjson::Value cObject(rapidjson::kObjectType);
+void emitterColorValue::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator, char* nameKey) {
+	m_rapidjson::Value cObject(m_rapidjson::kObjectType);
 
 	if (pType == emitterPropertyType::oneConstant) {
 		cObject.AddMember("pType", "oneConstant", allocator);
 		
-		rapidjson::Value constColorObject(rapidjson::kObjectType);
+		m_rapidjson::Value constColorObject(m_rapidjson::kObjectType);
 		constColorObject.AddMember("r", constColor.r, allocator);
 		constColorObject.AddMember("g", constColor.g, allocator);
 		constColorObject.AddMember("b", constColor.b, allocator);
@@ -1466,13 +1466,13 @@ void emitterColorValue::writeJsonData(rapidjson::Document& object, rapidjson::Do
 	else if (pType == emitterPropertyType::randBetweenTwoConst) {
 		cObject.AddMember("pType", "randBetweenTwoConst", allocator);
 		
-		rapidjson::Value randColorObject1(rapidjson::kObjectType);
+		m_rapidjson::Value randColorObject1(m_rapidjson::kObjectType);
 		randColorObject1.AddMember("r", randColor1.r, allocator);
 		randColorObject1.AddMember("g", randColor1.g, allocator);
 		randColorObject1.AddMember("b", randColor1.b, allocator);
 		cObject.AddMember("randColor1", randColorObject1, allocator);
 
-		rapidjson::Value randColorObject2(rapidjson::kObjectType);
+		m_rapidjson::Value randColorObject2(m_rapidjson::kObjectType);
 		randColorObject2.AddMember("r", randColor2.r, allocator);
 		randColorObject2.AddMember("g", randColor2.g, allocator);
 		randColorObject2.AddMember("b", randColor2.b, allocator);
@@ -1482,11 +1482,11 @@ void emitterColorValue::writeJsonData(rapidjson::Document& object, rapidjson::Do
 	else if (pType == emitterPropertyType::moreConstant) {
 		cObject.AddMember("pType", "moreConstant", allocator);
 
-		rapidjson::Value constColorsArray(rapidjson::kArrayType);
+		m_rapidjson::Value constColorsArray(m_rapidjson::kArrayType);
 		
 		auto itor = constColors.begin();
 		while (itor != constColors.end()) {
-			rapidjson::Value colorsObject(rapidjson::kObjectType);
+			m_rapidjson::Value colorsObject(m_rapidjson::kObjectType);
 			colorsObject.AddMember("r" , (*itor).r, allocator);
 			colorsObject.AddMember("g" , (*itor).g, allocator);
 			colorsObject.AddMember("b" , (*itor).b, allocator);
@@ -1503,20 +1503,20 @@ void emitterColorValue::writeJsonData(rapidjson::Document& object, rapidjson::Do
 		if (curveColors.size() <= 0) {
 			return;
 		}
-		rapidjson::Value curveColorsArray(rapidjson::kArrayType);
+		m_rapidjson::Value curveColorsArray(m_rapidjson::kArrayType);
 		auto itor = curveColors.begin();
 		while (itor != curveColors.end()) {
-			rapidjson::Value colorCurvePointObject(rapidjson::kObjectType);
+			m_rapidjson::Value colorCurvePointObject(m_rapidjson::kObjectType);
 
 			colorCurvePointObject.AddMember("x", (*itor).x, allocator);
 
-			rapidjson::Value colorYObject(rapidjson::kObjectType);
+			m_rapidjson::Value colorYObject(m_rapidjson::kObjectType);
 			colorYObject.AddMember("r", (*itor).colorY.r, allocator);
 			colorYObject.AddMember("g", (*itor).colorY.g, allocator);
 			colorYObject.AddMember("b", (*itor).colorY.b, allocator);
 			colorCurvePointObject.AddMember("colorY", colorYObject, allocator);
 
-			rapidjson::Value colorRandObject(rapidjson::kObjectType);
+			m_rapidjson::Value colorRandObject(m_rapidjson::kObjectType);
 			colorRandObject.AddMember("x", (*itor).colorRand.x, allocator);
 			colorRandObject.AddMember("y", (*itor).colorRand.y, allocator);
 			colorRandObject.AddMember("z", (*itor).colorRand.z, allocator);
@@ -1535,20 +1535,20 @@ void emitterColorValue::writeJsonData(rapidjson::Document& object, rapidjson::Do
 	object.AddMember(nameKey, cObject, allocator);
 }
 
-void emitterColorValue::readJsonData(rapidjson::Document& doc, char* nameKey) {
+void emitterColorValue::readJsonData(m_rapidjson::Document& doc, char* nameKey) {
 	pType = emitterPropertyType::oneConstant;
 	constColors.clear();
 	curveColors.clear();
 
 	if (doc.HasMember(nameKey)) {
 		if (doc[nameKey].IsObject()) {
-			rapidjson::Value& object = doc[nameKey];
+			m_rapidjson::Value& object = doc[nameKey];
 			std::string typeStr = object["pType"].GetString();
 
 			if (typeStr == "oneConstant") {
 				pType = emitterPropertyType::oneConstant;
 				
-				rapidjson::Value& item = object["constColor"];
+				m_rapidjson::Value& item = object["constColor"];
 				float r = item["r"].GetDouble();
 				float g = item["g"].GetDouble();
 				float b = item["b"].GetDouble();
@@ -1558,13 +1558,13 @@ void emitterColorValue::readJsonData(rapidjson::Document& doc, char* nameKey) {
 			else if (typeStr == "randBetweenTwoConst") {
 				pType = emitterPropertyType::randBetweenTwoConst;
 				
-				rapidjson::Value& item1 = object["randColor1"];
+				m_rapidjson::Value& item1 = object["randColor1"];
 				float r1 = item1["r"].GetDouble();
 				float g1 = item1["g"].GetDouble();
 				float b1 = item1["b"].GetDouble();
 				randColor1 = Color3B(r1, g1, b1);
 
-				rapidjson::Value& item2 = object["randColor2"];
+				m_rapidjson::Value& item2 = object["randColor2"];
 				float r2 = item2["r"].GetDouble();
 				float g2 = item2["g"].GetDouble();
 				float b2 = item2["b"].GetDouble();
@@ -1574,9 +1574,9 @@ void emitterColorValue::readJsonData(rapidjson::Document& doc, char* nameKey) {
 				pType = emitterPropertyType::moreConstant;
 				constColors.clear();
 
-				rapidjson::Value& array = object["constColors"];
+				m_rapidjson::Value& array = object["constColors"];
 				for (int i = 0; i < array.Size(); ++i) {
-					rapidjson::Value& item = array[i];
+					m_rapidjson::Value& item = array[i];
 
 					float r = item["r"].GetDouble();
 					float g = item["g"].GetDouble();
@@ -1587,9 +1587,9 @@ void emitterColorValue::readJsonData(rapidjson::Document& doc, char* nameKey) {
 			else if (typeStr == "curve") {
 				pType = emitterPropertyType::curve;
 				
-				rapidjson::Value& array = object["curveColors"];
+				m_rapidjson::Value& array = object["curveColors"];
 				for (int i = 0; i < array.Size(); ++i) {
-					rapidjson::Value& item = array[i];
+					m_rapidjson::Value& item = array[i];
 
 					float x = item["x"].GetDouble();
 					float colorYR = item["colorY"]["r"].GetDouble();

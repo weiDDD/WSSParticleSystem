@@ -173,6 +173,16 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)..\..\runtime\win32\Release\" /S /E 
     <ClInclude Include="..\Classes\DropDownList.h" />
     <ClInclude Include="..\Classes\FileCenter.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
+    <ClInclude Include="..\Classes\mjson\document.h" />
+    <ClInclude Include="..\Classes\mjson\filestream.h" />
+    <ClInclude Include="..\Classes\mjson\internal\pow10.h" />
+    <ClInclude Include="..\Classes\mjson\internal\stack.h" />
+    <ClInclude Include="..\Classes\mjson\internal\strfunc.h" />
+    <ClInclude Include="..\Classes\mjson\prettywriter.h" />
+    <ClInclude Include="..\Classes\mjson\rapidjson.h" />
+    <ClInclude Include="..\Classes\mjson\reader.h" />
+    <ClInclude Include="..\Classes\mjson\stringbuffer.h" />
+    <ClInclude Include="..\Classes\mjson\writer.h" />
     <ClInclude Include="..\Classes\ParticleEmitter.h" />
     <ClInclude Include="..\Classes\ParticleRenderer.h" />
     <ClInclude Include="..\Classes\ParticleUiView.h" />

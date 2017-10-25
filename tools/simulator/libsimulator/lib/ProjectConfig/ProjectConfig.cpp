@@ -33,7 +33,7 @@ static std::vector<std::string> split(const std::string &s, char delim) {
 }
 
 ProjectConfig::ProjectConfig()
-    : _scriptFile("$(PROJDIR)/src/main.lua")
+    : _scriptFile("")
     , _writablePath("")
     , _packagePath("")
     , _frameSize(960, 640)
@@ -721,12 +721,6 @@ void ProjectConfig::normalize()
     {
         _packagePath = _packagePath.substr(0, _packagePath.length() - 1);
     }
-
-	// £¨Modified by LongYuanxian£¡2015-09-22 11:51:38£©
-	cocos2d::FileUtils::getInstance()->normalizePath(_projectDir);
-	cocos2d::FileUtils::getInstance()->normalizePath(_scriptFile);
-	cocos2d::FileUtils::getInstance()->normalizePath(_writablePath);
-	cocos2d::FileUtils::getInstance()->normalizePath(_packagePath);
 }
 
 string ProjectConfig::replaceProjectDirToMacro(const string &path) const

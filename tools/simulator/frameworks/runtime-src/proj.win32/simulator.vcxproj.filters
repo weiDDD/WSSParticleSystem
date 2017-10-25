@@ -35,6 +35,9 @@
     <ClInclude Include="..\Classes\ide-support\lua_debugger.h">
       <Filter>Classes\ide-support</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\ide-support\RuntimeJsImpl.h">
+      <Filter>Classes\ide-support</Filter>
+    </ClInclude>
     <ClInclude Include="..\Classes\ide-support\RuntimeLuaImpl.h">
       <Filter>Classes\ide-support</Filter>
     </ClInclude>
@@ -54,6 +57,9 @@
       <Filter>Classes\ide-support</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\ide-support\RuntimeLuaImpl.cpp">
+      <Filter>Classes\ide-support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ide-support\RuntimeJsImpl.cpp">
       <Filter>Classes\ide-support</Filter>
     </ClCompile>
   </ItemGroup>

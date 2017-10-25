@@ -406,6 +406,10 @@ int SimulatorWin::run()
     {
         RECT rect;
         GetWindowRect(_hwnd, &rect);
+        if (pos.x < 0)
+            pos.x = 0;
+        if (pos.y < 0)
+            pos.y = 0;
         MoveWindow(_hwnd, pos.x, pos.y, rect.right - rect.left, rect.bottom - rect.top, FALSE);
     }
 
@@ -420,16 +424,13 @@ int SimulatorWin::run()
 
     g_oldWindowProc = (WNDPROC)SetWindowLong(_hwnd, GWL_WNDPROC, (LONG)SimulatorWin::windowProc);
 
-    // update window size
-    RECT rect;
-    GetWindowRect(_hwnd, &rect);
-    MoveWindow(_hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top + GetSystemMetrics(SM_CYMENU), FALSE);
-
     // update window title
     updateWindowTitle();
 
     // startup message loop
-    return app->run();
+    int ret = app->run();
+    CC_SAFE_DELETE(_app);
+    return ret;
 }
 
 // services
@@ -461,6 +462,10 @@ void SimulatorWin::setupUI()
             menuItem->setChecked(true);
         }
     }
+
+    // About
+    menuBar->addItem("HELP_MENU", tr("Help"));
+    menuBar->addItem("ABOUT_MENUITEM", tr("About"), "HELP_MENU");
 
     menuBar->addItem("DIRECTION_MENU_SEP", "-", "VIEW_MENU");
     menuBar->addItem("DIRECTION_PORTRAIT_MENU", tr("Portrait"), "VIEW_MENU")
@@ -632,6 +637,10 @@ void SimulatorWin::setupUI()
 
                             _instance->onOpenProjectFolder(path);
                         }
+                        else if (data == "ABOUT_MENUITEM")
+                        {
+                            onHelpAbout();
+                        }
                     }
                 }
             }
@@ -716,11 +725,35 @@ void SimulatorWin::parseCocosProjectConfig(ProjectConfig &config)
     }
 
     // set project directory as search root path
-    FileUtils::getInstance()->setDefaultResourceRootPath(tmpConfig.getProjectDir().c_str());
+    string solutionDir = tmpConfig.getProjectDir();
+    if (!solutionDir.empty())
+    {
+        for (int i = 0; i < solutionDir.size(); ++i)
+        {
+            if (solutionDir[i] == '\\')
+            {
+                solutionDir[i] = '/';
+            }
+        }
+        int nPos = -1;
+        if (solutionDir[solutionDir.length() - 1] == '/')
+            nPos = solutionDir.rfind('/', solutionDir.length() - 2);
+        else
+            nPos = solutionDir.rfind('/');
+        if (nPos > 0)
+            solutionDir = solutionDir.substr(0, nPos + 1);
+        FileUtils::getInstance()->setDefaultResourceRootPath(solutionDir);
+        FileUtils::getInstance()->addSearchPath(solutionDir);
+        FileUtils::getInstance()->addSearchPath(tmpConfig.getProjectDir().c_str());
+    }
+    else
+    {
+        FileUtils::getInstance()->setDefaultResourceRootPath(tmpConfig.getProjectDir().c_str());
+    }
 
     // parse config.json
     auto parser = ConfigParser::getInstance();
-    auto configPath = tmpConfig.getProjectDir().append(CONFIG_FILE);
+    auto configPath = solutionDir.append(CONFIG_FILE);
     parser->readConfig(configPath);
 
     // set information
@@ -766,7 +799,7 @@ std::string SimulatorWin::getUserDocumentPath()
     char* tempstring = new char[length + 1];
     wcstombs(tempstring, filePath, length + 1);
     string userDocumentPath(tempstring);
-    free(tempstring);
+    delete [] tempstring;
 
     userDocumentPath = convertPathFormatToUnixStyle(userDocumentPath);
     userDocumentPath.append("/");
@@ -839,6 +872,7 @@ LRESULT CALLBACK SimulatorWin::windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
     switch (uMsg)
     {
+    case WM_SYSCOMMAND:
     case WM_COMMAND:
     {
         if (HIWORD(wParam) == 0)
@@ -971,6 +1005,7 @@ void SimulatorWin::onOpenProjectFolder(const std::string &folderPath)
         if (fileUtils->isFileExist(configPath))
         {
             ConfigParser::getInstance()->readConfig(configPath);
+            _project.setProjectDir(path);
             _project.setScriptFile(ConfigParser::getInstance()->getEntryFile());
             foundProjectFile = true;
         }
@@ -996,6 +1031,7 @@ void SimulatorWin::onOpenProjectFolder(const std::string &folderPath)
                         fileContent = fileContent.substr(pos + matchString.size(), fileContent.size());
                         ssize_t posEnd = fileContent.find_first_of('"');
                         auto projectFileName = path + "/cocosstudio/" + fileContent.substr(0, posEnd);
+                        _project.setProjectDir(path);
                         _project.setScriptFile(projectFileName);
                         foundProjectFile = true;
                     }
@@ -1009,12 +1045,14 @@ void SimulatorWin::onOpenProjectFolder(const std::string &folderPath)
                 // 3.
                 if (fileUtils->isFileExist(csdFilePath))
                 {
+                    _project.setProjectDir(path);
                     _project.setScriptFile(csdFilePath);
                     foundProjectFile = true;
                 }
                 // 4.
                 else if (fileUtils->isFileExist(csbFilePath))
                 {
+                    _project.setProjectDir(path);
                     _project.setScriptFile(csbFilePath);
                     foundProjectFile = true;
                 }
@@ -1023,7 +1061,6 @@ void SimulatorWin::onOpenProjectFolder(const std::string &folderPath)
 
         if (foundProjectFile)
         {
-            _project.setProjectDir(path);
             openProjectWithProjectConfig(_project);
         }
         else

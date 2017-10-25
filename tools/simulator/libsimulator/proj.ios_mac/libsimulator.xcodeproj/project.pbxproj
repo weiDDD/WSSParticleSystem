@@ -102,6 +102,9 @@
 		9FB638BB1A635BA300AAEC43 /* VisibleRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FB638621A635BA300AAEC43 /* VisibleRect.cpp */; };
 		9FB638BC1A635BA300AAEC43 /* VisibleRect.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FB638631A635BA300AAEC43 /* VisibleRect.h */; };
 		9FD6FC311A5D281D0028EDC6 /* cocos2dx_extra.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FD6FC0E1A5D281D0028EDC6 /* cocos2dx_extra.h */; };
+		9FD6FC321A5D281D0028EDC6 /* CCHTTPRequest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FD6FC101A5D281D0028EDC6 /* CCHTTPRequest.cpp */; };
+		9FD6FC331A5D281D0028EDC6 /* CCHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FD6FC111A5D281D0028EDC6 /* CCHTTPRequest.h */; };
+		9FD6FC341A5D281D0028EDC6 /* CCHTTPRequestDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FD6FC121A5D281D0028EDC6 /* CCHTTPRequestDelegate.h */; };
 		9FD6FC351A5D281D0028EDC6 /* ProjectConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FD6FC171A5D281D0028EDC6 /* ProjectConfig.cpp */; };
 		9FD6FC361A5D281D0028EDC6 /* ProjectConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FD6FC181A5D281D0028EDC6 /* ProjectConfig.h */; };
 		9FD6FC371A5D281D0028EDC6 /* SimulatorConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FD6FC191A5D281D0028EDC6 /* SimulatorConfig.cpp */; };
@@ -144,6 +147,7 @@
 		9FF504BF1A5EA75D00AFDA55 /* PlayerTaskServiceProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FF504AA1A5EA75D00AFDA55 /* PlayerTaskServiceProtocol.h */; };
 		9FF504C01A5EA75D00AFDA55 /* PlayerUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FF504AB1A5EA75D00AFDA55 /* PlayerUtils.cpp */; };
 		9FF504C11A5EA75D00AFDA55 /* PlayerUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9FF504AC1A5EA75D00AFDA55 /* PlayerUtils.h */; };
+		ADD1C0E11C196C2500733781 /* SimulatorExport.h in Headers */ = {isa = PBXBuildFile; fileRef = ADD1C0E01C196C2500733781 /* SimulatorExport.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -228,6 +232,9 @@
 		9FB638621A635BA300AAEC43 /* VisibleRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VisibleRect.cpp; sourceTree = "<group>"; };
 		9FB638631A635BA300AAEC43 /* VisibleRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisibleRect.h; sourceTree = "<group>"; };
 		9FD6FC0E1A5D281D0028EDC6 /* cocos2dx_extra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cocos2dx_extra.h; sourceTree = "<group>"; };
+		9FD6FC101A5D281D0028EDC6 /* CCHTTPRequest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCHTTPRequest.cpp; sourceTree = "<group>"; };
+		9FD6FC111A5D281D0028EDC6 /* CCHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCHTTPRequest.h; sourceTree = "<group>"; };
+		9FD6FC121A5D281D0028EDC6 /* CCHTTPRequestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCHTTPRequestDelegate.h; sourceTree = "<group>"; };
 		9FD6FC171A5D281D0028EDC6 /* ProjectConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProjectConfig.cpp; sourceTree = "<group>"; };
 		9FD6FC181A5D281D0028EDC6 /* ProjectConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectConfig.h; sourceTree = "<group>"; };
 		9FD6FC191A5D281D0028EDC6 /* SimulatorConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulatorConfig.cpp; sourceTree = "<group>"; };
@@ -268,6 +275,7 @@
 		9FF504AA1A5EA75D00AFDA55 /* PlayerTaskServiceProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerTaskServiceProtocol.h; sourceTree = "<group>"; };
 		9FF504AB1A5EA75D00AFDA55 /* PlayerUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerUtils.cpp; sourceTree = "<group>"; };
 		9FF504AC1A5EA75D00AFDA55 /* PlayerUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerUtils.h; sourceTree = "<group>"; };
+		ADD1C0E01C196C2500733781 /* SimulatorExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatorExport.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -443,11 +451,23 @@
 				9FF504AB1A5EA75D00AFDA55 /* PlayerUtils.cpp */,
 				9FF504AC1A5EA75D00AFDA55 /* PlayerUtils.h */,
 				9FD6FC0E1A5D281D0028EDC6 /* cocos2dx_extra.h */,
+				ADD1C0E01C196C2500733781 /* SimulatorExport.h */,
+				9FD6FC0F1A5D281D0028EDC6 /* network */,
 				9FD6FC131A5D281D0028EDC6 /* platform */,
 				9FD6FC161A5D281D0028EDC6 /* ProjectConfig */,
 			);
 			name = lib;
 			path = ../lib;
+			sourceTree = "<group>";
+		};
+		9FD6FC0F1A5D281D0028EDC6 /* network */ = {
+			isa = PBXGroup;
+			children = (
+				9FD6FC101A5D281D0028EDC6 /* CCHTTPRequest.cpp */,
+				9FD6FC111A5D281D0028EDC6 /* CCHTTPRequest.h */,
+				9FD6FC121A5D281D0028EDC6 /* CCHTTPRequestDelegate.h */,
+			);
+			path = network;
 			sourceTree = "<group>";
 		};
 		9FD6FC131A5D281D0028EDC6 /* platform */ = {
@@ -507,7 +527,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FD6FC331A5D281D0028EDC6 /* CCHTTPRequest.h in Headers */,
 				9FD6FC631A5D2A380028EDC6 /* PlayerEditBoxServiceMac.h in Headers */,
+				9FD6FC341A5D281D0028EDC6 /* CCHTTPRequestDelegate.h in Headers */,
 				9FB638BC1A635BA300AAEC43 /* VisibleRect.h in Headers */,
 				9FB638721A635BA300AAEC43 /* zero_copy_stream_impl.h in Headers */,
 				9FB638891A635BA300AAEC43 /* common.h in Headers */,
@@ -546,6 +568,7 @@
 				9FB638931A635BA300AAEC43 /* stringprintf.h in Headers */,
 				9FB6388E1A635BA300AAEC43 /* once.h in Headers */,
 				9FD6FC671A5D2A380028EDC6 /* PlayerMac.h in Headers */,
+				ADD1C0E11C196C2500733781 /* SimulatorExport.h in Headers */,
 				9FB6386E1A635BA300AAEC43 /* coded_stream_inl.h in Headers */,
 				9F2F21BF1A635F1C006B8BF1 /* RuntimeCCSImpl.h in Headers */,
 				9FD6FC311A5D281D0028EDC6 /* cocos2dx_extra.h in Headers */,
@@ -687,6 +710,7 @@
 				9FF504BA1A5EA75D00AFDA55 /* PlayerServiceProtocol.cpp in Sources */,
 				9FD6FC6E1A5D2A380028EDC6 /* PlayerTaskServiceMac.mm in Sources */,
 				9FB638A01A635BA300AAEC43 /* ConsoleCommand.cpp in Sources */,
+				9FD6FC321A5D281D0028EDC6 /* CCHTTPRequest.cpp in Sources */,
 				9FB638871A635BA300AAEC43 /* common.cc in Sources */,
 				9FB638681A635BA300AAEC43 /* generated_message_util.cc in Sources */,
 				9FB6386F1A635BA300AAEC43 /* zero_copy_stream.cc in Sources */,

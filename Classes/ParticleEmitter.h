@@ -9,10 +9,10 @@ wss 17/4/19
 #ifndef _PARTICLE_EMITTER_H_
 #define _PARTICLE_EMITTER_H_
 
-#include "json/rapidjson.h"
-#include "json/document.h"
-#include "json/writer.h"
-#include "json/stringbuffer.h"
+#include "mjson/rapidjson.h"
+#include "mjson/document.h"
+#include "mjson/writer.h"
+#include "mjson/stringbuffer.h"
 
 #include "cocos2d.h"
 #include "ParticleRenderer.h"
@@ -132,9 +132,9 @@ struct emitterVarietyValue {
 	}
 
 	//写数据到json文件中
-	void writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator, char* nameKey);
+	void writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator, char* nameKey);
 	// 从json文件中读数据
-	void readJsonData(rapidjson::Document& doc, char* nameKey);
+	void readJsonData(m_rapidjson::Document& doc, char* nameKey);
 
 	// 值得类型
 	emitterPropertyType pType;
@@ -219,9 +219,9 @@ struct varietyFireAreaValue {
 	// 设置线段的距离
 	void setPolygonAndLineAreaLineDis();
 	// 将自身数据写到json文件中
-	void writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator, char* nameKey);
+	void writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator, char* nameKey);
 	// 从json文件中读数据
-	void readJsonData(rapidjson::Document& doc, char* nameKey);
+	void readJsonData(m_rapidjson::Document& doc, char* nameKey);
 
 
 	fireAreaType fAreaType;
@@ -262,9 +262,9 @@ struct emitterColorValue {
 	}
 
 	// 写数据到json文件中
-	void writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator, char* nameKey);
+	void writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator, char* nameKey);
 	// 从json文件中读数据
-	void readJsonData(rapidjson::Document& doc, char* nameKey);
+	void readJsonData(m_rapidjson::Document& doc, char* nameKey);
 
 	// 值得类型
 	emitterPropertyType pType;
@@ -304,9 +304,9 @@ struct tailPro {
 	MotionStreak* tailNode;
 
 	// 写数据到json文件中
-	void writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator, char* nameKey);
+	void writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator, char* nameKey);
 	// 从json文件中读数据
-	void readJsonData(rapidjson::Document& doc, char* nameKey);
+	void readJsonData(m_rapidjson::Document& doc, char* nameKey);
 
 	// 是否启用
 	bool isActive;
@@ -398,9 +398,9 @@ struct emitterFirePro {
 	}
 
 	// 写数据到json文件
-	bool writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator);
+	bool writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator);
 	// 从json文件中读数据
-	void readJsonData(rapidjson::Document& doc);
+	void readJsonData(m_rapidjson::Document& doc);
 
 	// ----- debug  drawNode
 	DrawNode* _debugDrawNode_centerPoint;
@@ -658,9 +658,9 @@ class ParticleEmitter : public Node
 		void setIsAutoRemoveOnFinish(bool autoRemove) { _isAutoRemoveOnFinish = autoRemove; }
 
 		// 写数据到json文件
-		bool writeJsonData(rapidjson::Document& object, rapidjson::Document::AllocatorType& allocator);
+		bool writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator);
 		// 从json文件中读数据
-		void readJsonData(rapidjson::Document& doc);
+		void readJsonData(m_rapidjson::Document& doc);
 
 		// 
 		void readJsonDataFromFile(std::string filename);

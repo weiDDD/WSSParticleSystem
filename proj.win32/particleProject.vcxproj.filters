@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\DropDownList.cpp" />
+    <ClCompile Include="..\Classes\FileCenter.cpp" />
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="..\Classes\ParticleEmitter.cpp" />
+    <ClCompile Include="..\Classes\ParticleRenderer.cpp" />
+    <ClCompile Include="..\Classes\ParticleUiView.cpp" />
+    <ClCompile Include="..\Classes\shaderSprite.cpp" />
+    <ClCompile Include="..\Classes\UpdateHelper.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\DropDownList.h" />
+    <ClInclude Include="..\Classes\FileCenter.h" />
+    <ClInclude Include="..\Classes\HelloWorldScene.h" />
+    <ClInclude Include="..\Classes\ParticleEmitter.h" />
+    <ClInclude Include="..\Classes\ParticleRenderer.h" />
+    <ClInclude Include="..\Classes\ParticleUiView.h" />
+    <ClInclude Include="..\Classes\shaderSprite.h" />
+    <ClInclude Include="..\Classes\UpdateHelper.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="..\Classes\mjson\document.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\filestream.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\prettywriter.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\rapidjson.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\reader.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\stringbuffer.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\writer.h">
+      <Filter>mjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\internal\pow10.h">
+      <Filter>mjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\internal\stack.h">
+      <Filter>mjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mjson\internal\strfunc.h">
+      <Filter>mjson\internal</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="mjson">
+      <UniqueIdentifier>{9204c923-fc05-4376-8ab3-32c22bc61273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mjson\internal">
+      <UniqueIdentifier>{6dac998c-ea94-4a7d-b74d-5f955d244314}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
