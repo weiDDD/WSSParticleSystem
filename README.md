@@ -15,8 +15,8 @@ WSSParticleSystem
       
 •应用到自己项目:   
       1.添加源码到自己的工程中编译:   
-          将Classes中的FileCenter ; lua_particle_system_auto ; ParticleEmitter ; ParticleRenderer ; UpdateHelper 的h,cpp文件拷到自己的工程中。   
-          
+          将Classes中的FileCenter ; lua_particle_system_auto ; ParticleEmitter ; ParticleRenderer ; UpdateHelper 的h,cpp文件拷到自己的工程中。   & mjson文件夹下的所有文件拷到工程中(这个是我这个版本额json库，避免与不同版本cocos冲突) ，编译。
+         
       2.注册C++到lua:(如果是lua工程)   
           在合适的地方(一般是工程开始的地方，如 appDelegate 文件的 applicationDidFinishLaunching 函数中)，调用 lua_particle_system_auto.cpp 中的register_all_particle_system 函数将C++绑定到lua.   
           
