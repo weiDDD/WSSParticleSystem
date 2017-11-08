@@ -20,8 +20,8 @@
 #pragma warning(disable : 4127) // conditional expression is constant
 #endif
 
-#ifndef RAPIDJSON_PARSE_ERROR
-#define RAPIDJSON_PARSE_ERROR(msg, offset) \
+#ifndef M_RAPIDJSON_PARSE_ERROR
+#define M_RAPIDJSON_PARSE_ERROR(msg, offset) \
 	RAPIDJSON_MULTILINEMACRO_BEGIN \
 	parseError_ = msg; \
 	errorOffset_ = offset; \
@@ -237,17 +237,17 @@ public:
 		SkipWhitespace(stream);
 
 		if (stream.Peek() == '\0')
-			RAPIDJSON_PARSE_ERROR("Text only contains white space(s)", stream.Tell());
+			M_RAPIDJSON_PARSE_ERROR("Text only contains white space(s)", stream.Tell());
 		else {
 			switch (stream.Peek()) {
 				case '{': ParseObject<parseFlags>(stream, handler); break;
 				case '[': ParseArray<parseFlags>(stream, handler); break;
-				default: RAPIDJSON_PARSE_ERROR("Expect either an object or array at root", stream.Tell());
+				default: M_RAPIDJSON_PARSE_ERROR("Expect either an object or array at root", stream.Tell());
 			}
 			SkipWhitespace(stream);
 
 			if (stream.Peek() != '\0')
-				RAPIDJSON_PARSE_ERROR("Nothing should follow the root object or array.", stream.Tell());
+				M_RAPIDJSON_PARSE_ERROR("Nothing should follow the root object or array.", stream.Tell());
 		}
 
 		return true;
@@ -274,7 +274,7 @@ private:
 
 		for (SizeType memberCount = 0;;) {
 			if (stream.Peek() != '"') {
-				RAPIDJSON_PARSE_ERROR("Name of an object member must be a string", stream.Tell());
+				M_RAPIDJSON_PARSE_ERROR("Name of an object member must be a string", stream.Tell());
 				break;
 			}
 
@@ -282,7 +282,7 @@ private:
 			SkipWhitespace(stream);
 
 			if (stream.Take() != ':') {
-				RAPIDJSON_PARSE_ERROR("There must be a colon after the name of object member", stream.Tell());
+				M_RAPIDJSON_PARSE_ERROR("There must be a colon after the name of object member", stream.Tell());
 				break;
 			}
 			SkipWhitespace(stream);
@@ -295,7 +295,7 @@ private:
 			switch(stream.Take()) {
 				case ',': SkipWhitespace(stream); break;
 				case '}': handler.EndObject(memberCount); return;
-				default:  RAPIDJSON_PARSE_ERROR("Must be a comma or '}' after an object member", stream.Tell());
+				default:  M_RAPIDJSON_PARSE_ERROR("Must be a comma or '}' after an object member", stream.Tell());
 			}
 		}
 	}
@@ -322,7 +322,7 @@ private:
 			switch (stream.Take()) {
 				case ',': SkipWhitespace(stream); break;
 				case ']': handler.EndArray(elementCount); return;
-				default:  RAPIDJSON_PARSE_ERROR("Must be a comma or ']' after an array element.", stream.Tell());
+				default:  M_RAPIDJSON_PARSE_ERROR("Must be a comma or ']' after an array element.", stream.Tell());
 			}
 		}
 	}
@@ -335,7 +335,7 @@ private:
 		if (stream.Take() == 'u' && stream.Take() == 'l' && stream.Take() == 'l')
 			handler.Null();
 		else
-			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
+			M_RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
 
 	template<unsigned parseFlags, typename Stream, typename Handler>
@@ -346,7 +346,7 @@ private:
 		if (stream.Take() == 'r' && stream.Take() == 'u' && stream.Take() == 'e')
 			handler.Bool(true);
 		else
-			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell());
+			M_RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell());
 	}
 
 	template<unsigned parseFlags, typename Stream, typename Handler>
@@ -357,7 +357,7 @@ private:
 		if (stream.Take() == 'a' && stream.Take() == 'l' && stream.Take() == 's' && stream.Take() == 'e')
 			handler.Bool(false);
 		else
-			RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
+			M_RAPIDJSON_PARSE_ERROR("Invalid value", stream.Tell() - 1);
 	}
 
 	// Helper function to parse four hexidecimal digits in \uXXXX in ParseString().
@@ -376,7 +376,7 @@ private:
 			else if (c >= 'a' && c <= 'f')
 				codepoint -= 'a' - 10;
 			else 
-				RAPIDJSON_PARSE_ERROR("Incorrect hex digit after \\u escape", s.Tell() - 1);
+				M_RAPIDJSON_PARSE_ERROR("Incorrect hex digit after \\u escape", s.Tell() - 1);
 		}
 		stream = s; // Restore stream
 		return codepoint;
@@ -425,12 +425,12 @@ private:
 					unsigned codepoint = ParseHex4(s);
 					if (codepoint >= 0xD800 && codepoint <= 0xDBFF) { // Handle UTF-16 surrogate pair
 						if (s.Take() != '\\' || s.Take() != 'u') {
-							RAPIDJSON_PARSE_ERROR("Missing the second \\u in surrogate pair", s.Tell() - 2);
+							M_RAPIDJSON_PARSE_ERROR("Missing the second \\u in surrogate pair", s.Tell() - 2);
 							return;
 						}
 						unsigned codepoint2 = ParseHex4(s);
 						if (codepoint2 < 0xDC00 || codepoint2 > 0xDFFF) {
-							RAPIDJSON_PARSE_ERROR("The second \\u in surrogate pair is invalid", s.Tell() - 2);
+							M_RAPIDJSON_PARSE_ERROR("The second \\u in surrogate pair is invalid", s.Tell() - 2);
 							return;
 						}
 						codepoint = (((codepoint - 0xD800) << 10) | (codepoint2 - 0xDC00)) + 0x10000;
@@ -448,7 +448,7 @@ private:
 					}
 				}
 				else {
-					RAPIDJSON_PARSE_ERROR("Unknown escape character", stream.Tell() - 1);
+					M_RAPIDJSON_PARSE_ERROR("Unknown escape character", stream.Tell() - 1);
 					return;
 				}
 			}
@@ -467,11 +467,11 @@ private:
 				return;
 			}
 			else if (c == '\0') {
-				RAPIDJSON_PARSE_ERROR("lacks ending quotation before the end of string", stream.Tell() - 1);
+				M_RAPIDJSON_PARSE_ERROR("lacks ending quotation before the end of string", stream.Tell() - 1);
 				return;
 			}
 			else if ((unsigned)c < 0x20) {	// RFC 4627: unescaped = %x20-21 / %x23-5B / %x5D-10FFFF
-				RAPIDJSON_PARSE_ERROR("Incorrect unescaped character in string", stream.Tell() - 1);
+				M_RAPIDJSON_PARSE_ERROR("Incorrect unescaped character in string", stream.Tell() - 1);
 				return;
 			}
 			else
@@ -522,7 +522,7 @@ private:
 				}
 		}
 		else {
-			RAPIDJSON_PARSE_ERROR("Expect a value here.", stream.Tell());
+			M_RAPIDJSON_PARSE_ERROR("Expect a value here.", stream.Tell());
 			return;
 		}
 
@@ -557,7 +557,7 @@ private:
 			d = (double)i64;
 			while (s.Peek() >= '0' && s.Peek() <= '9') {
 				if (d >= 1E307) {
-					RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
+					M_RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
 					return;
 				}
 				d = d * 10 + (s.Take() - '0');
@@ -578,7 +578,7 @@ private:
 				--expFrac;
 			}
 			else {
-				RAPIDJSON_PARSE_ERROR("At least one digit in fraction part", stream.Tell());
+				M_RAPIDJSON_PARSE_ERROR("At least one digit in fraction part", stream.Tell());
 				return;
 			}
 
@@ -613,13 +613,13 @@ private:
 				while (s.Peek() >= '0' && s.Peek() <= '9') {
 					exp = exp * 10 + (s.Take() - '0');
 					if (exp > 308) {
-						RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
+						M_RAPIDJSON_PARSE_ERROR("Number too big to store in double", stream.Tell());
 						return;
 					}
 				}
 			}
 			else {
-				RAPIDJSON_PARSE_ERROR("At least one digit in exponent", s.Tell());
+				M_RAPIDJSON_PARSE_ERROR("At least one digit in exponent", s.Tell());
 				return;
 			}
 

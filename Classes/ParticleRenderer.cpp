@@ -589,6 +589,7 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
 
 	GL::bindTexture2D(_texture->getName());
+
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
 #define quadSize sizeof(_quads[0].bl)
@@ -608,7 +609,7 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	GL::bindTexture2D(0);
+	//GL::bindTexture2D(0);
 	
 
 }
