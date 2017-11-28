@@ -8,6 +8,7 @@ int ParticleEmitter::updatePriority = 200;
 int ParticleEmitter::fireProId = 1;
 
 bool ParticleEmitter::isUseDrawNode = false;
+bool ParticleEmitter::isUiEditorModel = false;
 
 static long getNowTime(){
 	struct timeval now;
@@ -240,76 +241,8 @@ ParticleEmitter::~ParticleEmitter() {
 	// 当发射器死亡时，将render释放给runningLayer , 
 	//assert(this->runningLayer, "particle Emitter must set runningLayer , runningLayer is null !");
 
-	if (this->runningLayer && this->runningLayer->isRunning()) {
-		auto itor = childrenParMap.begin();
-		while (itor != childrenParMap.end()) {
-			childrenPar* cPar = (*itor).second;
-			if (cPar->_renderer) {
-				if (cPar->_renderer->getPositionType() == positionType::FREE) {
-					cPar->_renderer->scheduleUpdateWithPriority(1);
-					cPar->_renderer->setIsAutoRemoveOnFinish(true);
-					cPar->_renderer->_emitter = nullptr;
-					cPar->_renderer = nullptr;
-				}
-				else if (cPar->_renderer->getPositionType() == positionType::RELATIVE) {
-					// 相对的运动模式，发射器都死掉了，render也应该死掉
-
-					cPar->_renderer->removeFromParent();
-					/*this->runningLayer->addChild(cPar->_renderer);
-					Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
-					cPar->_renderer->setPosition(parentPos);
-					cPar->_renderer->scheduleUpdateWithPriority(1);
-					// 放完自死
-					cPar->_renderer->setIsAutoRemoveOnFinish(true);*/
-					cPar->_renderer->release();
-					cPar->_renderer->_emitter = nullptr;
-					cPar->_renderer = nullptr;
-				}
-			}
-			else {
-				for (int i = 0; i < cPar->_emitter.size(); ++i) {
-					auto ePar = cPar->_emitter[i]->par;
-					ePar->retain();
-					ePar->removeFromParent();
-					this->runningLayer->addChild(ePar);
-					Vec2 parentPos = this->convertToWorldSpace(Vec2::ZERO);
-					ePar->setPosition(parentPos);
-					ePar->release();
-					ePar->scheduleUpdateWithPriority(1);
-					// 放完自死
-					ePar->setIsAutoRemoveOnFinish(true);
-				}
-				cPar->_emitter.clear();
-			}
-
-			delete (*itor).second;
-			itor++;
-		}
-		childrenParMap.clear();
-	}
-	else {
-		auto itor = childrenParMap.begin();
-		while (itor != childrenParMap.end()) {
-			childrenPar* cPar = (*itor).second;
-			if (cPar->_renderer) {
-				cPar->_renderer->removeFromParent();
-				cPar->_renderer->release();
-				cPar->_renderer = nullptr;
-			}
-			else {
-				for (int i = 0; i < cPar->_emitter.size(); ++i) {
-					auto ePar = cPar->_emitter[i]->par;
-					ePar->removeFromParent();
-				}
-				cPar->_emitter.clear();
-			}
-
-			delete (*itor).second;
-			itor++;
-		}
-		childrenParMap.clear();
-
-	}
+	this->releaseRender();   // 先清理render
+	this->clearData();       // 清理数据
 }
 
 ParticleEmitter* ParticleEmitter::instance;
@@ -679,29 +612,49 @@ void ParticleEmitter::releaseRender() {
 			if (cPar != childrenParMap.end()) {
 				if (cPar->second->_renderer)
 				{
-					if (this->runningLayer) {
+					if (this->runningLayer && this->runningLayer->isRunning()) {
 						if (firePro->_positionType == positionType::FREE) {
-							cPar->second->_renderer->scheduleUpdateWithPriority(1);
-							cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
-							cPar->second->_renderer->_emitter = nullptr;
-							cPar->second->_renderer = nullptr;
+							if (UpdateHelper::getInstance()->getValueFromEmitterVarietyValue(firePro->_life, *firePro) >= 1000) {
+								cPar->second->_renderer->removeFromParent();
+								cPar->second->_renderer->release();
+								cPar->second->_renderer->_emitter = nullptr;
+								cPar->second->_renderer = nullptr;
+							}
+							else {
+								cPar->second->_renderer->scheduleUpdateWithPriority(1);
+								cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
+								cPar->second->_renderer->_emitter = nullptr;
+								cPar->second->_renderer = nullptr;
+							}
+
 						}
 						else if (firePro->_positionType == positionType::RELATIVE) {
-							cPar->second->_renderer->removeFromParent();
-							this->runningLayer->addChild(cPar->second->_renderer);
-							Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
-							parentPos = this->runningLayer->convertToNodeSpace(parentPos);
-							cPar->second->_renderer->setPosition(parentPos);
-							cPar->second->_renderer->scheduleUpdateWithPriority(1);
-							// 放完自死
-							cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
-							cPar->second->_renderer->_emitter = nullptr;
-							cPar->second->_renderer = nullptr;
+							if (UpdateHelper::getInstance()->getValueFromEmitterVarietyValue(firePro->_life, *firePro) >= 1000) {
+								// 如果是生命值无限长的话，那么就得直接删掉这个render
+								cPar->second->_renderer->removeFromParent();
+								cPar->second->_renderer->release();
+								cPar->second->_renderer->_emitter = nullptr;
+								cPar->second->_renderer = nullptr;
+							}
+							else {
+								// 不是无限长的生命，需要加到runningLayer上自死亡
+								cPar->second->_renderer->removeFromParent();
+								this->runningLayer->addChild(cPar->second->_renderer);
+								Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
+								parentPos = this->runningLayer->convertToNodeSpace(parentPos);
+								cPar->second->_renderer->setPosition(parentPos);
+								cPar->second->_renderer->scheduleUpdateWithPriority(1);
+								// 放完自死
+								cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
+								cPar->second->_renderer->_emitter = nullptr;
+								cPar->second->_renderer = nullptr;
+							}
 						}
 					}
 					else {
 						cPar->second->_renderer->removeFromParent();
 						cPar->second->_renderer->release();
+						cPar->second->_renderer->_emitter = nullptr;
 						cPar->second->_renderer = nullptr;
 					}
 				}
@@ -854,22 +807,26 @@ void ParticleEmitter::update(float dt) {
 		}
 	}
 
-	// 如果所有的发射属性都TM玩完了，这个发射器也玩完了
-	if (isAllFireProNotActive) {
-		_isActive = false;
-		//this->clearData();
-		if (_isAutoRemoveOnFinish) {
-			this->unscheduleUpdate();
-			if (this->getParent()) {
-				this->removeFromParent();
-			}
-		}
-	}
-
 	if (this->getParent()) {
 		this->setRotation(this->getParent()->getRotation());
 	}
 
+	// 如果所有的发射属性都TM玩完了，这个发射器也玩完了
+	if (isAllFireProNotActive ) {
+		_isActive = false;
+		if (!ParticleEmitter::isUiEditorModel) {
+			this->releaseRender();   // 先清理render
+			this->clearData();       // 清理数据
+			if (_isAutoRemoveOnFinish) {
+				this->unscheduleUpdate();
+				if (this->getParent()) {
+					this->removeFromParent();
+				}
+			}
+		}
+	}
+
+	
 	//CC_PROFILER_START_CATEGORY(kProfilerCategoryParticles, "NEW ParticleSystem - update");
 }
 

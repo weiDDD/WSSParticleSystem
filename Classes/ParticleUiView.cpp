@@ -123,7 +123,7 @@ Widget* ParticleUiView::seekByName(Widget* rootNode , std::string name) {
 
 }
 
-// ½«UI½ÚµãÖĞµÄ TextField »º´æEditBox
+// å°†UIèŠ‚ç‚¹ä¸­çš„ TextField ç¼“å­˜EditBox
 void ParticleUiView::replaceTextFieldToEditBox(Widget* rootNode) {
 	
 	Vector<Node*> children = rootNode->getChildren();
@@ -193,40 +193,41 @@ bool ParticleUiView::init() {
 	bgSprite->setScaleY(screenSize.height / bgSprite->getContentSize().height);
 	this->addChild(bgSprite, -100);*/
 
+	ParticleEmitter::isUiEditorModel = true;    // è®¾ç½®æ˜¯ä½¿ç”¨çš„UIç¼–è¾‘æ¨¡å¼
 
-	// ´¥ÃşÊÂ¼ş
+	// è§¦æ‘¸äº‹ä»¶
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(false);
 	listener->onTouchBegan = CC_CALLBACK_2(ParticleUiView::onTouchBegan, this);
 	listener->onTouchMoved = CC_CALLBACK_2(ParticleUiView::onTouchMoved, this);
 	listener->onTouchEnded = CC_CALLBACK_2(ParticleUiView::onTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);  //½«ÊÂ¼şÌí¼Óµ½thisÕâ¸ö²ãÖĞ
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);  //å°†äº‹ä»¶æ·»åŠ åˆ°thisè¿™ä¸ªå±‚ä¸­
 	this->setTouchEnabled(true);
 
-	// »ñÈ¡ÎÆÀíÍ¼Æ¬ÁĞ±í
+	// è·å–çº¹ç†å›¾ç‰‡åˆ—è¡¨
 	texNames = this->getPngFileName();
 
-	// »ñÈ¡ÎÄ¼şÁĞ±í
+	// è·å–æ–‡ä»¶åˆ—è¡¨
 	fileNames = this->getJsonFileName();
 
-	// »ñÈ¡²Î¿¼Í¼Æ¬ÁĞ±í
+	// è·å–å‚è€ƒå›¾ç‰‡åˆ—è¡¨
 	refSpriteNames = this->getRefSpriteName();
 
 	tailSpriteNames = this->getTailSpriteName();
 
-	// ÉèÖÃËæ»úÊıÖÖ×Ó
+	// è®¾ç½®éšæœºæ•°ç§å­
 	std::srand((unsigned int)time(0));
 
 	ParticleEmitter::setTexturePath("texture/");
 
-	// Ö÷²Ëµ¥ Ãæ°å
+	// ä¸»èœå• é¢æ¿
 	mainRootNode = GUIReader::getInstance()->widgetFromJsonFile("main_ui.ExportJson");
 	this->addChild(mainRootNode,10);
 	replaceTextFieldToEditBox(mainRootNode);
 
 	((ExEditBox*)seekByName(mainRootNode, "fileNameInput"))->setInputMode(ExEditBox::InputMode::ANY);
 
-	// µ¥Ò»Á£×ÓÊôĞÔpanel ui
+	// å•ä¸€ç²’å­å±æ€§panel ui
 	singleRootNode = GUIReader::getInstance()->widgetFromJsonFile("single_par_ui.ExportJson");
 	this->addChild(singleRootNode,10);
 	replaceTextFieldToEditBox(singleRootNode);
@@ -235,14 +236,14 @@ bool ParticleUiView::init() {
 	this->initUi();
 
 
-	// ´´½¨×éºÏÁ£×Ó·¢ÉäÆ÷
+	// åˆ›å»ºç»„åˆç²’å­å‘å°„å™¨
 	//parList = ParticleEmitterAdapter::create();
 	//parList->setPosition(Point(500, 500));
 	//this->addChild(parList);
 
 	//parList->addChildEmitterFirePro();
 
-	////»ñÈ¡idÎª1µÄÁ£×Ó·¢ÉäÆ÷ÊôĞÔ
+	////è·å–idä¸º1çš„ç²’å­å‘å°„å™¨å±æ€§
 	//nowEditingSignalPar = parList->getChildEmitter(1);
 	//this->initSingleParUi();
 
@@ -252,7 +253,7 @@ bool ParticleUiView::init() {
 	singlePar->setPosition(Vec2(500,500));
 	this->addChild(singlePar);
 
-	// -- ¼ÓÔØÁĞ±íµÄµÚÒ»¸öÎÄ¼ş
+	// -- åŠ è½½åˆ—è¡¨çš„ç¬¬ä¸€ä¸ªæ–‡ä»¶
 	nowFileName = "json/" + fileNames.at(0);
 
 	singlePar->readJsonDataFromFile(nowFileName);
@@ -272,7 +273,7 @@ bool ParticleUiView::init() {
 	return true;
 }
 
-// ÏÔÊ¾Ìí¼ÓfireProµÄÃæ°å
+// æ˜¾ç¤ºæ·»åŠ fireProçš„é¢æ¿
 void ParticleUiView::showAddFireProPanel() {
 	isOpenAddFireProPanel = true;
 	seekByName(mainRootNode, "addFireProPanel")->setVisible(true);
@@ -290,12 +291,12 @@ void ParticleUiView::showAddFireProPanel() {
 	}
 
 	if (addFireProJsonfileNames.size() > 0) {
-		// ¼ÓÔØÒ»¸ö³ıÁË×Ô¼ºÕâ¸öÎÄ¼şµÄËùÓĞjsonÎÄ¼şµÄÏÂÀ­ÁĞ±í
+		// åŠ è½½ä¸€ä¸ªé™¤äº†è‡ªå·±è¿™ä¸ªæ–‡ä»¶çš„æ‰€æœ‰jsonæ–‡ä»¶çš„ä¸‹æ‹‰åˆ—è¡¨
 		if (!addFireProjsonFileList) {
 			{
-				//----- ÉèÖÃ µ¥Á£×Ó jsonÎÄ¼ş ÏÂÀ­¿ò
+				//----- è®¾ç½® å•ç²’å­ jsonæ–‡ä»¶ ä¸‹æ‹‰æ¡†
 				LabelTTF* initLabel = LabelTTF::create("jsonFile", "Arial", 22);
-				//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize  
+				//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size  
 				auto textureSprite = seekByName(mainRootNode, "emitterFileSprite");
 				Size size = CCSizeMake(textureSprite->getContentSize().width * textureSprite->getScaleX(), textureSprite->getContentSize().height  * textureSprite->getScaleY());
 				addFireProjsonFileList = DropDownList::create(initLabel, size, addFireProJsonfileNames.size());
@@ -303,7 +304,7 @@ void ParticleUiView::showAddFireProPanel() {
 				addFireProjsonFileList->setSwallowsTouches(true);
 				textureSprite->getParent()->addChild(addFireProjsonFileList, textureSprite->getLocalZOrder());
 
-				////¸ù¾İ¶Á³öµÄÎÆÀípngÎÄ¼şµÄÃû×Ö£¬À´´´½¨¶ÔÓ¦µÄlabel
+				////æ ¹æ®è¯»å‡ºçš„çº¹ç†pngæ–‡ä»¶çš„åå­—ï¼Œæ¥åˆ›å»ºå¯¹åº”çš„label
 				std::vector<std::string>::iterator texItor = addFireProJsonfileNames.begin();
 				while (texItor != addFireProJsonfileNames.end()) {
 					auto label = LabelTTF::create((*texItor), "Arial", 22);
@@ -323,7 +324,7 @@ void ParticleUiView::showAddFireProPanel() {
 	}
 
 }
-// Òş²Ø Ìí¼ÓfireProµÄÃæ°å
+// éšè— æ·»åŠ fireProçš„é¢æ¿
 void ParticleUiView::hideAddFireProPanel() {
 	isOpenAddFireProPanel = false;
 	seekByName(mainRootNode, "addFireProPanel")->setVisible(false);
@@ -386,7 +387,7 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 			}
 
 			this->initSingleParUi();
-			// ¹ØµôËùÓĞµÄÃæ°å
+			// å…³æ‰æ‰€æœ‰çš„é¢æ¿
 			//this->setTailProPanelVisible(false);
 			//this->setFireProLayerVisible(false);
 			this->hideFireStartProValuePanel();
@@ -394,7 +395,7 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 		}
 	});
 
-	// ÎÄ±¾
+	// æ–‡æœ¬
 	auto textEditBox = ui::Text::create();
 	textEditBox->setAnchorPoint(Vec2(0.5, 0.5));
 	textEditBox->setPosition(Vec2(0.35 * cSize.width , 0.65*cSize.height));
@@ -402,7 +403,7 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 	item->addChild(textEditBox);
 	textEditBox->setText(showWord);
 
-	// id ÎÄ±¾
+	// id æ–‡æœ¬
 	auto idText = ui::Text::create();
 	idText->setAnchorPoint(Vec2(0.5, 0.5));
 	idText->setPosition(Vec2(0.1 * cSize.width, 0.5*cSize.height));
@@ -451,7 +452,7 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 
 		textEditBox->setText(tagName.c_str());
 	}
-	// °´Å¥
+	// æŒ‰é’®
 	auto subBtn = ImageView::create("sub.png");
 	subBtn->setTouchEnabled(true);
 	subBtn->setPosition(Vec2(0.9 * cSize.width , cSize.height / 2));
@@ -473,8 +474,8 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 
 
 					if (this->nowEditingSignalPar->_id == (*itor)->getTag()) {
-						//// É¾µôºó×Ô¶¯Ñ¡ÔñÒ»¸öfirePro
-						//ÏÈÏòÉÏÕÒ£¬ÉÏÃ»ÓĞ£¬¾ÍÏòÏÂÕÒ
+						//// åˆ æ‰åè‡ªåŠ¨é€‰æ‹©ä¸€ä¸ªfirePro
+						//å…ˆå‘ä¸Šæ‰¾ï¼Œä¸Šæ²¡æœ‰ï¼Œå°±å‘ä¸‹æ‰¾
 						bool isGetNewFirePro = false;
 						Widget* newItemWidget = nullptr;
 						if (index - 1 >= 0) {
@@ -504,13 +505,13 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 							}
 
 							this->initSingleParUi();
-							// ¹ØµôËùÓĞµÄÃæ°å
+							// å…³æ‰æ‰€æœ‰çš„é¢æ¿
 							this->hideFireStartProValuePanel();
 							this->hideParLifeProValuePanel();
 						}
 					}
 					
-					// É¾³ı
+					// åˆ é™¤
 					this->getSignalPar()->removeFireProById(item->getTag());
 					float cHeight = item->getContentSize().height;
 					(*itor)->removeFromParent();
@@ -518,7 +519,7 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 
 					for (int i = 0; i < this->moreParWidgetVec.size(); ++i) {
 						this->moreParWidgetVec.at(i)->setPositionY(innerSize.height - (i + 1) * cHeight);
-						// ĞŞ¸Äid
+						// ä¿®æ”¹id
 						int oldid = this->moreParWidgetVec.at(i)->getTag();
 						this->getSignalPar()->getFireProById(oldid)->_id = i + 1;
 						this->moreParWidgetVec.at(i)->setTag(i + 1);
@@ -601,9 +602,9 @@ void ParticleUiView::initUi() {
 	});
 
 	{
-		//----- ÉèÖÃ µ¥Á£×Ó jsonÎÄ¼ş ÏÂÀ­¿ò
+		//----- è®¾ç½® å•ç²’å­ jsonæ–‡ä»¶ ä¸‹æ‹‰æ¡†
 		LabelTTF* initLabel = LabelTTF::create("jsonFile", "Arial", 22); 
-		//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize  
+		//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size  
 		auto textureSprite = seekByName(mainRootNode, "singleParFileSprite");
 		Size size = CCSizeMake(textureSprite->getContentSize().width * textureSprite->getScaleX(), textureSprite->getContentSize().height  * textureSprite->getScaleY());
 		jsonFileList = DropDownList::create(initLabel, size, fileNames.size());
@@ -611,7 +612,7 @@ void ParticleUiView::initUi() {
 		jsonFileList->setSwallowsTouches(true);
 		textureSprite->getParent()->addChild(jsonFileList, textureSprite->getLocalZOrder());
 
-		////¸ù¾İ¶Á³öµÄÎÆÀípngÎÄ¼şµÄÃû×Ö£¬À´´´½¨¶ÔÓ¦µÄlabel
+		////æ ¹æ®è¯»å‡ºçš„çº¹ç†pngæ–‡ä»¶çš„åå­—ï¼Œæ¥åˆ›å»ºå¯¹åº”çš„label
 		std::vector<std::string>::iterator texItor = fileNames.begin();
 		while (texItor != fileNames.end()) {
 			auto label = LabelTTF::create((*texItor), "Arial", 22);
@@ -623,9 +624,9 @@ void ParticleUiView::initUi() {
 	}
 
 	{
-		//----- ²Î¿¼Í¼Æ¬µÄÏÂÀ­¿ò
+		//----- å‚è€ƒå›¾ç‰‡çš„ä¸‹æ‹‰æ¡†
 		LabelTTF* initLabel = LabelTTF::create("refSprite", "Arial", 22);
-		//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize  
+		//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size  
 		auto textureSprite = seekByName(mainRootNode, "bgSprite");
 		Size size = CCSizeMake(textureSprite->getContentSize().width * textureSprite->getScaleX(), textureSprite->getContentSize().height  * textureSprite->getScaleY());
 		refSpriteList = DropDownList::create(initLabel, size, refSpriteNames.size() + 1);
@@ -636,7 +637,7 @@ void ParticleUiView::initUi() {
 		auto label = LabelTTF::create("Black", "Arial", 22);
 		refSpriteList->addLabel(label);
 
-		////¸ù¾İ¶Á³öµÄÎÆÀípngÎÄ¼şµÄÃû×Ö£¬À´´´½¨¶ÔÓ¦µÄlabel
+		////æ ¹æ®è¯»å‡ºçš„çº¹ç†pngæ–‡ä»¶çš„åå­—ï¼Œæ¥åˆ›å»ºå¯¹åº”çš„label
 		std::vector<std::string>::iterator texItor = refSpriteNames.begin();
 		while (texItor != refSpriteNames.end()) {
 			auto label = LabelTTF::create((*texItor), "Arial", 22);
@@ -695,7 +696,7 @@ void ParticleUiView::initUi() {
 				nowEditingSignalPar = singlePar->getFirstFirePro();
 				this->initMoreParPanel();
 				singlePar->resetSystem();
-				// ¹ØµôËùÓĞµÄÃæ°å
+				// å…³æ‰æ‰€æœ‰çš„é¢æ¿
 				this->setTailProPanelVisible(false);
 				this->setFireProLayerVisible(false);
 				isSingleModeFireProLayerOpen = false;
@@ -730,7 +731,7 @@ void ParticleUiView::initUi() {
 			}
 			else if (((CheckBox*)seekByName(mainRootNode, "addEmitterFireProCheckBox"))->getSelectedState() == true) {
 				if (nowAddFireProJsonFileName != "") {
-					// ÅĞ¶Ï Õâ¸öÒªÌí¼ÓµÄÎÄ¼şÀïÃæÊÇ·ñÓĞ emitter µÄ·¢ÉäÀàĞÍ¡£Èç¹ûÓĞÔò²»ÄÜÌí¼Ó
+					// åˆ¤æ–­ è¿™ä¸ªè¦æ·»åŠ çš„æ–‡ä»¶é‡Œé¢æ˜¯å¦æœ‰ emitter çš„å‘å°„ç±»å‹ã€‚å¦‚æœæœ‰åˆ™ä¸èƒ½æ·»åŠ 
 					m_rapidjson::Document& readDoc = FileCenter::instance->readJsonData("json/" + nowAddFireProJsonFileName);
 					
 					bool isEmitter = false;
@@ -770,7 +771,7 @@ void ParticleUiView::initUi() {
 				this->initSingleParUi();
 			}*/
 
-			/// µ±Ç°±à¼­µÄ·¢ÉäÊôĞÔÊÇĞÂÔöµÄ
+			/// å½“å‰ç¼–è¾‘çš„å‘å°„å±æ€§æ˜¯æ–°å¢çš„
 			this->setNowEditingSignalPar(newFirePro);
 			this->initSingleParUi();
 
@@ -804,7 +805,7 @@ void ParticleUiView::initUi() {
 	seekByName(singleRootNode, "parLifeProPanel")->setTouchEnabled(false);
 	//seekByName(singleRootNode, "fireProLayer")->setSwallowTouches(true);
 
-	// µã»÷ ÍÏÎ²ÊôĞÔ °´Å¥
+	// ç‚¹å‡» æ‹–å°¾å±æ€§ æŒ‰é’®
 	seekByName(singleRootNode, "tailProBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			auto layer = seekByName(singleRootNode, "tailProPanel");
@@ -866,7 +867,7 @@ void ParticleUiView::initUi() {
 		}
 	});
 
-	// µã»÷ ·¢ÉäÆ÷ÊôĞÔ °´Å¥
+	// ç‚¹å‡» å‘å°„å™¨å±æ€§ æŒ‰é’®
 	seekByName(singleRootNode , "emitterProBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			auto layer = seekByName(singleRootNode, "fireProLayer");
@@ -909,7 +910,7 @@ void ParticleUiView::initUi() {
 				seekByName(singleRootNode, "parLifeProClose")->setVisible(true);
 				seekByName(singleRootNode, "parLifeProOpen")->setVisible(false);
 
-				// ÉÏÒ»¸öÑ¡ÖĞµÄ°´Å¥£¬ÔÚÁíÍâÒ»¸öÑ¡ÖĞÊ±ÉèÖÃÑÕÉ«»¹Ô­
+				// ä¸Šä¸€ä¸ªé€‰ä¸­çš„æŒ‰é’®ï¼Œåœ¨å¦å¤–ä¸€ä¸ªé€‰ä¸­æ—¶è®¾ç½®é¢œè‰²è¿˜åŸ
 				{
 					auto mapItor = parLifeProTypeBtns.find(nowSelectedSingleProTypeStr);
 					if (mapItor != parLifeProTypeBtns.end()) {
@@ -927,7 +928,7 @@ void ParticleUiView::initUi() {
 		}
 	});
 
-	// µã»÷ ·¢ÉäÊ±Á£×ÓÊôĞÔ °´Å¥
+	// ç‚¹å‡» å‘å°„æ—¶ç²’å­å±æ€§ æŒ‰é’®
 	seekByName(singleRootNode, "fireStartProBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			auto layer = seekByName(singleRootNode, "fireStartProPanel");
@@ -949,7 +950,7 @@ void ParticleUiView::initUi() {
 				parLifeProBtn->setPosition(Vec2(0, seekByName(singleRootNode, "fireStartProBtn")->getPositionY() - parLifeProBtn->getContentSize().height));
 			}
 			else {
-				//// ¹Øµô ×Ô¶¨Òå±à¼­·¢ÉäÇøÓò
+				//// å…³æ‰ è‡ªå®šä¹‰ç¼–è¾‘å‘å°„åŒºåŸŸ
 				/*isDiyEditPolygonOrLines = true;
 				this->showDiyFireAreaPoint();*/
 
@@ -969,7 +970,7 @@ void ParticleUiView::initUi() {
 				this->setTailProPanelVisible(false);
 				isSingleModeTailPanelOpen = false;
 
-				// ÉÏÒ»¸öÑ¡ÖĞµÄ°´Å¥£¬ÔÚÁíÍâÒ»¸öÑ¡ÖĞÊ±ÉèÖÃÑÕÉ«»¹Ô­
+				// ä¸Šä¸€ä¸ªé€‰ä¸­çš„æŒ‰é’®ï¼Œåœ¨å¦å¤–ä¸€ä¸ªé€‰ä¸­æ—¶è®¾ç½®é¢œè‰²è¿˜åŸ
 				auto mapItor = parLifeProTypeBtns.find(nowSelectedSingleProTypeStr);
 				if (mapItor != parLifeProTypeBtns.end()) {
 					seekByName(singleRootNode, (*mapItor).first)->setColor(Color3B(255, 255, 255));
@@ -992,7 +993,7 @@ void ParticleUiView::initUi() {
 		}
 	});
 
-	// µã»÷ Á£×ÓÉúÃüÄÚÊôĞÔ °´Å¥
+	// ç‚¹å‡» ç²’å­ç”Ÿå‘½å†…å±æ€§ æŒ‰é’®
 	seekByName(singleRootNode, "parLifeProBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			auto layer = seekByName(singleRootNode, "parLifeProPanel");
@@ -1003,7 +1004,7 @@ void ParticleUiView::initUi() {
 				seekByName(singleRootNode, "parLifeProClose")->setVisible(true);
 				seekByName(singleRootNode, "parLifeProOpen")->setVisible(false);
 
-				// ÉÏÒ»¸öÑ¡ÖĞµÄ°´Å¥£¬ÔÚÁíÍâÒ»¸öÑ¡ÖĞÊ±ÉèÖÃÑÕÉ«»¹Ô­
+				// ä¸Šä¸€ä¸ªé€‰ä¸­çš„æŒ‰é’®ï¼Œåœ¨å¦å¤–ä¸€ä¸ªé€‰ä¸­æ—¶è®¾ç½®é¢œè‰²è¿˜åŸ
 				auto mapItor = parLifeProTypeBtns.find(nowSelectedSingleProTypeStr);
 				if (mapItor != parLifeProTypeBtns.end()) {
 					seekByName(singleRootNode, (*mapItor).first)->setColor(Color3B(255, 255, 255));
@@ -1072,16 +1073,16 @@ void ParticleUiView::initUi() {
 	
 
 	{
-		//----- ÉèÖÃÎÆÀíÍ¼Æ¬ÏÂÀ­¿ò
+		//----- è®¾ç½®çº¹ç†å›¾ç‰‡ä¸‹æ‹‰æ¡†
 		LabelTTF* initLabel = LabelTTF::create("texture", "Arial", 22);
-		//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize  
+		//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size  
 		auto textureSprite = seekByName(singleRootNode, "textureSprite");
 		Size size = CCSizeMake(textureSprite->getContentSize().width * textureSprite->getScaleX(), textureSprite->getContentSize().height  * textureSprite->getScaleY());
 		textureList = DropDownList::create(initLabel, size, texNames.size());
 		textureList->setPosition(textureSprite->getPositionX() - size.width/2 , textureSprite->getPositionY() - size.height / 2);
 		textureSprite->getParent()->addChild(textureList , textureSprite->getLocalZOrder());
 
-		////¸ù¾İ¶Á³öµÄÎÆÀípngÎÄ¼şµÄÃû×Ö£¬À´´´½¨¶ÔÓ¦µÄlabel
+		////æ ¹æ®è¯»å‡ºçš„çº¹ç†pngæ–‡ä»¶çš„åå­—ï¼Œæ¥åˆ›å»ºå¯¹åº”çš„label
 		std::vector<std::string>::iterator texItor = texNames.begin();
 		while (texItor != texNames.end()) {
 			auto label = LabelTTF::create((*texItor), "Arial", 22);
@@ -1092,13 +1093,13 @@ void ParticleUiView::initUi() {
 		textureList->setItemCallBack(CC_CALLBACK_2(ParticleUiView::onDropDownList, this, textureList));
 	}
 
-	// ÉèÖÃ ·¢ÉäÇøÓòµÄÄ£Ê½
+	// è®¾ç½® å‘å°„åŒºåŸŸçš„æ¨¡å¼
 	{
 		auto fireAreaModeSprite = seekByName(singleRootNode, "fireAreaModeSprite");
 		Size size = CCSizeMake(fireAreaModeSprite->getContentSize().width * fireAreaModeSprite->getScaleX(), fireAreaModeSprite->getContentSize().height  * fireAreaModeSprite->getScaleY());
 		LabelTTF* initLabel = LabelTTF::create("fireAreaMode", "Arial", 20);
 		//initLabel->setDimensions(Size(size.width, size.height));
-		//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize 
+		//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size 
 		fireAreaMode = DropDownList::create(initLabel, size, 4);
 		fireAreaMode->setSwallowsTouches(true);
 		LabelTTF* label1 = LabelTTF::create("rect", "Arial", 22);
@@ -1118,12 +1119,12 @@ void ParticleUiView::initUi() {
 		fireAreaMode->setItemCallBack(CC_CALLBACK_2(ParticleUiView::onDropDownList, this, fireAreaMode));
 	}
 	{
-		//----- ÉèÖÃ Ô´ »ìºÏÄ£Ê½
+		//----- è®¾ç½® æº æ··åˆæ¨¡å¼
 		auto sourceSprite = seekByName(singleRootNode, "sourceBlendSprite");
 		Size size = CCSizeMake(sourceSprite->getContentSize().width * sourceSprite->getScaleX(), sourceSprite->getContentSize().height  * sourceSprite->getScaleY());
 		LabelTTF* initLabel = LabelTTF::create("sourceBlend", "Arial", 20);
 		//initLabel->setDimensions(Size(size.width, size.height));
-		//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize 
+		//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size 
 		sourceBlend = DropDownList::create(initLabel, size, 11);
 		sourceBlend->setSwallowsTouches(true);
 		LabelTTF* label1 = LabelTTF::create("GL_ZERO", "Arial", 22);
@@ -1164,12 +1165,12 @@ void ParticleUiView::initUi() {
 	}
 
 	{
-		//----- ÉèÖÃÄ¿±êºÏÄ£Ê½
+		//----- è®¾ç½®ç›®æ ‡åˆæ¨¡å¼
 		auto destSprite = seekByName(singleRootNode, "desBlendSprite");
 		Size size = CCSizeMake(destSprite->getContentSize().width * destSprite->getScaleX(), destSprite->getContentSize().height  * destSprite->getScaleY());
 		LabelTTF* initLabel = LabelTTF::create("destBlend", "Arial", 20);
 		//initLabel->setDimensions(Size(size.width, size.height));
-		//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize 
+		//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size 
 		destBlend = DropDownList::create(initLabel, size, 11);
 		destBlend->setSwallowsTouches(true);
 		LabelTTF* label1 = LabelTTF::create("GL_ZERO", "Arial", 22);
@@ -1209,14 +1210,14 @@ void ParticleUiView::initUi() {
 		
 	}
 
-	// ÉèÖÃ ·¢ÉäÊ±Á£×ÓÊôĞÔ ±à¼­Ãæ°åµÄÖµÀàĞÍ ÏÂÀ­ÁĞ±í
+	// è®¾ç½® å‘å°„æ—¶ç²’å­å±æ€§ ç¼–è¾‘é¢æ¿çš„å€¼ç±»å‹ ä¸‹æ‹‰åˆ—è¡¨
 	{
 
 		auto fireStartProValueTypeSprite = seekByName(singleRootNode, "typeSprite_fireStart");
 		Size size = CCSizeMake(fireStartProValueTypeSprite->getContentSize().width * fireStartProValueTypeSprite->getScaleX(), fireStartProValueTypeSprite->getContentSize().height  * fireStartProValueTypeSprite->getScaleY());
 		LabelTTF* initLabel = LabelTTF::create("valueType", "Arial", 20);
 		//initLabel->setDimensions(Size(size.width, size.height));
-		//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize 
+		//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size 
 		fireStartProValueType = DropDownList::create(initLabel, size, 4);
 		fireStartProValueType->setSwallowsTouches(true);
 		LabelTTF* label1 = LabelTTF::create("oneConstant", "Arial", 22);
@@ -1237,7 +1238,7 @@ void ParticleUiView::initUi() {
 		fireStartProValueType->setItemCallBack(CC_CALLBACK_2(ParticleUiView::onDropDownList, this, fireStartProValueType));
 	}
 
-	// -=-=-=-=-=- ·¢ÉäÊ±Á£×ÓÊôĞÔµÄ°´Å¥µÄ»Øµ÷º¯Êı
+	// -=-=-=-=-=- å‘å°„æ—¶ç²’å­å±æ€§çš„æŒ‰é’®çš„å›è°ƒå‡½æ•°
 	
 	fireStartProTypeBtns.insert(std::make_pair("fireStartBtn_life", singleProType::life_fireStart));
 	fireStartProTypeBtns.insert(std::make_pair("fireStartBtn_moveSpeed", singleProType::speed_fireStart));
@@ -1264,7 +1265,7 @@ void ParticleUiView::initUi() {
 			if (eType == Widget::TouchEventType::ENDED) {
 				if (nowSelectedSingleProType != type) {
 					//nowSelectedSingleProType = type;
-					// ÉÏÒ»¸öÑ¡ÖĞµÄ°´Å¥£¬ÔÚÁíÍâÒ»¸öÑ¡ÖĞÊ±ÉèÖÃÑÕÉ«»¹Ô­
+					// ä¸Šä¸€ä¸ªé€‰ä¸­çš„æŒ‰é’®ï¼Œåœ¨å¦å¤–ä¸€ä¸ªé€‰ä¸­æ—¶è®¾ç½®é¢œè‰²è¿˜åŸ
 					auto mapItor = fireStartProTypeBtns.find(nowSelectedSingleProTypeStr);
 					if (mapItor != fireStartProTypeBtns.end()) {
 						seekByName(singleRootNode, (*mapItor).first)->setColor(Color3B(255, 255, 255));
@@ -1287,18 +1288,18 @@ void ParticleUiView::initUi() {
 		});
 		itor++;
 	}
-	//·¢Éä¿ªÊ¼Ê± µÄ ÑÕÉ« ÊôĞÔ
+	//å‘å°„å¼€å§‹æ—¶ çš„ é¢œè‰² å±æ€§
 	seekByName(singleRootNode, "fireStartBtn_color")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			if (nowSelectedSingleProType != singleProType::color_fireStart) {
 				//nowSelectedSingleProType = type;
-				// ÉÏÒ»¸öÑ¡ÖĞµÄ°´Å¥£¬ÔÚÁíÍâÒ»¸öÑ¡ÖĞÊ±ÉèÖÃÑÕÉ«»¹Ô­
+				// ä¸Šä¸€ä¸ªé€‰ä¸­çš„æŒ‰é’®ï¼Œåœ¨å¦å¤–ä¸€ä¸ªé€‰ä¸­æ—¶è®¾ç½®é¢œè‰²è¿˜åŸ
 				auto mapItor = fireStartProTypeBtns.find(nowSelectedSingleProTypeStr);
 				if (mapItor != fireStartProTypeBtns.end()) {
 					seekByName(singleRootNode, (*mapItor).first)->setColor(Color3B(255, 255, 255));
 				}
 				nowSelectedSingleProTypeStr = "fireStartBtn_color";
-				// Òş²ØµôÆäËûÊôĞÔ
+				// éšè—æ‰å…¶ä»–å±æ€§
 				this->hideFireStartProValuePanel();
 				((Node*)pSender)->setColor(Color3B(255, 255, 0));
 				this->showFireStartProColorValuePanel(singleProType::color_fireStart, emitterPropertyType::oneConstant , true);
@@ -1311,7 +1312,7 @@ void ParticleUiView::initUi() {
 		}
 	});
 
-	// Á£×ÓÉúÃüÖÜÆÚÄÚ·¢ÉäÊôĞÔ °´Å¥ÃÇµÄµã»÷ÊÂ¼ş
+	// ç²’å­ç”Ÿå‘½å‘¨æœŸå†…å‘å°„å±æ€§ æŒ‰é’®ä»¬çš„ç‚¹å‡»äº‹ä»¶
 	{
 		parLifeProTypeBtns.insert(std::make_pair("parLifeBtn_moveSpeed", singleProType::speed_parLife));
 		parLifeProTypeBtns.insert(std::make_pair("parLifeBtn_moveAcc", singleProType::acc_parLife));
@@ -1337,7 +1338,7 @@ void ParticleUiView::initUi() {
 				if (eType == Widget::TouchEventType::ENDED) {
 					if (nowSelectedSingleProType != type) {
 						//nowSelectedSingleProType = type;
-						// ÉÏÒ»¸öÑ¡ÖĞµÄ°´Å¥£¬ÔÚÁíÍâÒ»¸öÑ¡ÖĞÊ±ÉèÖÃÑÕÉ«»¹Ô­
+						// ä¸Šä¸€ä¸ªé€‰ä¸­çš„æŒ‰é’®ï¼Œåœ¨å¦å¤–ä¸€ä¸ªé€‰ä¸­æ—¶è®¾ç½®é¢œè‰²è¿˜åŸ
 						auto mapItor = parLifeProTypeBtns.find(nowSelectedSingleProTypeStr);
 						if (mapItor != parLifeProTypeBtns.end()) {
 							seekByName(singleRootNode, (*mapItor).first)->setColor(Color3B(255, 255, 255));
@@ -1362,17 +1363,17 @@ void ParticleUiView::initUi() {
 			itor++;
 		}
 	}
-	//Á£×ÓÉúÃüÖÜÆÚ µÄ ÑÕÉ« ÊôĞÔ
+	//ç²’å­ç”Ÿå‘½å‘¨æœŸ çš„ é¢œè‰² å±æ€§
 	seekByName(singleRootNode, "parLifeBtn_color")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			if (nowSelectedSingleProType != singleProType::color_parLife) {
-				// ÉÏÒ»¸öÑ¡ÖĞµÄ°´Å¥£¬ÔÚÁíÍâÒ»¸öÑ¡ÖĞÊ±ÉèÖÃÑÕÉ«»¹Ô­
+				// ä¸Šä¸€ä¸ªé€‰ä¸­çš„æŒ‰é’®ï¼Œåœ¨å¦å¤–ä¸€ä¸ªé€‰ä¸­æ—¶è®¾ç½®é¢œè‰²è¿˜åŸ
 				auto mapItor = parLifeProTypeBtns.find(nowSelectedSingleProTypeStr);
 				if (mapItor != parLifeProTypeBtns.end()) {
 					seekByName(singleRootNode, (*mapItor).first)->setColor(Color3B(255, 255, 255));
 				}
 				nowSelectedSingleProTypeStr = "parLifeBtn_color";
-				// Òş²ØµôÆäËûÊôĞÔ
+				// éšè—æ‰å…¶ä»–å±æ€§
 				this->hideParLifeProValuePanel();
 				((Node*)pSender)->setColor(Color3B(255, 255, 0));
 				this->showParLifeProValuePanel(singleProType::color_parLife);
@@ -1386,7 +1387,7 @@ void ParticleUiView::initUi() {
 	});
 
 
-	//// Ìí¼Ó Ò»¸ö ¶à¸ö³£Öµ ÊôĞÔ
+	//// æ·»åŠ  ä¸€ä¸ª å¤šä¸ªå¸¸å€¼ å±æ€§
 	seekByName(singleRootNode, "moreValue_addBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			float value = std::atof( ((ExEditBox*)seekByName(singleRootNode, "moreValue_addInput"))->getText() );
@@ -1395,8 +1396,8 @@ void ParticleUiView::initUi() {
 		}
 	});
 
-	////// ÑÕÉ«Ïà¹ØµÄ°´Å¥
-	// ÍÏÎ²ÑÕÉ«°´Å¥
+	////// é¢œè‰²ç›¸å…³çš„æŒ‰é’®
+	// æ‹–å°¾é¢œè‰²æŒ‰é’®
 	seekByName(singleRootNode, "tail_color_sprite")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			this->showSetColorPanel();
@@ -1405,7 +1406,7 @@ void ParticleUiView::initUi() {
 		}
 	});
 
-	// Ò»¸ö³£ÖµÑÕÉ«
+	// ä¸€ä¸ªå¸¸å€¼é¢œè‰²
 	seekByName(singleRootNode, "oneColorValueBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			this->showSetColorPanel();
@@ -1413,7 +1414,7 @@ void ParticleUiView::initUi() {
 			this->setPointerPosByRGB(nowEditingColorNode->getColor());
 		}
 	});
-	// Á½¸öËæ»úÖµ ÑÕÉ«
+	// ä¸¤ä¸ªéšæœºå€¼ é¢œè‰²
 	seekByName(singleRootNode, "randColor1")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			this->showSetColorPanel();
@@ -1428,8 +1429,8 @@ void ParticleUiView::initUi() {
 			this->setPointerPosByRGB(nowEditingColorNode->getColor());
 		}
 	});
-	// ¶à¸öÑÕÉ«Öµ
-	//// Ìí¼Ó Ò»¸ö ¶à¸öÑÕÉ«Öµ ÊôĞÔ
+	// å¤šä¸ªé¢œè‰²å€¼
+	//// æ·»åŠ  ä¸€ä¸ª å¤šä¸ªé¢œè‰²å€¼ å±æ€§
 	seekByName(singleRootNode, "moreColorValue_addBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			Color3B addColor = Color3B(255, 255, 255);
@@ -1479,9 +1480,9 @@ void ParticleUiView::setTailProPanelVisible(bool visible) {
 
 	if (visible) {
 		if (!tailSpriteList) {
-			//----- ²Î¿¼Í¼Æ¬µÄÏÂÀ­¿ò
+			//----- å‚è€ƒå›¾ç‰‡çš„ä¸‹æ‹‰æ¡†
 			LabelTTF* initLabel = LabelTTF::create("tailSprite", "Arial", 22);
-			//ÉèÖÃÏÔÊ¾À¸Ä¿µÄsize  
+			//è®¾ç½®æ˜¾ç¤ºæ ç›®çš„size  
 			auto textureSprite = seekByName(singleRootNode, "tail_tex_sprite");
 			Size size = CCSizeMake(textureSprite->getContentSize().width * textureSprite->getScaleX(), textureSprite->getContentSize().height  * textureSprite->getScaleY());
 			tailSpriteList = DropDownList::create(initLabel, size, tailSpriteNames.size() + 1);
@@ -1489,7 +1490,7 @@ void ParticleUiView::setTailProPanelVisible(bool visible) {
 			tailSpriteList->setSwallowsTouches(true);
 			textureSprite->getParent()->addChild(tailSpriteList, textureSprite->getLocalZOrder());
 
-			////¸ù¾İ¶Á³öµÄÎÆÀípngÎÄ¼şµÄÃû×Ö£¬À´´´½¨¶ÔÓ¦µÄlabel
+			////æ ¹æ®è¯»å‡ºçš„çº¹ç†pngæ–‡ä»¶çš„åå­—ï¼Œæ¥åˆ›å»ºå¯¹åº”çš„label
 			std::vector<std::string>::iterator texItor = tailSpriteNames.begin();
 			while (texItor != tailSpriteNames.end()) {
 				auto label = LabelTTF::create((*texItor), "Arial", 22);
@@ -1503,7 +1504,7 @@ void ParticleUiView::setTailProPanelVisible(bool visible) {
 				tailSpriteList->setSelectedIndexByString(tailSpriteNames.at(0));
 			}
 		}
-		// ¸´Ñ¡¿ò
+		// å¤é€‰æ¡†
 		if (nowEditingSignalPar->_tailPro.isActive) {
 			((CheckBox*)seekByName(singleRootNode, "tail_active_checkbox"))->setSelectedState(true);
 		}
@@ -1530,9 +1531,9 @@ void ParticleUiView::setTailProPanelVisible(bool visible) {
 	}
 }
 
-// ÉèÖÃ fireProLayer µÄÏÔÊ¾ºÍÒş²Ø£¬Í¬Ê±ÉèÖÃÆäÖĞµÄsliderµÄ´¥Ãş¿ªÆôºÍÒş²Ø
+// è®¾ç½® fireProLayer çš„æ˜¾ç¤ºå’Œéšè—ï¼ŒåŒæ—¶è®¾ç½®å…¶ä¸­çš„sliderçš„è§¦æ‘¸å¼€å¯å’Œéšè—
 void ParticleUiView::setFireProLayerVisible(bool visible) {
-	// ÉèÖÃfireProLayer²ãÖĞµÄslider²»Æğ×÷ÓÃ »ò Æğ×÷ÓÃ
+	// è®¾ç½®fireProLayerå±‚ä¸­çš„sliderä¸èµ·ä½œç”¨ æˆ– èµ·ä½œç”¨
 	((ExSlider*)seekByName(singleRootNode, "maxParNum_Slider"))->setEnabled(visible);
 	((ExSlider*)seekByName(singleRootNode, "duration_Slider"))->setEnabled(visible);
 	((ExSlider*)seekByName(singleRootNode, "fireRate_Slider"))->setEnabled(visible);
@@ -1571,7 +1572,7 @@ void ParticleUiView::setFireProLayerVisible(bool visible) {
 }
 
 
-// ÏÔÊ¾ Á£×Ó·¢Éä¿ªÊ¼Ê±µÄÊôĞÔÃæ°å
+// æ˜¾ç¤º ç²’å­å‘å°„å¼€å§‹æ—¶çš„å±æ€§é¢æ¿
 void ParticleUiView::showFireStartProValuePanel(singleProType proType, emitterPropertyType type, bool isInitValue /*= false*/ ) {
 	nowSelectedSingleProType = proType;
 
@@ -1666,7 +1667,7 @@ void ParticleUiView::showFireStartProValuePanel(singleProType proType, emitterPr
 		fireStartProValueType->onClose();
 		fireStartProValueType->setSelectedIndex(0);
 
-		// ³õÊ¼»¯Öµ
+		// åˆå§‹åŒ–å€¼
 		if (isInitValue) {
 			((ExSlider*)seekByName(singleRootNode, "oneValue_Slider"))->setMaximumValueWithoutSetValue(100);
 			((ExSlider*)seekByName(singleRootNode, "oneValue_Slider"))->setMinimumValueWithoutSetValue(0);
@@ -1690,7 +1691,7 @@ void ParticleUiView::showFireStartProValuePanel(singleProType proType, emitterPr
 		fireStartProValueType->onClose();
 		fireStartProValueType->setSelectedIndex(1);
 
-		// ³õÊ¼»¯Öµ
+		// åˆå§‹åŒ–å€¼
 		if (isInitValue) {
 			((ExSlider*)seekByName(singleRootNode, "randValue1_Slider"))->setMaximumValueWithoutSetValue(100);
 			((ExSlider*)seekByName(singleRootNode, "randValue1_Slider"))->setMinimumValueWithoutSetValue(0);
@@ -1717,7 +1718,7 @@ void ParticleUiView::showFireStartProValuePanel(singleProType proType, emitterPr
 		fireStartProValueType->onClose();
 		fireStartProValueType->setSelectedIndex(2);
 
-		// ³õÊ¼»¯Öµ
+		// åˆå§‹åŒ–å€¼
 		((ExEditBox*)seekByName(singleRootNode, "moreValue_addInput"))->setText("0.0");
 		this->hideMoreConstantWidgetVec();
 		this->showMoreConstantWidgetVec(nowEditingEmitterVarietyValue->constValues);
@@ -1740,7 +1741,7 @@ void ParticleUiView::showFireStartProValuePanel(singleProType proType, emitterPr
 
 		this->hideMoreConstantWidgetVec();
 
-		// ³õÊ¼»¯Öµ
+		// åˆå§‹åŒ–å€¼
 		if (nowEditingEmitterVarietyValue->curvePoints.size() == 0) {
 			nowEditingEmitterVarietyValue->curvePoints.push_back(Vec3(0, 0, 0));
 			nowEditingEmitterVarietyValue->curvePoints.push_back(Vec3(1, 10, 0));
@@ -1774,7 +1775,7 @@ void ParticleUiView::hideFireStartProValuePanel() {
 	this->hideSetColorPanel();
 }
 
-// ÏÔÊ¾ºÍÒş²Ø ·¢ÉäÊ±Á£×Ó ÑÕÉ« ÊôĞÔµÄÖµ±à¼­Ãæ°å 
+// æ˜¾ç¤ºå’Œéšè— å‘å°„æ—¶ç²’å­ é¢œè‰² å±æ€§çš„å€¼ç¼–è¾‘é¢æ¿ 
 void ParticleUiView::showFireStartProColorValuePanel(singleProType proType, emitterPropertyType type, bool isInitValue /*= false*/) {
 	nowEditingEmitterColorValue = &nowEditingSignalPar->_startColor;
 	
@@ -1832,7 +1833,7 @@ void ParticleUiView::showFireStartProColorValuePanel(singleProType proType, emit
 	}
 
 	if (targetType == emitterPropertyType::oneConstant) {
-		// oneColorValuePanel Õâ¸öÃæ°å£¬±ØĞëÊÇ ÔÚui±à¼­ÖĞ ¡°½»»¥¡± Ñ¡ÖĞ
+		// oneColorValuePanel è¿™ä¸ªé¢æ¿ï¼Œå¿…é¡»æ˜¯ åœ¨uiç¼–è¾‘ä¸­ â€œäº¤äº’â€ é€‰ä¸­
 
 		seekByName(singleRootNode, "oneColorValuePanel")->setTouchEnabled(false);
 		seekByName(singleRootNode, "oneColorValuePanel")->setVisible(true);
@@ -1898,7 +1899,7 @@ void ParticleUiView::showFireStartProColorValuePanel(singleProType proType, emit
 			curveColorValueShowLine->addChild(fireStartCurveColorLine);
 		}
 
-		// ³õÊ¼»¯Öµ
+		// åˆå§‹åŒ–å€¼
 		if (nowEditingEmitterColorValue->curveColors.size() == 0) {
 			colorCurvePoint color1;
 			color1.x = 0.2;
@@ -1985,7 +1986,7 @@ void ParticleUiView::showSetColorPanel(bool isShowRandColor /*= false*/) {
 		seekByName(singleRootNode, "randColorPanel")->setVisible(false);
 	}
 
-	// ÏÔÊ¾Ëæ»úÖµ
+	// æ˜¾ç¤ºéšæœºå€¼
 	if (isShowRandColor && nowEditingColorPoint) {
 		char randColorR[20];
 		sprintf(randColorR, "%.1f", nowEditingColorPoint->colorRand.x);
@@ -2000,7 +2001,7 @@ void ParticleUiView::showSetColorPanel(bool isShowRandColor /*= false*/) {
 		((ExEditBox*)seekByName(singleRootNode, "randB_ColorInput"))->setText(randColorB);
 	}
 
-	// ´´½¨ÑÕÉ«°å ºÍ ÑÕÉ«Ìõ
+	// åˆ›å»ºé¢œè‰²æ¿ å’Œ é¢œè‰²æ¡
 	if (!colorRect) {
 		
 		colorRect = ShaderSprite::create("colorRectShader.png");
@@ -2125,17 +2126,17 @@ void ParticleUiView::setRectColor(Vec2 pos, Color3B* realColor) {
 
 }
 
-// ¸ù¾İÊäÈëµÄrgbÖµÀ´ÉèÖÃ rectPointer ºÍ linePointer µÄÎ»ÖÃ
+// æ ¹æ®è¾“å…¥çš„rgbå€¼æ¥è®¾ç½® rectPointer å’Œ linePointer çš„ä½ç½®
 void ParticleUiView::setPointerPosByRGB(Color3B color) {
-	// Ô­Àí:rgb ×ª hsb
-	float hue;            // É«Ïà
-	float saturation;     // ±¥ºÍ¶È  Ïàµ±ÓÚ x ×ø±ê
-	float brightness;     // ÁÁ¶È    Ïàµ±ÓÚ y ×ø±ê
+	// åŸç†:rgb è½¬ hsb
+	float hue;            // è‰²ç›¸
+	float saturation;     // é¥±å’Œåº¦  ç›¸å½“äº x åæ ‡
+	float brightness;     // äº®åº¦    ç›¸å½“äº y åæ ‡
 	
 	float maxColor = max(max(color.r, color.g), color.b);
 	float minColor = min(min(color.r, color.g), color.b);
 	if (maxColor == minColor) { 
-		hue = 0; // 0 ¶È
+		hue = 0; // 0 åº¦
 	}
 	else if (maxColor == color.r) {
 		if (color.g >= color.b) {
@@ -2162,7 +2163,7 @@ void ParticleUiView::setPointerPosByRGB(Color3B color) {
 	saturation = (maxColor - minColor) / maxColor;
 
 
-	// ÉèÖÃlinePointerµÄÎ»ÖÃ
+	// è®¾ç½®linePointerçš„ä½ç½®
 	float linePointerHeight;
 
 	auto showColorLine = seekByName(singleRootNode, "showColorLine");
@@ -2177,7 +2178,7 @@ void ParticleUiView::setPointerPosByRGB(Color3B color) {
 	this->setLineColor(linePointerHeight );
 
 	
-	// ÉèÖÃrectPointerµÄÎ»ÖÃ
+	// è®¾ç½®rectPointerçš„ä½ç½®
 	auto showRectColor = seekByName(singleRootNode, "showColorRect");
 	Vec2 showRectColorPos = showRectColor->getPosition();
 	Size showRectSize = showRectColor->getContentSize();
@@ -2188,7 +2189,7 @@ void ParticleUiView::setPointerPosByRGB(Color3B color) {
 	this->setRectColor(rectPointerPos , &color);
 }
 
-////---- ¶à¸öÑÕÉ«Ö®ÖĞµÄËæ»úÑÕÉ«
+////---- å¤šä¸ªé¢œè‰²ä¹‹ä¸­çš„éšæœºé¢œè‰²
 void ParticleUiView::showMoreColorWidgetVec(std::vector<Color3B>& vec) {
 	auto itor = vec.begin();
 	int index = 0;
@@ -2241,7 +2242,7 @@ void ParticleUiView::addMoreColorWidgetVec(Color3B color) {
 	scrollView->scrollToBottom(0.5, true);
 
 
-	// ÑÕÉ« °´Å¥
+	// é¢œè‰² æŒ‰é’®
 	auto colorBtn = ui::Button::create(
 		"colorSprite.png",
 		"colorSprite.png");
@@ -2267,7 +2268,7 @@ void ParticleUiView::addMoreColorWidgetVec(Color3B color) {
 	});
 
 
-	// °´Å¥
+	// æŒ‰é’®
 	auto subBtn = ImageView::create("sub.png");
 	subBtn->setTouchEnabled(true);
 	subBtn->setPosition(Vec2(123, 15));
@@ -2315,7 +2316,7 @@ void ParticleUiView::addMoreColorWidgetVec(Color3B color) {
 	moreColorWidgetVec.push_back(item);
 }
 
-// -------------- ÏÔÊ¾¶à¸ö³£ÖµµÄuiÁĞ±í
+// -------------- æ˜¾ç¤ºå¤šä¸ªå¸¸å€¼çš„uiåˆ—è¡¨
 void ParticleUiView::showMoreConstantWidgetVec(std::vector<float>& vec) {
 	auto itor = vec.begin();
 	int index = 0;
@@ -2369,7 +2370,7 @@ void ParticleUiView::addMoreConstantWidgetVec(float value) {
 	scrollView->scrollToBottom(0.5, true);
 	
 
-	// ÎÄ±¾
+	// æ–‡æœ¬
 	auto textEditBox = ExEditBox::create(Size(50, 28), ui::Scale9Sprite::create("editBg.png"));
 
 	textEditBox->setAnchorPoint(Vec2(0.5,0.5));
@@ -2388,7 +2389,7 @@ void ParticleUiView::addMoreConstantWidgetVec(float value) {
 	sprintf(tex, "%.2f", value);
 	textEditBox->setText(tex);
 
-	// °´Å¥
+	// æŒ‰é’®
 	auto subBtn = ImageView::create("sub.png");
 	subBtn->setTouchEnabled(true);
 	subBtn->setPosition(Vec2(123,15));
@@ -2435,7 +2436,7 @@ void ParticleUiView::addMoreConstantWidgetVec(float value) {
 
 }
 
-//////***************************** ·¢ÉäÊ±Á£×ÓÊôĞÔµÄ ÇúÏßÊı¾İ Ïà¹Ø *****************************
+//////***************************** å‘å°„æ—¶ç²’å­å±æ€§çš„ æ›²çº¿æ•°æ® ç›¸å…³ *****************************
 void ParticleUiView::showFireStartCurvePoints() {
 	isOpenFireStartCurvePanel = true;
 
@@ -2446,7 +2447,7 @@ void ParticleUiView::showFireStartCurvePoints() {
 	curvePanel->setSwallowTouches(true);
 	Size curvePanelSize = curvePanel->getContentSize();
 	Vec2 curvePanelPos = Vec2(curvePanelSize.width / 2, curvePanelSize.height / 2);
-	// ÕÒµ½×î´ó¸ß¶È
+	// æ‰¾åˆ°æœ€å¤§é«˜åº¦
 	fireStartCurvePointMaxHeight = 0;
 	while (itor != curvePoints.end()) {
 		if ( fabsf((*itor).y) > fireStartCurvePointMaxHeight) {
@@ -2454,7 +2455,7 @@ void ParticleUiView::showFireStartCurvePoints() {
 		}
 		itor++;
 	}
-	// ÎÄ±¾ÉèÖÃ
+	// æ–‡æœ¬è®¾ç½®
 	char maxStr[20];
 	char minStr[20];
 	char durationStr[20];
@@ -2465,12 +2466,12 @@ void ParticleUiView::showFireStartCurvePoints() {
 	((Text*)seekByName(singleRootNode, "downYWord_fireStart"))->setString(minStr);
 	((Text*)seekByName(singleRootNode, "rightXWord_fireStart"))->setString(durationStr);
 
-	// ¼Óµã
+	// åŠ ç‚¹
 	itor = curvePoints.begin();
 	while (itor != curvePoints.end()) {
 		Vec2 inPanelPos = Vec2(curvePanelPos.x - curvePanelSize.width/2 + (*itor).x * curvePanelSize.width , curvePanelPos.y + ((*itor).y / fireStartCurvePointMaxHeight) * curvePanelSize.height/2 );
 		
-		// ¼ÓÒ»¸ö ÔÚÇúÏßÃæ°åÖĞµÄµã °´Å¥
+		// åŠ ä¸€ä¸ª åœ¨æ›²çº¿é¢æ¿ä¸­çš„ç‚¹ æŒ‰é’®
 		auto curvePoint = ui::Button::create(
 			"coord_point1.png",
 			"coord_point2.png");
@@ -2484,7 +2485,7 @@ void ParticleUiView::showFireStartCurvePoints() {
 		itor++;
 	}
 
-	// ¼ÓÏß £¬Á¬½ÓµãµÄÏß £¬ 
+	// åŠ çº¿ ï¼Œè¿æ¥ç‚¹çš„çº¿ ï¼Œ 
 	
 	for (int i = 0; i < fireStartCurvePointBtnVec.size()-1; ++i) {
 		auto lineSprite = Sprite::create("coord_line.png");
@@ -2506,10 +2507,10 @@ void ParticleUiView::showFireStartCurvePoints() {
 
 	}
 
-	// ¼Ó Ëæ»úÖµµÄ ±à¼­¿ò
+	// åŠ  éšæœºå€¼çš„ ç¼–è¾‘æ¡†
 	for (int i = 0; i < fireStartCurvePointBtnVec.size(); ++i) {
 		Vec2 point = fireStartCurvePointBtnVec.at(i)->getPosition();
-		// ¼ÓËæ»úÖµµÄ±à¼­¿ò
+		// åŠ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 		auto editBox = ExEditBox::create(Size(35, 25), ui::Scale9Sprite::create("editBg.png"));
 		editBox->setAnchorPoint(Vec2(0.5, 0));
 		editBox->setPosition(Vec2(point.x, curvePanelSize.height + 5));
@@ -2528,7 +2529,7 @@ void ParticleUiView::showFireStartCurvePoints() {
 		fireStartCurveRandEditBoxVec.push_back(editBox);
 	}
 
-	// ¼Ó Á¬½Ó Ëæ»úÖµ±à¼­¿ò µÄÏß
+	// åŠ  è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡† çš„çº¿
 	for (int i = 0; i < fireStartCurvePointBtnVec.size(); ++i) {
 		auto lineSprite = Sprite::create("coord_xu_line.png");
 		curvePanel->addChild(lineSprite);
@@ -2554,7 +2555,7 @@ void ParticleUiView::showFireStartCurvePoints() {
 void ParticleUiView::hideFireStartCurvePoints() {
 	isOpenFireStartCurvePanel = false;
 
-	// É¾µã°´Å¥
+	// åˆ ç‚¹æŒ‰é’®
 	auto itor = fireStartCurvePointBtnVec.begin();
 	while (itor != fireStartCurvePointBtnVec.end()) {
 		(*itor)->removeFromParent();
@@ -2563,7 +2564,7 @@ void ParticleUiView::hideFireStartCurvePoints() {
 	}
 	fireStartCurvePointBtnVec.clear();
 
-	// É¾ Á¬½ÓµãµÄÏß
+	// åˆ  è¿æ¥ç‚¹çš„çº¿
 	auto itor2 = fireStartCurveLines.begin();
 	while (itor2 != fireStartCurveLines.end()) {
 		(*itor2)->removeFromParent();
@@ -2572,7 +2573,7 @@ void ParticleUiView::hideFireStartCurvePoints() {
 	}
 	fireStartCurveLines.clear();
 
-	// É¾Ëæ»úÖµµÄ±à¼­¿ò
+	// åˆ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 	auto itor3 = fireStartCurveRandEditBoxVec.begin();
 	while (itor3 != fireStartCurveRandEditBoxVec.end()) {
 		(*itor3)->removeFromParent();
@@ -2581,7 +2582,7 @@ void ParticleUiView::hideFireStartCurvePoints() {
 	}
 	fireStartCurveRandEditBoxVec.clear();
 
-	// É¾Á¬½Ó Ëæ»úÖµ±à¼­¿òµÄ Ïß
+	// åˆ è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡†çš„ çº¿
 	auto itor4 = fireStartCurveRandLines.begin();
 	while (itor4 != fireStartCurveRandLines.end()) {
 		(*itor4)->removeFromParent();
@@ -2600,7 +2601,7 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 
 	Vec2 value = Vec2(inPanelPos.x / curvePanelSize.width , (inPanelPos.y - curvePanelSize.height / 2) / (curvePanelSize.height/2) * fireStartCurvePointMaxHeight);
 	
-	// ÕÒµ½ÕıÈ·µÄÎ»ÖÃ²åÈë
+	// æ‰¾åˆ°æ­£ç¡®çš„ä½ç½®æ’å…¥
 	int size = fireStartCurvePointBtnVec.size();
 	for (int i = 1; i < size; ++i) {
 		if (inPanelPos.x <= fireStartCurvePointBtnVec.at(i)->getPositionX()) {
@@ -2625,7 +2626,7 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 		lineItor++;
 	}
 	fireStartCurveLines.clear();
-	// É¾Ëæ»úÖµµÄ±à¼­¿ò
+	// åˆ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 	auto randEditBoxItor = fireStartCurveRandEditBoxVec.begin();
 	while (randEditBoxItor != fireStartCurveRandEditBoxVec.end()) {
 		(*randEditBoxItor)->removeFromParent();
@@ -2633,7 +2634,7 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 	}
 	fireStartCurveRandEditBoxVec.clear();
 
-	// É¾Á¬½Ó Ëæ»úÖµ±à¼­¿òµÄ Ïß
+	// åˆ è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡†çš„ çº¿
 	auto randLineItor = fireStartCurveRandLines.begin();
 	while (randLineItor != fireStartCurveRandLines.end()) {
 		(*randLineItor)->removeFromParent();
@@ -2641,7 +2642,7 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 	}
 	fireStartCurveRandLines.clear();
 
-	// ¼ÓÏß
+	// åŠ çº¿
 	for (int i = 0; i < fireStartCurvePointBtnVec.size() - 1; ++i) {
 		auto lineSprite = Sprite::create("coord_line.png");
 		curvePanel->addChild(lineSprite);
@@ -2661,10 +2662,10 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 		fireStartCurveLines.push_back(lineSprite);
 	}
 
-	// ¼Ó Ëæ»úÖµµÄ ±à¼­¿ò
+	// åŠ  éšæœºå€¼çš„ ç¼–è¾‘æ¡†
 	for (int i = 0; i < fireStartCurvePointBtnVec.size(); ++i) {
 		Vec2 point = fireStartCurvePointBtnVec.at(i)->getPosition();
-		// ¼ÓËæ»úÖµµÄ±à¼­¿ò
+		// åŠ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 		auto editBox = ExEditBox::create(Size(35, 25), ui::Scale9Sprite::create("editBg.png"));
 		editBox->setAnchorPoint(Vec2(0.5, 0));
 		editBox->setPosition(Vec2(point.x, curvePanelSize.height + 5));
@@ -2685,7 +2686,7 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 		fireStartCurveRandEditBoxVec.push_back(editBox);
 	}
 
-	// ¼Ó Á¬½Ó Ëæ»úÖµ±à¼­¿ò µÄÏß
+	// åŠ  è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡† çš„çº¿
 	for (int i = 0; i < fireStartCurvePointBtnVec.size(); ++i) {
 		auto lineSprite = Sprite::create("coord_xu_line.png");
 		curvePanel->addChild(lineSprite);
@@ -2711,7 +2712,7 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 }
 
 void ParticleUiView::deleteFireStartCurvePoints(ui::Button* btn) {
-	// É¾µôÒ»¸öµã °´Å¥
+	// åˆ æ‰ä¸€ä¸ªç‚¹ æŒ‰é’®
 	auto itor = fireStartCurvePointBtnVec.begin();
 	int index = 0;
 	while (itor != fireStartCurvePointBtnVec.end()) {
@@ -2719,24 +2720,24 @@ void ParticleUiView::deleteFireStartCurvePoints(ui::Button* btn) {
 			(*itor)->removeFromParent();
 			fireStartCurvePointBtnVec.erase(itor);
 
-			// É¾µôÒ»ÌõÏß
+			// åˆ æ‰ä¸€æ¡çº¿
 			fireStartCurveLines.at(fireStartCurveLines.size()-1)->removeFromParent();
 			fireStartCurveLines.pop_back();
 
-			// É¾µô¶ÔÓ¦Êı¾İ
+			// åˆ æ‰å¯¹åº”æ•°æ®
 			nowEditingEmitterVarietyValue->curvePoints.erase(nowEditingEmitterVarietyValue->curvePoints.begin() + index);
 
-			// É¾µô¶ÔÓ¦ Ëæ»úÖµ ±à¼­¿ò
+			// åˆ æ‰å¯¹åº” éšæœºå€¼ ç¼–è¾‘æ¡†
 			fireStartCurveRandEditBoxVec.at(index)->removeFromParent();
 			fireStartCurveRandEditBoxVec.erase(fireStartCurveRandEditBoxVec.begin() + index);
-			// ÔÙ°ÑºóÃæµÄ Ëæ»úÖµ ±à¼­¿òµÄÃû×Ö¸ÄÁË
+			// å†æŠŠåé¢çš„ éšæœºå€¼ ç¼–è¾‘æ¡†çš„åå­—æ”¹äº†
 			for (int i = index; i < fireStartCurveRandEditBoxVec.size(); ++i){
 				char name[50];
 				sprintf(name, "fireStartCurveRandEditBox_%d", i);
 				fireStartCurveRandEditBoxVec.at(i)->setName(name);
 			}
 
-			// É¾µô¶ÔÓ¦ Á¬½Ó Ëæ»úÖµ±à¼­¿ò µÄÏß
+			// åˆ æ‰å¯¹åº” è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡† çš„çº¿
 			fireStartCurveRandLines.at(index)->removeFromParent();
 			fireStartCurveRandLines.erase(fireStartCurveRandLines.begin() + index);
 
@@ -2756,7 +2757,7 @@ void ParticleUiView::refreshFireStartCurvePoints(float maxHeight) {
 	Vec2 curvePanelPos = Vec2(curvePanelSize.width / 2, curvePanelSize.height / 2);
 
 	
-	// ×îÏÈ¸üĞÂÊı¾İ
+	// æœ€å…ˆæ›´æ–°æ•°æ®
 	if (fireStartCurvePointBtnVec.size() == nowEditingEmitterVarietyValue->curvePoints.size()) {
 		for (int i = 0; i < fireStartCurvePointBtnVec.size(); ++i) {
 			Vec2 pos = fireStartCurvePointBtnVec.at(i)->getPosition();
@@ -2771,7 +2772,7 @@ void ParticleUiView::refreshFireStartCurvePoints(float maxHeight) {
 	nowEditingEmitterVarietyValue->isSetCurveKB = false;
 	
 
-	// ¸üĞÂ ÇúÏß µÄ µã°´Å¥
+	// æ›´æ–° æ›²çº¿ çš„ ç‚¹æŒ‰é’®
 	
 	auto itor = fireStartCurvePointBtnVec.begin();
 	int index = 0;
@@ -2785,7 +2786,7 @@ void ParticleUiView::refreshFireStartCurvePoints(float maxHeight) {
 
 	
 
-	// ¸üĞÂ Á¬½Óµã µÄ Ïß
+	// æ›´æ–° è¿æ¥ç‚¹ çš„ çº¿
 	for (int i = 0; i < fireStartCurveLines.size(); ++i) {
 		Vec2 point1 = fireStartCurvePointBtnVec.at(i)->getPosition();
 		Vec2 point2 = fireStartCurvePointBtnVec.at(i + 1)->getPosition();
@@ -2800,13 +2801,13 @@ void ParticleUiView::refreshFireStartCurvePoints(float maxHeight) {
 
 	}
 
-	// ¸üĞÂ Ëæ»ú¿ò °´Å¥
+	// æ›´æ–° éšæœºæ¡† æŒ‰é’®
 	for (int i = 0; i < fireStartCurveRandEditBoxVec.size(); ++i) {
 		Vec2 point = fireStartCurvePointBtnVec.at(i)->getPosition();
 		fireStartCurveRandEditBoxVec.at(i)->setPositionX(point.x);
 	}
 
-	// ¸üĞÂ Á¬½Ó Ëæ»ú¿ò °´Å¥ µÄÏß
+	// æ›´æ–° è¿æ¥ éšæœºæ¡† æŒ‰é’® çš„çº¿
 	for (int i = 0; i < fireStartCurveRandLines.size(); ++i) {
 		Vec2 point = fireStartCurvePointBtnVec.at(i)->getPosition();
 		float dis = curvePanelSize.height - point.y;
@@ -2819,16 +2820,16 @@ void ParticleUiView::refreshFireStartCurvePoints(float maxHeight) {
 	fireStartCurvePointMaxHeight = maxHeight;
 }
 
-/////// ***************************** Á£×ÓÉúÃüÖÜÆÚÄÚÊôĞÔµÄ ÇúÏßÊı¾İ Ïà¹Ø *****************************
+/////// ***************************** ç²’å­ç”Ÿå‘½å‘¨æœŸå†…å±æ€§çš„ æ›²çº¿æ•°æ® ç›¸å…³ *****************************
 void ParticleUiView::showParLifeCurvePoints() {
 	isOpenParLifeCurvePanel = true;
-	// Ãæ°åÊôĞÔ
+	// é¢æ¿å±æ€§
 	auto curvePanel = seekByName(singleRootNode, "curveMap_parLife");
 	curvePanel->setSwallowTouches(true);
 	Size curvePanelSize = curvePanel->getContentSize();
 	Vec2 curvePanelPos = Vec2(curvePanelSize.width / 2, curvePanelSize.height / 2);
 
-	// ÉèÖÃ ÆôÓÃ ¸´Ñ¡¿ò ÊÇ·ñÑ¡ÖĞ£¬Èç¹ûÇúÏßÊı¾İ´óÓÚµÈÓÚ2 ÔòÊÇÆôÓÃ£¬·ñÔòÊÇÍ£ÓÃ
+	// è®¾ç½® å¯ç”¨ å¤é€‰æ¡† æ˜¯å¦é€‰ä¸­ï¼Œå¦‚æœæ›²çº¿æ•°æ®å¤§äºç­‰äº2 åˆ™æ˜¯å¯ç”¨ï¼Œå¦åˆ™æ˜¯åœç”¨
 	auto curvePoints = nowEditingEmitterVarietyValue->curvePoints;
 
 	if (curvePoints.size() >= 2) {
@@ -2841,7 +2842,7 @@ void ParticleUiView::showParLifeCurvePoints() {
 		return;
 	}
 
-	// ÕÒµ½×î´ó¸ß¶È£¬×î×ó±ßµÄÖµ£¬×îÓÒ±ßµÄÖµ
+	// æ‰¾åˆ°æœ€å¤§é«˜åº¦ï¼Œæœ€å·¦è¾¹çš„å€¼ï¼Œæœ€å³è¾¹çš„å€¼
 	parLifeCurvePointMaxHeight = 0;
 	int leftPrecent = 1000;
 	parLifeCurvePointLeftPrecent = 0;
@@ -2864,7 +2865,7 @@ void ParticleUiView::showParLifeCurvePoints() {
 	parLifeCurvePointLeftPrecent = leftPrecent;
 	parLifeCurvePointRightPrecent = rightPrecent;
 	
-	//// ÉèÖÃÎÄ×Ö£¬±à¼­¿ò...
+	//// è®¾ç½®æ–‡å­—ï¼Œç¼–è¾‘æ¡†...
 	char maxHeightStr[20];
 	char minHeightStr[20];
 	char leftPrecentStr[20];
@@ -2878,13 +2879,13 @@ void ParticleUiView::showParLifeCurvePoints() {
 	((ExEditBox*)seekByName(singleRootNode, "leftXInput_parLife"))->setText(leftPrecentStr);
 	((ExEditBox*)seekByName(singleRootNode, "rightXInput_parLife"))->setText(rightPrecentStr);
 
-	// ¼Óµã
+	// åŠ ç‚¹
 	itor = curvePoints.begin();
 	while (itor != curvePoints.end()) {
 		float xPos = ((*itor).x - parLifeCurvePointLeftPrecent) / (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent);
 		Vec2 inPanelPos = Vec2(curvePanelPos.x - curvePanelSize.width / 2 + xPos * curvePanelSize.width, curvePanelPos.y + ((*itor).y / parLifeCurvePointMaxHeight) * curvePanelSize.height / 2);
 
-		// ¼ÓÒ»¸ö ÔÚÇúÏßÃæ°åÖĞµÄµã °´Å¥
+		// åŠ ä¸€ä¸ª åœ¨æ›²çº¿é¢æ¿ä¸­çš„ç‚¹ æŒ‰é’®
 		auto curvePoint = ui::Button::create(
 			"coord_point1.png",
 			"coord_point2.png");
@@ -2898,7 +2899,7 @@ void ParticleUiView::showParLifeCurvePoints() {
 		itor++;
 	}
 
-	// ¼ÓÏß £¬Á¬½ÓµãµÄÏß £¬ 
+	// åŠ çº¿ ï¼Œè¿æ¥ç‚¹çš„çº¿ ï¼Œ 
 	for (int i = 0; i < parLifeCurvePointBtnVec.size() - 1; ++i) {
 		auto lineSprite = Sprite::create("coord_line.png");
 		curvePanel->addChild(lineSprite);
@@ -2918,10 +2919,10 @@ void ParticleUiView::showParLifeCurvePoints() {
 		parLifeCurveLines.push_back(lineSprite);
 
 	}
-	// ¼Ó Ëæ»úÖµµÄ ±à¼­¿ò
+	// åŠ  éšæœºå€¼çš„ ç¼–è¾‘æ¡†
 	for (int i = 0; i < parLifeCurvePointBtnVec.size(); ++i) {
 		Vec2 point = parLifeCurvePointBtnVec.at(i)->getPosition();
-		// ¼ÓËæ»úÖµµÄ±à¼­¿ò
+		// åŠ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 		auto editBox = ExEditBox::create(Size(35, 25), ui::Scale9Sprite::create("editBg.png"));
 		editBox->setAnchorPoint(Vec2(0.5, 0));
 		editBox->setPosition(Vec2(point.x, curvePanelSize.height + 5));
@@ -2939,7 +2940,7 @@ void ParticleUiView::showParLifeCurvePoints() {
 
 		parLifeCurveRandEditBoxVec.push_back(editBox);
 	}
-	// ¼Ó Á¬½Ó Ëæ»úÖµ±à¼­¿ò µÄÏß
+	// åŠ  è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡† çš„çº¿
 	for (int i = 0; i < parLifeCurvePointBtnVec.size(); ++i) {
 		auto lineSprite = Sprite::create("coord_xu_line.png");
 		curvePanel->addChild(lineSprite);
@@ -2964,7 +2965,7 @@ void ParticleUiView::showParLifeCurvePoints() {
 
 void ParticleUiView::hideParLifeCurvePoints() {
 	isOpenParLifeCurvePanel = false;
-	// É¾µã°´Å¥
+	// åˆ ç‚¹æŒ‰é’®
 	auto itor = parLifeCurvePointBtnVec.begin();
 	while (itor != parLifeCurvePointBtnVec.end()) {
 		(*itor)->removeFromParent();
@@ -2973,7 +2974,7 @@ void ParticleUiView::hideParLifeCurvePoints() {
 	}
 	parLifeCurvePointBtnVec.clear();
 
-	// É¾ Á¬½ÓµãµÄÏß
+	// åˆ  è¿æ¥ç‚¹çš„çº¿
 	auto itor2 = parLifeCurveLines.begin();
 	while (itor2 != parLifeCurveLines.end()) {
 		(*itor2)->removeFromParent();
@@ -2982,7 +2983,7 @@ void ParticleUiView::hideParLifeCurvePoints() {
 	}
 	parLifeCurveLines.clear();
 
-	// É¾Ëæ»úÖµµÄ±à¼­¿ò
+	// åˆ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 	auto itor3 = parLifeCurveRandEditBoxVec.begin();
 	while (itor3 != parLifeCurveRandEditBoxVec.end()) {
 		(*itor3)->removeFromParent();
@@ -2991,7 +2992,7 @@ void ParticleUiView::hideParLifeCurvePoints() {
 	}
 	parLifeCurveRandEditBoxVec.clear();
 
-	// É¾Á¬½Ó Ëæ»úÖµ±à¼­¿òµÄ Ïß
+	// åˆ è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡†çš„ çº¿
 	auto itor4 = parLifeCurveRandLines.begin();
 	while (itor4 != parLifeCurveRandLines.end()) {
 		(*itor4)->removeFromParent();
@@ -3011,7 +3012,7 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 
 	Vec2 value = Vec2( (inPanelPos.x / curvePanelSize.width) * (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent) + parLifeCurvePointLeftPrecent , (inPanelPos.y - curvePanelSize.height / 2) / (curvePanelSize.height / 2) * parLifeCurvePointMaxHeight);
 
-	// ÕÒµ½ÕıÈ·µÄÎ»ÖÃ²åÈë
+	// æ‰¾åˆ°æ­£ç¡®çš„ä½ç½®æ’å…¥
 	int size = parLifeCurvePointBtnVec.size();
 	for (int i = 1; i < size; ++i) {
 		if (inPanelPos.x <= parLifeCurvePointBtnVec.at(i)->getPositionX()) {
@@ -3036,7 +3037,7 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 		lineItor++;
 	}
 	parLifeCurveLines.clear();
-	// É¾Ëæ»úÖµµÄ±à¼­¿ò
+	// åˆ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 	auto randEditBoxItor = parLifeCurveRandEditBoxVec.begin();
 	while (randEditBoxItor != parLifeCurveRandEditBoxVec.end()) {
 		(*randEditBoxItor)->removeFromParent();
@@ -3044,7 +3045,7 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 	}
 	parLifeCurveRandEditBoxVec.clear();
 
-	// É¾Á¬½Ó Ëæ»úÖµ±à¼­¿òµÄ Ïß
+	// åˆ è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡†çš„ çº¿
 	auto randLineItor = parLifeCurveRandLines.begin();
 	while (randLineItor != parLifeCurveRandLines.end()) {
 		(*randLineItor)->removeFromParent();
@@ -3052,7 +3053,7 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 	}
 	parLifeCurveRandLines.clear();
 
-	// ¼ÓÏß
+	// åŠ çº¿
 	for (int i = 0; i < parLifeCurvePointBtnVec.size() - 1; ++i) {
 		auto lineSprite = Sprite::create("coord_line.png");
 		curvePanel->addChild(lineSprite);
@@ -3072,10 +3073,10 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 		parLifeCurveLines.push_back(lineSprite);
 	}
 
-	// ¼Ó Ëæ»úÖµµÄ ±à¼­¿ò
+	// åŠ  éšæœºå€¼çš„ ç¼–è¾‘æ¡†
 	for (int i = 0; i < parLifeCurvePointBtnVec.size(); ++i) {
 		Vec2 point = parLifeCurvePointBtnVec.at(i)->getPosition();
-		// ¼ÓËæ»úÖµµÄ±à¼­¿ò
+		// åŠ éšæœºå€¼çš„ç¼–è¾‘æ¡†
 		auto editBox = ExEditBox::create(Size(35, 25), ui::Scale9Sprite::create("editBg.png"));
 		editBox->setAnchorPoint(Vec2(0.5, 0));
 		editBox->setPosition(Vec2(point.x, curvePanelSize.height + 5));
@@ -3096,7 +3097,7 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 		parLifeCurveRandEditBoxVec.push_back(editBox);
 	}
 
-	// ¼Ó Á¬½Ó Ëæ»úÖµ±à¼­¿ò µÄÏß
+	// åŠ  è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡† çš„çº¿
 	for (int i = 0; i < parLifeCurvePointBtnVec.size(); ++i) {
 		auto lineSprite = Sprite::create("coord_xu_line.png");
 		curvePanel->addChild(lineSprite);
@@ -3122,7 +3123,7 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 }
 
 void ParticleUiView::deleteParLifeCurvePoints(ui::Button* btn) {
-	// É¾µôÒ»¸öµã °´Å¥
+	// åˆ æ‰ä¸€ä¸ªç‚¹ æŒ‰é’®
 	auto itor = parLifeCurvePointBtnVec.begin();
 	int index = 0;
 	while (itor != parLifeCurvePointBtnVec.end()) {
@@ -3130,25 +3131,25 @@ void ParticleUiView::deleteParLifeCurvePoints(ui::Button* btn) {
 			(*itor)->removeFromParent();
 			parLifeCurvePointBtnVec.erase(itor);
 
-			// É¾µôÒ»ÌõÏß
+			// åˆ æ‰ä¸€æ¡çº¿
 			parLifeCurveLines.at(parLifeCurveLines.size() - 1)->removeFromParent();
 			parLifeCurveLines.pop_back();
 
-			// É¾µô¶ÔÓ¦Êı¾İ
+			// åˆ æ‰å¯¹åº”æ•°æ®
 			nowEditingEmitterVarietyValue->curvePoints.erase(nowEditingEmitterVarietyValue->curvePoints.begin() + index);
 
-			// É¾µô¶ÔÓ¦ Ëæ»úÖµ ±à¼­¿ò
+			// åˆ æ‰å¯¹åº” éšæœºå€¼ ç¼–è¾‘æ¡†
 			parLifeCurveRandEditBoxVec.at(index)->removeFromParent();
 			parLifeCurveRandEditBoxVec.erase(parLifeCurveRandEditBoxVec.begin() + index);
 
-			// ÔÙ°ÑºóÃæµÄ Ëæ»úÖµ ±à¼­¿òµÄÃû×Ö¸ÄÁË
+			// å†æŠŠåé¢çš„ éšæœºå€¼ ç¼–è¾‘æ¡†çš„åå­—æ”¹äº†
 			for (int i = index; i < parLifeCurveRandEditBoxVec.size(); ++i){
 				char name[50];
 				sprintf(name, "parLifeCurveRandEditBox_%d", i);
 				parLifeCurveRandEditBoxVec.at(i)->setName(name);
 			}
 
-			// É¾µô¶ÔÓ¦ Á¬½Ó Ëæ»úÖµ±à¼­¿ò µÄÏß
+			// åˆ æ‰å¯¹åº” è¿æ¥ éšæœºå€¼ç¼–è¾‘æ¡† çš„çº¿
 			parLifeCurveRandLines.at(index)->removeFromParent();
 			parLifeCurveRandLines.erase(parLifeCurveRandLines.begin() + index);
 
@@ -3167,7 +3168,7 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 	Size curvePanelSize = curvePanel->getContentSize();
 	Vec2 curvePanelPos = Vec2(curvePanelSize.width / 2, curvePanelSize.height / 2);
 
-	// ÏÈÕÒµ½ÀÏµÄ ×óÓÒÁ½µãµÄ±ß½ç
+	// å…ˆæ‰¾åˆ°è€çš„ å·¦å³ä¸¤ç‚¹çš„è¾¹ç•Œ
 	float oldLeftPrecent = 10000;
 	float oldRightPrecent = 0;
 	auto curvePoints = nowEditingEmitterVarietyValue->curvePoints;
@@ -3187,7 +3188,7 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 		}
 	}
 
-	// ×îÏÈ¸üĞÂÊı¾İ
+	// æœ€å…ˆæ›´æ–°æ•°æ®
 	if (parLifeCurvePointBtnVec.size() == nowEditingEmitterVarietyValue->curvePoints.size()) {
 		for (int i = 0; i < parLifeCurvePointBtnVec.size(); ++i) {
 			Vec2 pos = parLifeCurvePointBtnVec.at(i)->getPosition();
@@ -3204,7 +3205,7 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 	}
 	nowEditingEmitterVarietyValue->isSetCurveKB = false;
 
-	// ¸üĞÂ ÇúÏß µÄ µã°´Å¥
+	// æ›´æ–° æ›²çº¿ çš„ ç‚¹æŒ‰é’®
 
 	auto itor = parLifeCurvePointBtnVec.begin();
 	int index = 0;
@@ -3219,7 +3220,7 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 
 
 
-	// ¸üĞÂ Á¬½Óµã µÄ Ïß
+	// æ›´æ–° è¿æ¥ç‚¹ çš„ çº¿
 	for (int i = 0; i < parLifeCurveLines.size(); ++i) {
 		Vec2 point1 = parLifeCurvePointBtnVec.at(i)->getPosition();
 		Vec2 point2 = parLifeCurvePointBtnVec.at(i + 1)->getPosition();
@@ -3234,13 +3235,13 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 
 	}
 
-	// ¸üĞÂ Ëæ»ú¿ò °´Å¥
+	// æ›´æ–° éšæœºæ¡† æŒ‰é’®
 	for (int i = 0; i < parLifeCurveRandEditBoxVec.size(); ++i) {
 		Vec2 point = parLifeCurvePointBtnVec.at(i)->getPosition();
 		parLifeCurveRandEditBoxVec.at(i)->setPositionX(point.x);
 	}
 
-	// ¸üĞÂ Á¬½Ó Ëæ»ú¿ò °´Å¥ µÄÏß
+	// æ›´æ–° è¿æ¥ éšæœºæ¡† æŒ‰é’® çš„çº¿
 	for (int i = 0; i < parLifeCurveRandLines.size(); ++i) {
 		Vec2 point = parLifeCurvePointBtnVec.at(i)->getPosition();
 		float dis = curvePanelSize.height - point.y;
@@ -3253,7 +3254,7 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 	parLifeCurvePointMaxHeight = maxHeight;
 }
 
-//////***************************** ·¢ÉäÊ±Á£×Ó ¡°ÑÕÉ«¡± ÊôĞÔµÄ ÇúÏßÊı¾İ Ïà¹Ø *****************************
+//////***************************** å‘å°„æ—¶ç²’å­ â€œé¢œè‰²â€ å±æ€§çš„ æ›²çº¿æ•°æ® ç›¸å…³ *****************************
 void ParticleUiView::showFireStartCurveColors() {
 	isOpenFireStartCurveColorPanel = true;
 
@@ -3266,7 +3267,7 @@ void ParticleUiView::showFireStartCurveColors() {
 
 	auto curveColors = nowEditingEmitterColorValue->curveColors;
 
-	// ´´½¨ ÑÕÉ« °´Å¥
+	// åˆ›å»º é¢œè‰² æŒ‰é’®
 	auto itor = curveColors.begin();
 	while (itor != curveColors.end()) {
 
@@ -3292,7 +3293,7 @@ void ParticleUiView::showFireStartCurveColors() {
 }
 void ParticleUiView::hideFireStartCurveColors() {
 	isOpenFireStartCurveColorPanel = false;
-	// É¾µã°´Å¥
+	// åˆ ç‚¹æŒ‰é’®
 	auto itor = fireStartCurveColorBtnVec.begin();
 	while (itor != fireStartCurveColorBtnVec.end()) {
 		(*itor)->removeFromParent();
@@ -3341,7 +3342,7 @@ void ParticleUiView::deleteFireStartCurveColors(ui::Button* btn) {
 			(*itor)->removeFromParent();
 			fireStartCurveColorBtnVec.erase(itor);
 
-			// É¾µô¶ÔÓ¦Êı¾İ
+			// åˆ æ‰å¯¹åº”æ•°æ®
 			nowEditingEmitterColorValue->curveColors.erase(nowEditingEmitterColorValue->curveColors.begin() + index);
 
 			break;
@@ -3359,7 +3360,7 @@ void ParticleUiView::refreshFireStartCurveColors() {
 	Vec2 colorLinePos = colorLine->convertToWorldSpace(Vec2::ZERO);
 	Size colorLineSize = colorLine->getContentSize();
 
-	// ÅÅÒ»²¨Ğò
+	// æ’ä¸€æ³¢åº
 	int btnSize = fireStartCurveColorBtnVec.size();
 	for (int i = 0; i < btnSize - 1; ++i){
 		for (int j = i; j < btnSize; ++j){
@@ -3369,7 +3370,7 @@ void ParticleUiView::refreshFireStartCurveColors() {
 		}
 	}
 
-	// ÏÈ¸üĞÂÒ»²¨Êı¾İ
+	// å…ˆæ›´æ–°ä¸€æ³¢æ•°æ®
 	if (fireStartCurveColorBtnVec.size() == nowEditingEmitterColorValue->curveColors.size()){
 		auto itor = fireStartCurveColorBtnVec.begin();
 		int index = 0;
@@ -3433,14 +3434,14 @@ void ParticleUiView::refreshFireStartCurveColors() {
 	}
 }
 
-//////***************************** Á£×ÓÉúÃüÖÜÆÚÄÚ ¡°ÑÕÉ«¡± ÊôĞÔµÄ ÇúÏßÊı¾İ Ïà¹Ø *****************************
+//////***************************** ç²’å­ç”Ÿå‘½å‘¨æœŸå†… â€œé¢œè‰²â€ å±æ€§çš„ æ›²çº¿æ•°æ® ç›¸å…³ *****************************
 void ParticleUiView::showParLifeCurveColors() {
 	isOpenParLifeCurveColorPanel = true;
-	// ´ò¿ªÃæ°å
+	// æ‰“å¼€é¢æ¿
 	auto panel = seekByName(singleRootNode, "parLifeProColorValuePanel"); 
 	panel->setVisible(true);
 	
-	// ¸´Ñ¡¿ò ÊÇ·ñÆôÓÃ
+	// å¤é€‰æ¡† æ˜¯å¦å¯ç”¨
 	auto curveColors = nowEditingEmitterColorValue->curveColors;
 	if (curveColors.size() >= 2) {
 		((CheckBox*)seekByName(singleRootNode, "isOpenParLifeProColorCheckBox"))->setSelectedState(true);
@@ -3452,7 +3453,7 @@ void ParticleUiView::showParLifeCurveColors() {
 		return;
 	}
 
-	// ´´½¨ÑÕÉ«Ìõ shader
+	// åˆ›å»ºé¢œè‰²æ¡ shader
 	auto colorLine = seekByName(singleRootNode, "parLifeProColorValueShowLine");
 	Size colorLineSize = colorLine->getContentSize();
 	if (!parLifeCurveColorLine) {
@@ -3463,7 +3464,7 @@ void ParticleUiView::showParLifeCurveColors() {
 		colorLine->addChild(parLifeCurveColorLine);
 	}
 
-	// ÉèÖÃ×óÓÒÁ½±ßµÄprecent
+	// è®¾ç½®å·¦å³ä¸¤è¾¹çš„precent
 	parLifeCurveColorLeftPrecent = curveColors.at(0).x;
 	parLifeCurveColorRightPrecent = curveColors.at(curveColors.size() - 1).x;
 
@@ -3476,7 +3477,7 @@ void ParticleUiView::showParLifeCurveColors() {
 	((ExEditBox*)seekByName(singleRootNode, "parLifeProColor_rightSideInput"))->setText(rightPrecentStr);
 
 	
-	// ´´½¨ ÑÕÉ« °´Å¥
+	// åˆ›å»º é¢œè‰² æŒ‰é’®
 	auto itor = curveColors.begin();
 	while (itor != curveColors.end()) {
 		float posX = ((*itor).x - parLifeCurveColorLeftPrecent) / (parLifeCurveColorRightPrecent - parLifeCurveColorLeftPrecent) * colorLineSize.width;
@@ -3502,7 +3503,7 @@ void ParticleUiView::showParLifeCurveColors() {
 }
 
 void ParticleUiView::hideParLifeCurveColors() {
-	// ¹Ø±ÕÃæ°å
+	// å…³é—­é¢æ¿
 	auto panel = seekByName(singleRootNode, "parLifeProColorValuePanel");
 	panel->setVisible(false);
 
@@ -3510,7 +3511,7 @@ void ParticleUiView::hideParLifeCurveColors() {
 
 	this->hideSetColorPanel();
 
-	// É¾µã°´Å¥
+	// åˆ ç‚¹æŒ‰é’®
 	auto itor = parLifeCurveColorBtnVec.begin();
 	while (itor != parLifeCurveColorBtnVec.end()) {
 		(*itor)->removeFromParent();
@@ -3564,7 +3565,7 @@ void ParticleUiView::deleteParLifeCurveColors(ui::Button* btn) {
 		return;
 	}
 
-	// ²»ÄÜÉ¾³ı×óÓÒÁ½¸öµã
+	// ä¸èƒ½åˆ é™¤å·¦å³ä¸¤ä¸ªç‚¹
 	if (btn == parLifeCurveColorBtnVec.at(0) || btn == parLifeCurveColorBtnVec.at(parLifeCurveColorBtnVec.size() - 1)) {
 		return;
 	}
@@ -3581,7 +3582,7 @@ void ParticleUiView::deleteParLifeCurveColors(ui::Button* btn) {
 			(*itor)->removeFromParent();
 			parLifeCurveColorBtnVec.erase(itor);
 
-			// É¾µô¶ÔÓ¦Êı¾İ
+			// åˆ æ‰å¯¹åº”æ•°æ®
 			nowEditingEmitterColorValue->curveColors.erase(nowEditingEmitterColorValue->curveColors.begin() + index);
 
 			break;
@@ -3599,7 +3600,7 @@ void ParticleUiView::refreshParLifeCurveColors() {
 	Vec2 colorLinePos = colorLine->convertToWorldSpace(Vec2::ZERO);
 	Size colorLineSize = colorLine->getContentSize();
 
-	// ÅÅÒ»²¨Ğò
+	// æ’ä¸€æ³¢åº
 	int btnSize = parLifeCurveColorBtnVec.size();
 	for (int i = 0; i < btnSize - 1; ++i) {
 		for (int j = i; j < btnSize; ++j) {
@@ -3609,7 +3610,7 @@ void ParticleUiView::refreshParLifeCurveColors() {
 		}
 	}
 
-	// ÏÈ¸üĞÂÒ»²¨Êı¾İ
+	// å…ˆæ›´æ–°ä¸€æ³¢æ•°æ®
 	if (parLifeCurveColorBtnVec.size() == nowEditingEmitterColorValue->curveColors.size()) {
 		auto itor = parLifeCurveColorBtnVec.begin();
 		int index = 0;
@@ -3657,7 +3658,7 @@ void ParticleUiView::refreshParLifeCurveColors() {
 }
 
 
-///////////////////******* ´ò¿ª Á£×ÓÉúÃüÖÜÆÚÄÚµÄÊôĞÔÃæ°å
+///////////////////******* æ‰“å¼€ ç²’å­ç”Ÿå‘½å‘¨æœŸå†…çš„å±æ€§é¢æ¿
 void ParticleUiView::showParLifeProValuePanel(singleProType proType) {
 	nowSelectedSingleProType = proType;
 	seekByName(singleRootNode, "parLifeProValuePanel")->setVisible(true); 
@@ -3722,7 +3723,7 @@ void ParticleUiView::showParLifeProValuePanel(singleProType proType) {
 		return;
 	}
 
-	// ÏÔÊ¾Ãæ°å
+	// æ˜¾ç¤ºé¢æ¿
 	this->hideParLifeCurvePoints();
 	this->showParLifeCurvePoints();
 
@@ -3742,7 +3743,7 @@ void ParticleUiView::hideParLifeProValuePanel() {
 	}
 }
 
-// ÉèÖÃÒ»¸ö»¬¶¯ÌõµÄÖµ£¬ÅĞ¶ÏÖµÊÇ·ñ´óÓÚ»¬¶¯ÌõµÄ×î´ó»ò×îĞ¡
+// è®¾ç½®ä¸€ä¸ªæ»‘åŠ¨æ¡çš„å€¼ï¼Œåˆ¤æ–­å€¼æ˜¯å¦å¤§äºæ»‘åŠ¨æ¡çš„æœ€å¤§æˆ–æœ€å°
 void ParticleUiView::setSliderValueWithMaxMin(ExSlider& slider, float value) {
 	if (value > slider.getMaximumValue()) {
 		//slider.setMaximumValue(value);
@@ -3792,7 +3793,7 @@ void ParticleUiView::initSingleParUi() {
 	((ExSlider*)seekByName(singleRootNode, "fireDelay_Slider"))->setMaximumValueWithoutSetValue(1);
 	setSliderValueWithMaxMinNoSetValueEvent(*((ExSlider*)seekByName(singleRootNode, "fireDelay_Slider")), nowEditingSignalPar->_delayTime);
 
-	// ±à¼­¿ò
+	// ç¼–è¾‘æ¡†
 	{
 		char textTem[20];
 		sprintf(textTem, "%d", nowEditingSignalPar->_maxParticleNum);
@@ -3820,14 +3821,14 @@ void ParticleUiView::initSingleParUi() {
 	}
 
 
-	// ÊÇ·ñÑ­»·
+	// æ˜¯å¦å¾ªç¯
 	if (nowEditingSignalPar->_isLoop) {
 		((CheckBox*)seekByName(singleRootNode, "isLoopCheckBox"))->setSelectedState(true);
 	}
 	else {
 		((CheckBox*)seekByName(singleRootNode, "isLoopCheckBox"))->setSelectedState(false);
 	}
-	// ÊÇ·ñËø¶¨Ğı×ªµ½ÒÆ¶¯½Ç¶È
+	// æ˜¯å¦é”å®šæ—‹è½¬åˆ°ç§»åŠ¨è§’åº¦
 	if (nowEditingSignalPar->_isLockRotationToMoveAngle) {
 		((CheckBox*)seekByName(singleRootNode, "lockRotationCheckBox"))->setSelectedState(true); 
 	}
@@ -3835,7 +3836,7 @@ void ParticleUiView::initSingleParUi() {
 		((CheckBox*)seekByName(singleRootNode, "lockRotationCheckBox"))->setSelectedState(false);
 	}
 
-	// ÔË¶¯Ä£Ê½
+	// è¿åŠ¨æ¨¡å¼
 	if (nowEditingSignalPar->_positionType == positionType::FREE ) {
 		((CheckBox*)seekByName(singleRootNode, "moveMode_free"))->setSelectedState(true);
 		((CheckBox*)seekByName(singleRootNode, "moveMode_relative"))->setSelectedState(false);
@@ -3844,7 +3845,7 @@ void ParticleUiView::initSingleParUi() {
 		((CheckBox*)seekByName(singleRootNode, "moveMode_free"))->setSelectedState(false);
 		((CheckBox*)seekByName(singleRootNode, "moveMode_relative"))->setSelectedState(true);
 	}
-	// ½Ç¶ÈÄ£Ê½
+	// è§’åº¦æ¨¡å¼
 	if (nowEditingSignalPar->_angleType == fireAngleType::local) {
 		((CheckBox*)seekByName(singleRootNode, "angleMode_global"))->setSelectedState(false);
 		((CheckBox*)seekByName(singleRootNode, "angleMode_local"))->setSelectedState(true);
@@ -3853,10 +3854,10 @@ void ParticleUiView::initSingleParUi() {
 		((CheckBox*)seekByName(singleRootNode, "angleMode_global"))->setSelectedState(true);
 		((CheckBox*)seekByName(singleRootNode, "angleMode_local"))->setSelectedState(false);
 	}
-	// »ìºÏÄ£Ê½
+	// æ··åˆæ¨¡å¼
 	sourceBlend->setSelectedIndex(getIntByBlendType(nowEditingSignalPar->_sourceBlend));
 	destBlend->setSelectedIndex(getIntByBlendType(nowEditingSignalPar->_destBlend));
-	// ·¢ÉäÇøÓòÄ£Ê½
+	// å‘å°„åŒºåŸŸæ¨¡å¼
 	this->setFireAreaMode(nowEditingSignalPar->_fireArea);
 	
 
@@ -3865,7 +3866,7 @@ void ParticleUiView::initSingleParUi() {
 void ParticleUiView::setFireAreaMode(varietyFireAreaValue& areaData) {
 	if (areaData.fAreaType == fireAreaType::rect) {
 		fireAreaMode->setSelectedIndex(0);
-		// ¶ÔÓ¦µÄ²ãÈİÆ÷´ò¿ª¹Ø±Õ
+		// å¯¹åº”çš„å±‚å®¹å™¨æ‰“å¼€å…³é—­
 		seekByName(singleRootNode, "rectModeLayer")->setVisible(true);
 		seekByName(singleRootNode, "circleModeLayer")->setVisible(false);
 		seekByName(singleRootNode, "polygonAndLineCommonLayer")->setVisible(false);
@@ -3877,13 +3878,13 @@ void ParticleUiView::setFireAreaMode(varietyFireAreaValue& areaData) {
 		((ExSlider*)seekByName(singleRootNode, "rectModeInWidthSlider"))->setEnabled(true);
 		((ExSlider*)seekByName(singleRootNode, "rectModeOutHeight_Slider"))->setEnabled(true);
 		((ExSlider*)seekByName(singleRootNode, "rectModeInHeightSlider"))->setEnabled(true);
-		// ÉèÖÃ»¬¶¯ÌõµÄÖµ£¬´øÅĞ¶Ï×î´ó×îĞ¡ÖµµÄ
+		// è®¾ç½®æ»‘åŠ¨æ¡çš„å€¼ï¼Œå¸¦åˆ¤æ–­æœ€å¤§æœ€å°å€¼çš„
 		this->setSliderValueWithMaxMin(*((ExSlider*)seekByName(singleRootNode, "rectModeInWidthSlider")), areaData.inRect.width);
 		this->setSliderValueWithMaxMin(*((ExSlider*)seekByName(singleRootNode, "rectModeOutWidth_Slider")), areaData.outRect.width);
 		this->setSliderValueWithMaxMin(*((ExSlider*)seekByName(singleRootNode, "rectModeInHeightSlider")), areaData.inRect.height);
 		this->setSliderValueWithMaxMin(*((ExSlider*)seekByName(singleRootNode, "rectModeOutHeight_Slider")), areaData.outRect.height);
 		
-		// ¹Ø±ÕÆäËûÍ¬¼¶ ÔøÈİÆ÷ µÄ »¬¶¯Ìõ
+		// å…³é—­å…¶ä»–åŒçº§ æ›¾å®¹å™¨ çš„ æ»‘åŠ¨æ¡
 		((ExSlider*)seekByName(singleRootNode, "circleModeOutRadius_Slider"))->setEnabled(false);
 		((ExSlider*)seekByName(singleRootNode, "circleModeInRadiusSlider"))->setEnabled(false);
 
@@ -3983,7 +3984,7 @@ void ParticleUiView::update(float dt) {
 		lastTouchDelay = 0;
 	}
 
-	// É¾³ı diy ÇøÓò±à¼­µÄµã °´Å¥
+	// åˆ é™¤ diy åŒºåŸŸç¼–è¾‘çš„ç‚¹ æŒ‰é’®
 	if (isStartDeleteDiyFireAreaPointBtn) {
 		if (deleteDiyFireAreaPointNeedTimeCount < deleteDiyFireAreaPointNeedTime) {
 			deleteDiyFireAreaPointNeedTimeCount += dt;
@@ -4001,7 +4002,7 @@ void ParticleUiView::update(float dt) {
 		deleteDiyFireAreaPointNeedTimeCount = 0;
 	}
 
-	// É¾³ı ·¢Éä¿ªÊ¼Ê± µÄÇúÏß µã °´Å¥
+	// åˆ é™¤ å‘å°„å¼€å§‹æ—¶ çš„æ›²çº¿ ç‚¹ æŒ‰é’®
 	if (isStartDeleteFireStartCurvePointBtn) {
 		if (deleteFireStartCurvePointNeedTimeCount < deleteFireStartCurvePointNeedTime) {
 			deleteFireStartCurvePointNeedTimeCount += dt;
@@ -4019,7 +4020,7 @@ void ParticleUiView::update(float dt) {
 		deleteFireStartCurvePointNeedTimeCount = 0;
 	}
 
-	// É¾³ı Á£×ÓÉúÃüÖÜÆÚÄÚÊôĞÔ µÄÇúÏß µã °´Å¥
+	// åˆ é™¤ ç²’å­ç”Ÿå‘½å‘¨æœŸå†…å±æ€§ çš„æ›²çº¿ ç‚¹ æŒ‰é’®
 	if (isStartDeleteParLifeCurvePointBtn) {
 		if (deleteParLifeCurvePointNeedTimeCount < deleteParLifeCurvePointNeedTime) {
 			deleteParLifeCurvePointNeedTimeCount += dt;
@@ -4037,7 +4038,7 @@ void ParticleUiView::update(float dt) {
 		deleteParLifeCurvePointNeedTimeCount = 0;
 	}
 
-	// É¾³ı ·¢Éä¿ªÊ¼Ê± ¡°ÑÕÉ«¡± µÄÇúÏß µã °´Å¥
+	// åˆ é™¤ å‘å°„å¼€å§‹æ—¶ â€œé¢œè‰²â€ çš„æ›²çº¿ ç‚¹ æŒ‰é’®
 	if (isStartDeleteFireStartCurveColorBtn) {
 		if (deleteFireStartCurveColorNeedTimeCount < deleteFireStartCurveColorNeedTime) {
 			deleteFireStartCurveColorNeedTimeCount += dt;
@@ -4055,7 +4056,7 @@ void ParticleUiView::update(float dt) {
 		deleteFireStartCurveColorNeedTimeCount = 0;
 	}
 
-	// É¾³ı Á£×ÓÉúÃüÖÜÆÚ ¡°ÑÕÉ«¡± µÄÇúÏß µã °´Å¥
+	// åˆ é™¤ ç²’å­ç”Ÿå‘½å‘¨æœŸ â€œé¢œè‰²â€ çš„æ›²çº¿ ç‚¹ æŒ‰é’®
 	if (isStartDeleteParLifeCurveColorBtn) {
 		if (deleteParLifeCurveColorNeedTimeCount < deleteParLifeCurveColorNeedTime) {
 			deleteParLifeCurveColorNeedTimeCount += dt;
@@ -4078,7 +4079,7 @@ void ParticleUiView::update(float dt) {
 
 }
 
-// ÏÔÊ¾ ·¢ÉäÇøÓòµã , ¶à±ßĞÎºÍÏß¶ÎµÄ , µ±¿ªÆô×Ô¶¨Òå±à¼­Ê±£¬½« ·¢ÉäÇøÓòµãÊı¾İ ×ª»»³É µã°´Å¥
+// æ˜¾ç¤º å‘å°„åŒºåŸŸç‚¹ , å¤šè¾¹å½¢å’Œçº¿æ®µçš„ , å½“å¼€å¯è‡ªå®šä¹‰ç¼–è¾‘æ—¶ï¼Œå°† å‘å°„åŒºåŸŸç‚¹æ•°æ® è½¬æ¢æˆ ç‚¹æŒ‰é’®
 void ParticleUiView::showDiyFireAreaPoint() {
 	if (nowEditingSignalPar->_fireArea.fAreaType == fireAreaType::polygon && editMode == EditMode::single && singlePar) {
 		auto itor = nowEditingSignalPar->_fireArea.polygonPoints.begin();
@@ -4122,7 +4123,7 @@ void ParticleUiView::showDiyFireAreaPoint() {
 	}
 }
 
-// Òş²Ø ·¢ÉäÇøÓòµã
+// éšè— å‘å°„åŒºåŸŸç‚¹
 void ParticleUiView::hideDiyFireAreaPoint() {
 	auto itor = diyFireAreaPointVec.begin();
 	while (itor != diyFireAreaPointVec.end()) {
@@ -4156,7 +4157,7 @@ void ParticleUiView::refreshDiyFireAreaPoints() {
 
 void ParticleUiView::addDiyFireAreaPoint(Vec2 pos) {
 	if (nowEditingSignalPar->_fireArea.fAreaType == fireAreaType::polygon && editMode == EditMode::single && singlePar) {
-		// Ô­Àí£ºÅĞ¶ÏÕâ¸öµãÊÇ·ñÔÚ ¶à±ßĞÎÖĞµÄÈÎÒâÒ»Ìõ±ßÉÏ£¬ÔÊĞíÕâ¸ö±ßÓĞÒ»¶¨µÄ¿í¶È(Ã»¿í¶È£¬ÄÇÔõÃ´¿ÉÄÜµãµÃµ½)£¬È»ºóÔÙ¶ÔÓ¦±ßÉÏ ²åÈëµã
+		// åŸç†ï¼šåˆ¤æ–­è¿™ä¸ªç‚¹æ˜¯å¦åœ¨ å¤šè¾¹å½¢ä¸­çš„ä»»æ„ä¸€æ¡è¾¹ä¸Šï¼Œå…è®¸è¿™ä¸ªè¾¹æœ‰ä¸€å®šçš„å®½åº¦(æ²¡å®½åº¦ï¼Œé‚£æ€ä¹ˆå¯èƒ½ç‚¹å¾—åˆ°)ï¼Œç„¶åå†å¯¹åº”è¾¹ä¸Š æ’å…¥ç‚¹
 		Vec2 realPos = Vec2(pos.x - singlePar->getPositionX(), pos.y - singlePar->getPositionY());
 		int size = nowEditingSignalPar->_fireArea.polygonPoints.size();
 		for (int i = 0; i < size; ++i) {
@@ -4175,11 +4176,11 @@ void ParticleUiView::addDiyFireAreaPoint(Vec2 pos) {
 			if (arDis > abDis) {
 				continue;
 			}
-			float height = 5;  // ÉÏÏÂ¸ß5£¬¹²¸ß10
+			float height = 5;  // ä¸Šä¸‹é«˜5ï¼Œå…±é«˜10
 			float arAngle = Vec2(realPos.x - pointA.x, realPos.y - pointA.y).getAngle() / P_PI * 180;
 			float abAngle = Vec2(pointB.x - pointA.x, pointB.y - pointA.y).getAngle() / P_PI * 180;
 			float angleOffset = arAngle - abAngle;
-			// ¼ÙÉèÖ±Ïß³¤·½ĞÎÊÇË®Æ½µÄ£¬ÔòÕæÊµµÄ´¥ÃşµãĞèÒªĞı×ª - abAngle ÔÙÅĞ¶ÏÄæĞı×ªºóµÄµã ÊÇ·ñÔÚË®Æ½¾ØĞÎÖĞ
+			// å‡è®¾ç›´çº¿é•¿æ–¹å½¢æ˜¯æ°´å¹³çš„ï¼Œåˆ™çœŸå®çš„è§¦æ‘¸ç‚¹éœ€è¦æ—‹è½¬ - abAngle å†åˆ¤æ–­é€†æ—‹è½¬åçš„ç‚¹ æ˜¯å¦åœ¨æ°´å¹³çŸ©å½¢ä¸­
 			Vec2 rectPos = Vec2(pointA.x + arDis * cosf( angleOffset / 180 * P_PI ) , pointA.y + arDis * sinf(angleOffset / 180 * P_PI));
 			if (rectPos.x >= pointA.x && rectPos.x <= pointA.x + abDis && rectPos.y >= pointA.y - height && rectPos.y <= pointA.y + height) {
 				if (i == size - 1) {
@@ -4239,7 +4240,7 @@ void ParticleUiView::deleteDiyFireAreaPoint(ui::Button* btn) {
 	}
 }
 
-////////////////////********* ·¢ÉäÇøÓòµã °´Å¥ µÄ»Øµ÷º¯Êı *******/////////////////////////////////////////
+////////////////////********* å‘å°„åŒºåŸŸç‚¹ æŒ‰é’® çš„å›è°ƒå‡½æ•° *******/////////////////////////////////////////
 void ParticleUiView::diyFireAreaPointCall(cocos2d::Ref* pSender, ui::Widget::TouchEventType type) {
 	switch (type) {
 	case ui::Widget::TouchEventType::BEGAN:
@@ -4262,7 +4263,7 @@ void ParticleUiView::diyFireAreaPointCall(cocos2d::Ref* pSender, ui::Widget::Tou
 	}
 }
 
-////////////////////********* ¿ªÊ¼·¢ÉäÊ±ÊôĞÔ ÇúÏß °´Å¥ µÄ»Øµ÷º¯Êı *******/////////////////////////////////////////
+////////////////////********* å¼€å§‹å‘å°„æ—¶å±æ€§ æ›²çº¿ æŒ‰é’® çš„å›è°ƒå‡½æ•° *******/////////////////////////////////////////
 void ParticleUiView::fireStartCurvePointCall(cocos2d::Ref* pSender, ui::Widget::TouchEventType type) {
 	switch (type) {
 	case ui::Widget::TouchEventType::BEGAN:
@@ -4311,7 +4312,7 @@ void ParticleUiView::fireStartCurvePointCall(cocos2d::Ref* pSender, ui::Widget::
 	}
 }
 
-////////////////////********* Á£×ÓÉúÃüÖÜÆÚ ÊôĞÔ ÇúÏß °´Å¥ µÄ»Øµ÷º¯Êı *******/////////////////////////////////////////
+////////////////////********* ç²’å­ç”Ÿå‘½å‘¨æœŸ å±æ€§ æ›²çº¿ æŒ‰é’® çš„å›è°ƒå‡½æ•° *******/////////////////////////////////////////
 void ParticleUiView::parLifeCurvePointCall(cocos2d::Ref* pSender, ui::Widget::TouchEventType type) {
 	switch (type) {
 	case ui::Widget::TouchEventType::BEGAN:
@@ -4360,7 +4361,7 @@ void ParticleUiView::parLifeCurvePointCall(cocos2d::Ref* pSender, ui::Widget::To
 	}
 }
 
-////////////////////********* ¿ªÊ¼·¢ÉäÊ±ÊôĞÔ ¡°ÑÕÉ«¡± ÇúÏß °´Å¥ µÄ»Øµ÷º¯Êı *******/////////////////////////////////////////
+////////////////////********* å¼€å§‹å‘å°„æ—¶å±æ€§ â€œé¢œè‰²â€ æ›²çº¿ æŒ‰é’® çš„å›è°ƒå‡½æ•° *******/////////////////////////////////////////
 void ParticleUiView::fireStartCurveColorCall(cocos2d::Ref* pSender, ui::Widget::TouchEventType type) {
 	switch (type) {
 	case ui::Widget::TouchEventType::BEGAN:
@@ -4384,7 +4385,7 @@ void ParticleUiView::fireStartCurveColorCall(cocos2d::Ref* pSender, ui::Widget::
 	}
 }
 
-////////////////////********* Á£×ÓÉúÃüÖÜÆÚÊôĞÔ ¡°ÑÕÉ«¡± ÇúÏß °´Å¥ µÄ»Øµ÷º¯Êı *******/////////////////////////////////////////
+////////////////////********* ç²’å­ç”Ÿå‘½å‘¨æœŸå±æ€§ â€œé¢œè‰²â€ æ›²çº¿ æŒ‰é’® çš„å›è°ƒå‡½æ•° *******/////////////////////////////////////////
 void ParticleUiView::parLifeCurveColorCall(cocos2d::Ref* pSender, ui::Widget::TouchEventType type) {
 	switch (type) {
 	case ui::Widget::TouchEventType::BEGAN:
@@ -4408,7 +4409,7 @@ void ParticleUiView::parLifeCurveColorCall(cocos2d::Ref* pSender, ui::Widget::To
 	}
 }
 
-////////////////////********* »¬¶¯Ìõ¸Ä±ä *******/////////////////////////////////////////
+////////////////////********* æ»‘åŠ¨æ¡æ”¹å˜ *******/////////////////////////////////////////
 void ParticleUiView::onSliderChanged(Ref* sender, extension::Control::EventType) {
 	CCLOG("-=-=-=-=--= slider changed");
 	auto slider = (ExSlider*)sender;
@@ -4416,11 +4417,11 @@ void ParticleUiView::onSliderChanged(Ref* sender, extension::Control::EventType)
 
 	
 
-	//ÕÒµ½Ö÷ÌâÃû£¬ĞŞ¸Ä¶ÔÓ¦µÄ±à¼­¿ò
-	float start = sliderName.find("_", 0); // find ·µ»Ø-1 ´ú±íÃ»ÓĞÕÒµ½
+	//æ‰¾åˆ°ä¸»é¢˜åï¼Œä¿®æ”¹å¯¹åº”çš„ç¼–è¾‘æ¡†
+	float start = sliderName.find("_", 0); // find è¿”å›-1 ä»£è¡¨æ²¡æœ‰æ‰¾åˆ°
 	if (start > -1) {
 		std::string name = sliderName.substr(0, start);
-		//Èç¹ûÓĞ¶ÔÓ¦ Ö÷ÌâÃû µÄÊäÈë¿ò£¬Ôò¸Ä±äÊäÈë¿òµÄÖµ
+		//å¦‚æœæœ‰å¯¹åº” ä¸»é¢˜å çš„è¾“å…¥æ¡†ï¼Œåˆ™æ”¹å˜è¾“å…¥æ¡†çš„å€¼
 		auto editBoxTem = seekByName(singleRootNode, name + "_Input");
 		if (editBoxTem) {
 			auto editBox = (ExEditBox*)editBoxTem;
@@ -4430,7 +4431,7 @@ void ParticleUiView::onSliderChanged(Ref* sender, extension::Control::EventType)
 		}
 	}
 
-	// ÆäËû£¬»¬¶¯Ìõ¸Ä±ä
+	// å…¶ä»–ï¼Œæ»‘åŠ¨æ¡æ”¹å˜
 	if (sliderName == "maxParNum_Slider") {
 		nowEditingSignalPar->_maxParticleNum = slider->getValue();
 	}
@@ -4500,22 +4501,22 @@ void ParticleUiView::onSliderChanged(Ref* sender, extension::Control::EventType)
 }
 
 
-////////////////////********* ±à¼­¿ò¸Ä±ä *******/////////////////////////////////////////
+////////////////////********* ç¼–è¾‘æ¡†æ”¹å˜ *******/////////////////////////////////////////
 void ParticleUiView::editBoxEditingDidBegin(ExEditBox* editBox) {}
 void ParticleUiView::editBoxEditingDidEnd(ExEditBox* editBox) {}
 void ParticleUiView::editBoxTextChanged(ExEditBox* editBox, const std::string& text) {
 	std::string editBoxName = editBox->getName();
 	float value = std::atof(text.c_str());
-	// Èç¹ûÊäÈë²»ÊÇÊı×Ö
+	// å¦‚æœè¾“å…¥ä¸æ˜¯æ•°å­—
 	if(value == 0 && editBoxName != "fileNameInput")
 		editBox->setText("0.0");
 
 
-	//ÕÒµ½Ö÷ÌâÃû
+	//æ‰¾åˆ°ä¸»é¢˜å
 	float start = editBoxName.find("_", 0);
 	if (start > -1) {
 		std::string name = editBoxName.substr(0, start);
-		//Èç¹ûÓĞ¶ÔÓ¦Ö÷ÌâÃûµÄ»¬¶¯Ìõ£¬Ôò¸Ä±ä»¬¶¯ÌõµÄÃû³Æ
+		//å¦‚æœæœ‰å¯¹åº”ä¸»é¢˜åçš„æ»‘åŠ¨æ¡ï¼Œåˆ™æ”¹å˜æ»‘åŠ¨æ¡çš„åç§°
 		auto sliderTem = seekByName(singleRootNode, name + "_Slider");
 		if (sliderTem) {
 			auto slider = (ExSlider*)sliderTem;
@@ -4527,26 +4528,26 @@ void ParticleUiView::editBoxTextChanged(ExEditBox* editBox, const std::string& t
 			}
 			slider->setValue(value);
 		}
-		// Èç¹ûÊÇ¶à¸öÖµÊôĞÔÖĞµÄ±à¼­¿ò µÄ ¸Ä±ä
+		// å¦‚æœæ˜¯å¤šä¸ªå€¼å±æ€§ä¸­çš„ç¼–è¾‘æ¡† çš„ æ”¹å˜
 		if (name == "moreConstant") {
-			// »ñµÃ _ ºóÃæµÄÏÂ±ê
+			// è·å¾— _ åé¢çš„ä¸‹æ ‡
 			std::string indexStr = editBoxName.substr(start + 1, -1);
 			int index = std::stoi(indexStr);
 			nowEditingEmitterVarietyValue->constValues.at(index) = value;
 		}
 		if (name == "tagName") {
-			// »ñµÃ _ ºóÃæµÄÏÂ±ê
+			// è·å¾— _ åé¢çš„ä¸‹æ ‡
 			std::string indexStr = editBoxName.substr(start + 1, -1);
 			int index = std::stoi(indexStr);
-			// ÉèÖÃid Îª index µÄfireProµÄtagName
+			// è®¾ç½®id ä¸º index çš„fireProçš„tagName
 			singlePar->getFireProById(index)->_tagName = text;
 			editBox->setText(text.c_str());
 		}
 		if (name == "localZorder") {
-			// »ñµÃ _ ºóÃæµÄÏÂ±ê
+			// è·å¾— _ åé¢çš„ä¸‹æ ‡
 			std::string indexStr = editBoxName.substr(start + 1, -1);
 			int index = std::stoi(indexStr);
-			// ÉèÖÃid Îª index µÄfireProµÄtagName
+			// è®¾ç½®id ä¸º index çš„fireProçš„tagName
 			singlePar->getFireProById(index)->_localZorder = value;
 			//editBox->setText(text.c_str());
 
@@ -4555,14 +4556,14 @@ void ParticleUiView::editBoxTextChanged(ExEditBox* editBox, const std::string& t
 		
 
 		if (name == "fireStartCurveRandEditBox") {
-			// »ñµÃ _ ºóÃæµÄÏÂ±ê
+			// è·å¾— _ åé¢çš„ä¸‹æ ‡
 			std::string indexStr = editBoxName.substr(start + 1, -1);
 			int index = std::stoi(indexStr);
 			nowEditingEmitterVarietyValue->curvePoints.at(index).z = value;
 			nowEditingEmitterVarietyValue->isSetCurveKB = false;
 		}
 		if (name == "parLifeCurveRandEditBox") {
-			// »ñµÃ _ ºóÃæµÄÏÂ±ê
+			// è·å¾— _ åé¢çš„ä¸‹æ ‡
 			std::string indexStr = editBoxName.substr(start + 1, -1);
 			int index = std::stoi(indexStr);
 			nowEditingEmitterVarietyValue->curvePoints.at(index).z = value;
@@ -4572,7 +4573,7 @@ void ParticleUiView::editBoxTextChanged(ExEditBox* editBox, const std::string& t
 
 	}
 
-	// ÆäËû£¬±à¼­¿ò¸Ä±ä
+	// å…¶ä»–ï¼Œç¼–è¾‘æ¡†æ”¹å˜
 	if (editBoxName == "textureAnchorPointX_Input") {
 		nowEditingSignalPar->_texAnchorPoint.x = value;
 	}
@@ -4716,11 +4717,11 @@ void ParticleUiView::editBoxTextChanged(ExEditBox* editBox, const std::string& t
 }
 void ParticleUiView::editBoxReturn(ExEditBox* editBox) {}
 
-////////////////////********* ´¥ÃşÊÂ¼ş *******/////////////////////////////////////////
+////////////////////********* è§¦æ‘¸äº‹ä»¶ *******/////////////////////////////////////////
 bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pEvent) {
 	Vec2 location = pTouch->getLocation();
 
-	// µ¥Á£×Ó±à¼­ £¬Èç¹ûÁ£×Ó·¢ÉäÆ÷ËÀµôÁË£¬µã»÷¾ÍÖØÖÃÒ»ÏÂ
+	// å•ç²’å­ç¼–è¾‘ ï¼Œå¦‚æœç²’å­å‘å°„å™¨æ­»æ‰äº†ï¼Œç‚¹å‡»å°±é‡ç½®ä¸€ä¸‹
 	if (editMode == EditMode::single && singlePar) {
 		if (!singlePar->getIsActive()) {
 			if (nowEditingSignalPar) {
@@ -4742,49 +4743,49 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 	}
 
 	if (fabsf(lastTouchTime - nowTime) < 0.5 && lastTouchDelay <= 0) {
-		// --------- Ë«»÷³ÉÁ¢
+		// --------- åŒå‡»æˆç«‹
 		
-		// ÔÚ ÄÇ¸ö ÇúÏßÃæ°åÖĞ
+		// åœ¨ é‚£ä¸ª æ›²çº¿é¢æ¿ä¸­
 		bool isAddFireStartCurvePoint = false;
 		if (isOpenFireStartCurvePanel) {
-			//¡¡ÅĞ¶ÏÔÚÄÇ¸öÇúÏßÃæ°åÄÚ
+			//ã€€åˆ¤æ–­åœ¨é‚£ä¸ªæ›²çº¿é¢æ¿å†…
 			auto curvePanel = seekByName(singleRootNode, "curveMap_fireStart");
 			Size curvePanelSize = curvePanel->getContentSize();
 			Vec2 curvePanelPos = curvePanel->convertToWorldSpace(Vec2::ZERO);
 
 			if (location.x >= curvePanelPos.x  && location.x <= curvePanelPos.x + curvePanelSize.width  &&
 				location.y >= curvePanelPos.y  && location.y <= curvePanelPos.y + curvePanelSize.height) {
-				// ¼ÓÒ»¸öÇúÏßµã
+				// åŠ ä¸€ä¸ªæ›²çº¿ç‚¹
 				this->addFireStartCurvePoints(location);
 				isAddFireStartCurvePoint = true;
-				CCLOG("+++++++++++++++++++++ addFireStartCurvePoints £¡");
+				CCLOG("+++++++++++++++++++++ addFireStartCurvePoints ï¼");
 			}
 		}
-		// ÔÚ ÄÇ¸ö ÇúÏßÃæ°åÖĞ
+		// åœ¨ é‚£ä¸ª æ›²çº¿é¢æ¿ä¸­
 		bool isAddParLifeCurvePoint = false;
 		if (isOpenParLifeCurvePanel) {
-			//¡¡ÅĞ¶ÏÔÚÄÇ¸öÇúÏßÃæ°åÄÚ
+			//ã€€åˆ¤æ–­åœ¨é‚£ä¸ªæ›²çº¿é¢æ¿å†…
 			auto curvePanel = seekByName(singleRootNode, "curveMap_parLife");
 			Size curvePanelSize = curvePanel->getContentSize();
 			Vec2 curvePanelPos = curvePanel->convertToWorldSpace(Vec2::ZERO);
 
 			if (location.x >= curvePanelPos.x  && location.x <= curvePanelPos.x + curvePanelSize.width  &&
 				location.y >= curvePanelPos.y  && location.y <= curvePanelPos.y + curvePanelSize.height) {
-				// ¼ÓÒ»¸öÇúÏßµã
+				// åŠ ä¸€ä¸ªæ›²çº¿ç‚¹
 				this->addParLifeCurvePoints(location);
 				isAddParLifeCurvePoint = true;
-				CCLOG("+++++++++++++++++++++ addParLifeCurvePoints £¡");
+				CCLOG("+++++++++++++++++++++ addParLifeCurvePoints ï¼");
 			}
 		}
 
-		// Èç¹û¿ªÆôÁË ×Ô¶¨Òå±à¼­ ·¢ÉäÇøÓò¹¦ÄÜ£¬ÔòË«»÷ÔÚÆÁÄ»ÉÏĞÂÔö ¶à±ßĞÎ»òÖ±Ïßµã
+		// å¦‚æœå¼€å¯äº† è‡ªå®šä¹‰ç¼–è¾‘ å‘å°„åŒºåŸŸåŠŸèƒ½ï¼Œåˆ™åŒå‡»åœ¨å±å¹•ä¸Šæ–°å¢ å¤šè¾¹å½¢æˆ–ç›´çº¿ç‚¹
 		if (isDiyEditPolygonOrLines && !isOpenFireStartCurvePanel && !isAddParLifeCurvePoint) {
 			this->addDiyFireAreaPoint(location);
 		}
 
-		// Èç¹ûÔÚ ·¢ÉäÖÜÆÚµÄÑÕÉ«ÌõÖĞ
+		// å¦‚æœåœ¨ å‘å°„å‘¨æœŸçš„é¢œè‰²æ¡ä¸­
 		if (isOpenFireStartCurveColorPanel) {
-			// Èç¹ûÊÇË«»÷ÁËÒ»¸öÑÕÉ«°´Å¥Ôò´ò¿ªÑÕÉ«ÉèÖÃÆ÷
+			// å¦‚æœæ˜¯åŒå‡»äº†ä¸€ä¸ªé¢œè‰²æŒ‰é’®åˆ™æ‰“å¼€é¢œè‰²è®¾ç½®å™¨
 			if (targetFireStartCurveColorBtn) {
 				
 				for (int i = 0; i < fireStartCurveColorBtnVec.size(); ++i) {
@@ -4799,7 +4800,7 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 				this->setPointerPosByRGB(nowEditingColorNode->getColor());
 			}
 
-			// Èç¹ûË«»÷ÁËÑÕÉ«Ìõ
+			// å¦‚æœåŒå‡»äº†é¢œè‰²æ¡
 			auto colorLine = seekByName(singleRootNode, "curveColorValueShowLine");
 			Size colorLineSize = colorLine->getContentSize();
 			Vec2 colorLinePos = colorLine->convertToWorldSpace(Vec2::ZERO);
@@ -4812,9 +4813,9 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 
 		}
 
-		// Èç¹û ´ò¿ªÁË Á£×ÓÉúÃüÖÜÆÚÄÚ µÄ ¡°ÑÕÉ«¡± ÇúÏß±à¼­
+		// å¦‚æœ æ‰“å¼€äº† ç²’å­ç”Ÿå‘½å‘¨æœŸå†… çš„ â€œé¢œè‰²â€ æ›²çº¿ç¼–è¾‘
 		if (isOpenParLifeCurveColorPanel) {
-			// Èç¹ûÊÇË«»÷ÁËÒ»¸öÑÕÉ«°´Å¥Ôò´ò¿ªÑÕÉ«ÉèÖÃÆ÷
+			// å¦‚æœæ˜¯åŒå‡»äº†ä¸€ä¸ªé¢œè‰²æŒ‰é’®åˆ™æ‰“å¼€é¢œè‰²è®¾ç½®å™¨
 			if (targetParLifeCurveColorBtn) {
 
 				for (int i = 0; i < parLifeCurveColorBtnVec.size(); ++i) {
@@ -4829,7 +4830,7 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 				this->setPointerPosByRGB(nowEditingColorNode->getColor());
 			}
 
-			// Èç¹ûË«»÷ÁËÑÕÉ«Ìõ
+			// å¦‚æœåŒå‡»äº†é¢œè‰²æ¡
 			auto colorLine = seekByName(singleRootNode, "parLifeProColorValueShowLine");
 			Size colorLineSize = colorLine->getContentSize();
 			Vec2 colorLinePos = colorLine->convertToWorldSpace(Vec2::ZERO);
@@ -4848,9 +4849,9 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 
 	lastTouchTime = nowTime;
 	
-	// ÑÕÉ«°å
+	// é¢œè‰²æ¿
 	if (isOpenSetColorPanel) {
-		// ÅĞ¶Ï´¥ÃşµãÊÇ·ñÔÚ ÑÕÉ«¾ØĞÎÖĞ 
+		// åˆ¤æ–­è§¦æ‘¸ç‚¹æ˜¯å¦åœ¨ é¢œè‰²çŸ©å½¢ä¸­ 
 		auto showRectColor = seekByName(singleRootNode, "showColorRect");
 		Vec2 colorRectPos = showRectColor->convertToWorldSpace(Vec2::ZERO);
 		Size colorRectSize = showRectColor->getContentSize();
@@ -4859,7 +4860,7 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 			isTouchInColorRect = true;
 		}
 
-		// ÅĞ¶Ï´¥ÃşµãÊÇ·ñÔÚ ÑÕÉ«Ìõ ÖĞ
+		// åˆ¤æ–­è§¦æ‘¸ç‚¹æ˜¯å¦åœ¨ é¢œè‰²æ¡ ä¸­
 		auto showLineColor = seekByName(singleRootNode, "showColorLine");
 		Vec2 colorLinePos = showLineColor->convertToWorldSpace(Vec2::ZERO);
 		Size colorLineSize = showLineColor->getContentSize();
@@ -4868,7 +4869,7 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 			isTouchInColorLine = true;
 		}
 
-		// ÅĞ¶Ï´¥ÃşµãÊÇ·ñÔÚ ÒÆ¶¯Ìõ ÖĞ
+		// åˆ¤æ–­è§¦æ‘¸ç‚¹æ˜¯å¦åœ¨ ç§»åŠ¨æ¡ ä¸­
 		auto moveBar = seekByName(singleRootNode, "setColorPanelMoveBar");
 		Vec2 moveBarPos = moveBar->convertToWorldSpace(Vec2::ZERO);
 		Size moveBarSize = moveBar->getContentSize();
@@ -4887,7 +4888,7 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pEvent) {
 	Vec2 location = pTouch->getLocation();
 	 
-	// ÊÇ·ñ´¥ÃşÔÚÁË ·¢ÉäÖÜÆÚÄÚ ÇúÏßÃæ°å
+	// æ˜¯å¦è§¦æ‘¸åœ¨äº† å‘å°„å‘¨æœŸå†… æ›²çº¿é¢æ¿
 	bool isTouchInFireStartCurvePanel = false;
 	if (isOpenFireStartCurvePanel) {
 		auto curvePanel = seekByName(singleRootNode, "curveMap_fireStart");
@@ -4898,7 +4899,7 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 			isTouchInFireStartCurvePanel = true;
 		}
 	}
-	////¡¡ÊÇ·ñ´¥ÃşÔÚÁËÁ£×ÓÉúÃüÖÜÆÚÄÚÇúÏßÃæ°å
+	////ã€€æ˜¯å¦è§¦æ‘¸åœ¨äº†ç²’å­ç”Ÿå‘½å‘¨æœŸå†…æ›²çº¿é¢æ¿
 	bool isTouchInParLifeCurvePanel = false;
 	if (isOpenParLifeCurvePanel) {
 		auto curvePanel = seekByName(singleRootNode, "curveMap_parLife");
@@ -4909,7 +4910,7 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 			isTouchInParLifeCurvePanel = true;
 		}
 	}
-	// ÊÇ·ñ´¥ÃşÔÚÁË·¢ÉäÖÜÆÚÄÚ "ÑÕÉ«" Ãæ°å
+	// æ˜¯å¦è§¦æ‘¸åœ¨äº†å‘å°„å‘¨æœŸå†… "é¢œè‰²" é¢æ¿
 	bool isTouchInFireStartColorLine = false;
 	if (isOpenFireStartCurveColorPanel) {
 		auto colorLine = seekByName(singleRootNode, "curveColorValuePanel_fireStart");
@@ -4920,7 +4921,7 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 			isTouchInFireStartColorLine = true;
 		}
 	}
-	// ÊÇ·ñ´¥ÃşÔÚÁË Á£×ÓÉúÃüÖÜÆÚ "ÑÕÉ«" Ãæ°å
+	// æ˜¯å¦è§¦æ‘¸åœ¨äº† ç²’å­ç”Ÿå‘½å‘¨æœŸ "é¢œè‰²" é¢æ¿
 	bool isTouchInParLifeColorLine = false;
 	if (isOpenParLifeCurveColorPanel) {
 		auto colorLine = seekByName(singleRootNode, "parLifeProColorValuePanel");
@@ -4931,7 +4932,7 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 			isTouchInParLifeColorLine = true;
 		}
 	}
-	// ÊÇ·ñ´¥ÃşÔÚÁË ÑÕÉ«Ê°È¡Æ÷ÖĞ
+	// æ˜¯å¦è§¦æ‘¸åœ¨äº† é¢œè‰²æ‹¾å–å™¨ä¸­
 	bool isTouchInSetColorPanel = false;
 	if (isOpenSetColorPanel) {
 		auto setColorPanel = seekByName(singleRootNode, "setColorPanel");
@@ -5016,7 +5017,7 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 	/////////////////////////////////////
 
 	if (isDiyEditPolygonOrLines && !targetFireStartCurvePointBtn && !targetParLifeCurvePointBtn) {
-		// Èç¹ûÕıÔÚ±à¼­·¢ÉäÇøÓò
+		// å¦‚æœæ­£åœ¨ç¼–è¾‘å‘å°„åŒºåŸŸ
 		if (targetdiyFireAreaPointBtn) {
 			targetdiyFireAreaPointBtn->setPosition(Vec2(location.x - singlePar->getPositionX(), location.y - singlePar->getPositionY()));
 			this->refreshDiyFireAreaPoints();
@@ -5025,8 +5026,8 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 		isCanMovePar = false;
 	}
 	else if (targetFireStartCurvePointBtn) {
-		// --- Èç¹ûÑ¡ÖĞÁËÒ»¸ö ·¢Éä¿ªÊ¼ÊôĞÔ µÄÇúÏß °´Å¥
-		// ÅĞ¶ÏÒ»ÏÂÊÇ·ñÎª×óÓÒÁ½¸ö¼«µã
+		// --- å¦‚æœé€‰ä¸­äº†ä¸€ä¸ª å‘å°„å¼€å§‹å±æ€§ çš„æ›²çº¿ æŒ‰é’®
+		// åˆ¤æ–­ä¸€ä¸‹æ˜¯å¦ä¸ºå·¦å³ä¸¤ä¸ªæç‚¹
 		bool isLeftPoint = false;
 		bool isRightPoint = false;
 		if (targetFireStartCurvePointBtn == fireStartCurvePointBtnVec.at(0)) {
@@ -5039,19 +5040,19 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 		Vec2 curvePanelPos = curvePanel->convertToWorldSpace(Vec2::ZERO);
 		Size curvePanelSize = curvePanel->getContentSize();
 		Vec2 realPos = Vec2(location.x - curvePanelPos.x  , location.y - curvePanelPos.y );
-		// ÊÇ·ñÎª×óÓÒÁ½¸öµã
+		// æ˜¯å¦ä¸ºå·¦å³ä¸¤ä¸ªç‚¹
 		if (isLeftPoint) {
 			realPos.x = 0;
 		}
 		if (isRightPoint) {
 			realPos.x = curvePanel->getContentSize().width;
 		}
-		// ÏŞÖÆµã²»³ö¿ò
+		// é™åˆ¶ç‚¹ä¸å‡ºæ¡†
 		realPos.y = (realPos.y > curvePanelSize.height ) ? curvePanelSize.height : realPos.y;
 		realPos.y = (realPos.y < 0) ? 0 : realPos.y;
 		realPos.x = (realPos.x > curvePanelSize.width ) ? curvePanelSize.width : realPos.x;
 		realPos.x = (realPos.x < 0) ? 0 : realPos.x;
-		// ÏŞÖÆµã µÄ X×ø±ê²»¹ı ×óÓÒÁ½¸öµã
+		// é™åˆ¶ç‚¹ çš„ Xåæ ‡ä¸è¿‡ å·¦å³ä¸¤ä¸ªç‚¹
 		float leftX = targetFireStartCurvePointBtn_left->getPositionX();
 		float rightX = targetFireStartCurvePointBtn_right->getPositionX();
 		if (realPos.x < leftX) {
@@ -5067,8 +5068,8 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 		isCanMovePar = false;
 	}
 	else if (targetParLifeCurvePointBtn) {
-		// --- Èç¹ûÑ¡ÖĞÁËÒ»¸ö Á£×ÓÉúÃüÖÜÆÚÄÚÊôĞÔ µÄÇúÏß °´Å¥
-		// ÅĞ¶ÏÒ»ÏÂÊÇ·ñÎª×óÓÒÁ½¸ö¼«µã
+		// --- å¦‚æœé€‰ä¸­äº†ä¸€ä¸ª ç²’å­ç”Ÿå‘½å‘¨æœŸå†…å±æ€§ çš„æ›²çº¿ æŒ‰é’®
+		// åˆ¤æ–­ä¸€ä¸‹æ˜¯å¦ä¸ºå·¦å³ä¸¤ä¸ªæç‚¹
 		bool isLeftPoint = false;
 		bool isRightPoint = false;
 		if (targetParLifeCurvePointBtn == parLifeCurvePointBtnVec.at(0)) {
@@ -5081,19 +5082,19 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 		Vec2 curvePanelPos = curvePanel->convertToWorldSpace(Vec2::ZERO);
 		Size curvePanelSize = curvePanel->getContentSize();
 		Vec2 realPos = Vec2(location.x - curvePanelPos.x, location.y - curvePanelPos.y);
-		// ÊÇ·ñÎª×óÓÒÁ½¸öµã
+		// æ˜¯å¦ä¸ºå·¦å³ä¸¤ä¸ªç‚¹
 		if (isLeftPoint) {
 			realPos.x = 0;
 		}
 		if (isRightPoint) {
 			realPos.x = curvePanel->getContentSize().width;
 		}
-		// ÏŞÖÆµã²»³ö¿ò
+		// é™åˆ¶ç‚¹ä¸å‡ºæ¡†
 		realPos.y = (realPos.y > curvePanelSize.height) ? curvePanelSize.height : realPos.y;
 		realPos.y = (realPos.y < 0) ? 0 : realPos.y;
 		realPos.x = (realPos.x > curvePanelSize.width) ? curvePanelSize.width : realPos.x;
 		realPos.x = (realPos.x < 0) ? 0 : realPos.x;
-		// ÏŞÖÆµã µÄ X×ø±ê²»¹ı ×óÓÒÁ½¸öµã
+		// é™åˆ¶ç‚¹ çš„ Xåæ ‡ä¸è¿‡ å·¦å³ä¸¤ä¸ªç‚¹
 		float leftX = targetParLifeCurvePointBtn_left->getPositionX();
 		float rightX = targetParLifeCurvePointBtn_right->getPositionX();
 		if (realPos.x < leftX) {
@@ -5136,7 +5137,7 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 
 		realPosX = (realPosX < 0) ? 0 : realPosX;
 		realPosX = (realPosX > colorLineSize.width) ? colorLineSize.width : realPosX;
-		// ×óÓÒÁ½¸öµã£¬²»ÄÜ¶¯
+		// å·¦å³ä¸¤ä¸ªç‚¹ï¼Œä¸èƒ½åŠ¨
 		if (targetParLifeCurveColorBtn == parLifeCurveColorBtnVec.at(0)) {
 			realPosX = 0;
 		}
@@ -5176,11 +5177,11 @@ void ParticleUiView::onTouchEnded(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 	touchMoveBarOffsetPos = Vec2(0, 0);
 }
 
-////////////////////*********ÏÂÀ­ÁĞ±íµÄ»Øµ÷º¯Êı*******/////////////////////////////////////////
+////////////////////*********ä¸‹æ‹‰åˆ—è¡¨çš„å›è°ƒå‡½æ•°*******/////////////////////////////////////////
 void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType type, DropDownList* sender) {
 	switch (type) {
 	case ui::Widget::TouchEventType::ENDED:
-		sender->onSelected(list); //¹Ø±ÕÏÂÀ­ÁĞ±í¿ò
+		sender->onSelected(list); //å…³é—­ä¸‹æ‹‰åˆ—è¡¨æ¡†
 
 		std::string name = sender->getName();
 		int index = dynamic_cast<ui::Button*>(list)->getTag();
@@ -5210,7 +5211,7 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 			if (nowEditingSignalPar) {
 				this->initSingleParUi();
 			}
-			// ¹ØµôËùÓĞµÄÃæ°å
+			// å…³æ‰æ‰€æœ‰çš„é¢æ¿
 			this->setTailProPanelVisible(false);
 			this->setFireProLayerVisible(false);
 			isSingleModeFireProLayerOpen = false;
@@ -5308,7 +5309,7 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 		//else if (name == "jsonFileList") {
 		//	jsonFile = "json/" + jsonFiles.at(index);
 
-		//	/////ÖØ¶ÁÊı¾İ
+		//	/////é‡è¯»æ•°æ®
 		//	this->readJsonData();
 
 		//}
@@ -5330,7 +5331,7 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 	}
 }
 
-////////////////////********* ¸´Ñ¡¿ò»Øµ÷º¯Êı *******/////////////////////////////////////////
+////////////////////********* å¤é€‰æ¡†å›è°ƒå‡½æ•° *******/////////////////////////////////////////
 void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 	auto checkBox = (ui::CheckBox*)pSender;
 	std::string name = checkBox->getName();
@@ -5375,7 +5376,7 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 		if (name == "moveMode_free") {
 			((CheckBox*)seekByName(singleRootNode, "moveMode_relative"))->setSelectedState(false);
 			
-			// ĞèÒª ½«render ÇåÀíÔÙ¼Ó½øÀ´
+			// éœ€è¦ å°†render æ¸…ç†å†åŠ è¿›æ¥
 			singlePar->clearRender();
 			singlePar->resetSystem();
 			nowEditingSignalPar->_positionType = positionType::FREE;
@@ -5386,7 +5387,7 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 		if (name == "moveMode_relative") {
 			((CheckBox*)seekByName(singleRootNode, "moveMode_free"))->setSelectedState(false);
 			
-			// ĞèÒª ½«render ÇåÀíÔÙ¼Ó½øÀ´
+			// éœ€è¦ å°†render æ¸…ç†å†åŠ è¿›æ¥
 			singlePar->clearRender();
 			singlePar->resetSystem();
 			nowEditingSignalPar->_positionType = positionType::RELATIVE;
@@ -5474,7 +5475,7 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 		if (name == "moveMode_free") {
 			((CheckBox*)seekByName(singleRootNode, "moveMode_relative"))->setSelectedState(true);
 			
-			// ĞèÒª ½«render ÇåÀíÔÙ¼Ó½øÀ´
+			// éœ€è¦ å°†render æ¸…ç†å†åŠ è¿›æ¥
 			singlePar->clearRender();
 			singlePar->resetSystem();
 			nowEditingSignalPar->_positionType = positionType::RELATIVE;
@@ -5484,7 +5485,7 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 		if (name == "moveMode_relative") {
 			((CheckBox*)seekByName(singleRootNode, "moveMode_free"))->setSelectedState(true);
 			
-			// ĞèÒª ½«render ÇåÀíÔÙ¼Ó½øÀ´
+			// éœ€è¦ å°†render æ¸…ç†å†åŠ è¿›æ¥
 			singlePar->clearRender();
 			singlePar->resetSystem();
 			nowEditingSignalPar->_positionType = positionType::FREE;
@@ -5539,7 +5540,7 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 }	
 
 
-// »ñÈ¡ textureÎÄ¼şÏÂµÄ .png ÎÆÀíÍ¼Æ¬
+// è·å– textureæ–‡ä»¶ä¸‹çš„ .png çº¹ç†å›¾ç‰‡
 std::vector<std::string> ParticleUiView::getPngFileName() {
 	std::vector<std::string> texList;
 	const int maxNum = 300;
@@ -5569,7 +5570,7 @@ std::vector<std::string> ParticleUiView::getPngFileName() {
 }
 
 
-// »ñÈ¡ textureÎÄ¼şÏÂµÄ .png ÎÆÀíÍ¼Æ¬
+// è·å– textureæ–‡ä»¶ä¸‹çš„ .png çº¹ç†å›¾ç‰‡
 std::vector<std::string> ParticleUiView::getJsonFileName() {
 	std::vector<std::string> texList;
 	const int maxNum = 300;

@@ -632,6 +632,7 @@ class ParticleEmitter : public Node
 
 	public:
 		static int updatePriority;
+		static bool isUiEditorModel;     // 是否是在UI编辑模式下，非UI编辑模式为正式使用模式
 
 		ParticleEmitter();
 		~ParticleEmitter();
