@@ -4758,7 +4758,7 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 				// 加一个曲线点
 				this->addFireStartCurvePoints(location);
 				isAddFireStartCurvePoint = true;
-				CCLOG("+++++++++++++++++++++ addFireStartCurvePoints ！");
+				CCLOG("+++++++++++++++++++++ addFireStartCurvePoints");
 			}
 		}
 		// 在 那个 曲线面板中
@@ -4774,7 +4774,7 @@ bool ParticleUiView::onTouchBegan(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 				// 加一个曲线点
 				this->addParLifeCurvePoints(location);
 				isAddParLifeCurvePoint = true;
-				CCLOG("+++++++++++++++++++++ addParLifeCurvePoints ！");
+				CCLOG("+++++++++++++++++++++ addParLifeCurvePoints");
 			}
 		}
 

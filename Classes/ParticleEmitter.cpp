@@ -298,6 +298,8 @@ void ParticleEmitter::onEnter() {
 
 }
 void ParticleEmitter::onExit() {
+	this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
+
 	Node::onExit();
 	//this->unscheduleUpdate();
 	//this->stopSystem();
@@ -640,9 +642,9 @@ void ParticleEmitter::releaseRender() {
 								// 不是无限长的生命，需要加到runningLayer上自死亡
 								cPar->second->_renderer->removeFromParent();
 								this->runningLayer->addChild(cPar->second->_renderer);
-								Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
-								parentPos = this->runningLayer->convertToNodeSpace(parentPos);
-								cPar->second->_renderer->setPosition(parentPos);
+								//Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
+								//parentPos = this->runningLayer->convertToNodeSpace(parentPos);
+								cPar->second->_renderer->setPosition(this->worldPos);
 								cPar->second->_renderer->scheduleUpdateWithPriority(1);
 								// 放完自死
 								cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
@@ -668,8 +670,8 @@ void ParticleEmitter::releaseRender() {
 					ePar->retain();
 					ePar->removeFromParent();
 					this->runningLayer->addChild(ePar);
-					Vec2 parentPos = this->convertToWorldSpace(Vec2::ZERO);
-					ePar->setPosition(parentPos);
+					//Vec2 parentPos = this->convertToWorldSpace(Vec2::ZERO);
+					ePar->setPosition(this->worldPos);
 					ePar->release();
 					ePar->scheduleUpdateWithPriority(int(CCRANDOM_0_1() * 200));
 					// 放完自死
@@ -815,6 +817,7 @@ void ParticleEmitter::update(float dt) {
 	if (isAllFireProNotActive ) {
 		_isActive = false;
 		if (!ParticleEmitter::isUiEditorModel) {
+			this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
 			this->releaseRender();   // 先清理render
 			this->clearData();       // 清理数据
 			if (_isAutoRemoveOnFinish) {
