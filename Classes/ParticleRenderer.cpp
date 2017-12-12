@@ -318,6 +318,8 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 		{
 			//this->unscheduleUpdate();
 			//
+			this->setScaleX(1);
+			this->setScaleY(1);
 
 			this->removeFromParent();
 			if (ParticleRenderer::cacheSize >= ParticleRenderer::maxCacheSize) {

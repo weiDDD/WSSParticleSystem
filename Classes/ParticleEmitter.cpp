@@ -640,12 +640,30 @@ void ParticleEmitter::releaseRender() {
 							}
 							else {
 								// 不是无限长的生命，需要加到runningLayer上自死亡
+								float scaleX = cPar->second->_renderer->getScaleX();
+								float scaleY = cPar->second->_renderer->getScaleY();
+								auto parent = cPar->second->_renderer->getParent();
+								while (true) {
+									float fScaleX = parent->getScaleX();
+									float fScaleY = parent->getScaleY();
+									scaleX = scaleX * fScaleX;
+									scaleY = scaleY * fScaleY;
+
+									parent = parent->getParent();
+									if (!parent) {
+										break;
+									}
+								}
+
 								cPar->second->_renderer->removeFromParent();
 								this->runningLayer->addChild(cPar->second->_renderer);
 								//Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
 								//parentPos = this->runningLayer->convertToNodeSpace(parentPos);
 								cPar->second->_renderer->setPosition(this->worldPos);
 								cPar->second->_renderer->scheduleUpdateWithPriority(1);
+
+								cPar->second->_renderer->setScaleX(scaleX);
+								cPar->second->_renderer->setScaleY(scaleY);
 								// 放完自死
 								cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
 								cPar->second->_renderer->_emitter = nullptr;
