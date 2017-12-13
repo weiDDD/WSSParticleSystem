@@ -235,6 +235,8 @@ ParticleEmitter::ParticleEmitter()
 	_isAutoRemoveOnFinish = false;
 	worldPos = Vec2(0, 0);
 
+	fScaleX = 0;
+	fScaleY = 0;
 }
 
 ParticleEmitter::~ParticleEmitter() {
@@ -299,6 +301,7 @@ void ParticleEmitter::onEnter() {
 }
 void ParticleEmitter::onExit() {
 	this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
+	this->getFatherScale();
 
 	Node::onExit();
 	//this->unscheduleUpdate();
@@ -640,21 +643,7 @@ void ParticleEmitter::releaseRender() {
 							}
 							else {
 								// 不是无限长的生命，需要加到runningLayer上自死亡
-								float scaleX = cPar->second->_renderer->getScaleX();
-								float scaleY = cPar->second->_renderer->getScaleY();
-								auto parent = cPar->second->_renderer->getParent();
-								while (true) {
-									float fScaleX = parent->getScaleX();
-									float fScaleY = parent->getScaleY();
-									scaleX = scaleX * fScaleX;
-									scaleY = scaleY * fScaleY;
-
-									parent = parent->getParent();
-									if (!parent) {
-										break;
-									}
-								}
-
+								
 								cPar->second->_renderer->removeFromParent();
 								this->runningLayer->addChild(cPar->second->_renderer);
 								//Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
@@ -662,8 +651,8 @@ void ParticleEmitter::releaseRender() {
 								cPar->second->_renderer->setPosition(this->worldPos);
 								cPar->second->_renderer->scheduleUpdateWithPriority(1);
 
-								cPar->second->_renderer->setScaleX(scaleX);
-								cPar->second->_renderer->setScaleY(scaleY);
+								cPar->second->_renderer->setScaleX(fScaleX);
+								cPar->second->_renderer->setScaleY(fScaleY);
 								// 放完自死
 								cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
 								cPar->second->_renderer->_emitter = nullptr;
@@ -699,6 +688,23 @@ void ParticleEmitter::releaseRender() {
 			}
 		}
 		++itor;
+	}
+}
+
+void ParticleEmitter::getFatherScale() {
+	fScaleX = 1;
+	fScaleY = 1;
+	auto parent = (Node*)this;
+	while (true) {
+		float scaleX = parent->getScaleX();
+		float scaleY = parent->getScaleY();
+		fScaleX *= scaleX;
+		fScaleY *= scaleY;
+
+		parent = parent->getParent();
+		if (!parent) {
+			break;
+		}
 	}
 }
 
@@ -836,6 +842,8 @@ void ParticleEmitter::update(float dt) {
 		_isActive = false;
 		if (!ParticleEmitter::isUiEditorModel) {
 			this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
+			this->getFatherScale();
+
 			this->releaseRender();   // 先清理render
 			this->clearData();       // 清理数据
 			if (_isAutoRemoveOnFinish) {

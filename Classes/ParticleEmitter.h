@@ -717,6 +717,12 @@ class ParticleEmitter : public Node
 		// 世界位置
 		Vec2 worldPos;
 
+		// 跟随父节点的缩放
+		float fScaleX;
+		float fScaleY;
+
+		void getFatherScale();
+
 		/////--------------发射器数据
 		std::vector<emitterFirePro*> fireProVec;
 
