@@ -291,12 +291,12 @@ struct tailPro {
 		color = Color3B(255, 255, 255);
 	}
 	~tailPro() {
-		if (tailNode) {
+		/*if (tailNode) {
 			if (tailNode->getParent()) {
 				tailNode->removeFromParent();
 			}
 			tailNode = nullptr;
-		}
+		}*/
 	}
 	// 刷新拖尾
 	void refreshTailData();

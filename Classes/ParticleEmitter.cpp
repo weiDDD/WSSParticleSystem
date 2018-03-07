@@ -294,7 +294,7 @@ void ParticleEmitter::onEnter() {
 		ParticleEmitter::updatePriority = 200;
 	}*/
 
-	//this->scheduleUpdate();
+	this->scheduleUpdate();
 
 	
 
@@ -363,7 +363,7 @@ bool ParticleEmitter::init() {
 
 	//this->addOneFirePro(parType::render, "");
 
-	this->scheduleUpdate();
+	//this->scheduleUpdate();
 	
 	return true;
 }
