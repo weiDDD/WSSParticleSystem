@@ -648,7 +648,7 @@ void ParticleEmitter::releaseRender() {
 								this->runningLayer->addChild(cPar->second->_renderer);
 								//Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
 								//parentPos = this->runningLayer->convertToNodeSpace(parentPos);
-								cPar->second->_renderer->setPosition(this->worldPos);
+								cPar->second->_renderer->setPosition(this->worldPos.x - this->runningLayer->getPositionX(), this->worldPos.y - this->runningLayer->getPositionY());
 								cPar->second->_renderer->scheduleUpdateWithPriority(1);
 
 								cPar->second->_renderer->setScaleX(fScaleX);
@@ -678,7 +678,7 @@ void ParticleEmitter::releaseRender() {
 					ePar->removeFromParent();
 					this->runningLayer->addChild(ePar);
 					//Vec2 parentPos = this->convertToWorldSpace(Vec2::ZERO);
-					ePar->setPosition(this->worldPos);
+					ePar->setPosition(this->worldPos.x - this->runningLayer->getPositionX(), this->worldPos.y - this->runningLayer->getPositionY());
 					ePar->release();
 					ePar->scheduleUpdateWithPriority(int(CCRANDOM_0_1() * 200));
 					// 放完自死
