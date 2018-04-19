@@ -807,6 +807,8 @@ void ParticleEmitter::update(float dt) {
 					//emitterPar->par->resetSystem();
 					emitterPar->par->stopSystem();
 
+					emitterPar->par->clearData ();
+
 					auto tem = cPar->_emitter[parIndex];
 					cPar->_emitter[parIndex] = cPar->_emitter[cPar->_particleCount-1];
 					cPar->_emitter[cPar->_particleCount - 1] = tem;
