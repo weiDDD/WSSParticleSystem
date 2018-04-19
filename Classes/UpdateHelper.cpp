@@ -1017,7 +1017,7 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 	// мон╡
 	if (firePro._tailPro.isActive) {
 		if (!firePro._tailPro.tailNode) {
-			firePro._tailPro.tailNode = MotionStreak::create(firePro._tailPro.fade, firePro._tailPro.minSeg, firePro._tailPro.stroke, firePro._tailPro.color, "tail/" + firePro._tailPro.tailName);
+			firePro._tailPro.tailNode = MotionStreak::create(firePro._tailPro.fade, firePro._tailPro.minSeg, firePro._tailPro.stroke, firePro._tailPro.color, firePro._tailPro.tailName);
 			father->runningLayer->addChild(firePro._tailPro.tailNode , father->getLocalZOrder()-1);
 		}
 		else {

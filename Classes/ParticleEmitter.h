@@ -731,6 +731,11 @@ class ParticleEmitter : public Node
 		// 纹理的路径
 		static void setTexturePath(std::string path);
 		static std::string texturePath;
+
+		// 拖尾的路径
+		static void setTailPath(std::string path);
+		static std::string tailPath;
+
 	private:
 
 		// 是否在发射完后自动死亡

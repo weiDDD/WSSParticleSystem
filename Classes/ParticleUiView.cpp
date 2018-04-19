@@ -219,6 +219,7 @@ bool ParticleUiView::init() {
 	std::srand((unsigned int)time(0));
 
 	ParticleEmitter::setTexturePath("texture/");
+	ParticleEmitter::setTailPath("tail/");
 
 	// 主菜单 面板
 	mainRootNode = GUIReader::getInstance()->widgetFromJsonFile("main_ui.ExportJson");

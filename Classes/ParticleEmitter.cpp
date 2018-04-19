@@ -44,7 +44,8 @@ void childrenPar::setTotalParticles(int tp, Node* father,std::string emitterFile
 					ePar->par->readJsonData(FileCenter::getInstance()->readJsonData(ParticleEmitter::sourcePath + emitterFileName));
 				}
 				ePar->par->unscheduleUpdate();
-				ePar->par->setVisible(false);
+				//ePar->par->setVisible(false);
+				ePar->par->setPosition(-1000,-1000);
 				father->addChild(ePar->par);
 				_emitter.push_back(ePar);
 			}
@@ -222,6 +223,13 @@ std::string ParticleEmitter::texturePath = "";
 void ParticleEmitter::setTexturePath(std::string path) {
 	ParticleEmitter::texturePath = path;
 }
+
+// 拖尾的路径
+std::string ParticleEmitter::tailPath = "";
+void ParticleEmitter::setTailPath(std::string path) {
+	ParticleEmitter::tailPath = path;
+}
+
 
 void ParticleEmitter::setRunningLayer(Node* layer) {
 	this->runningLayer = layer;
@@ -680,7 +688,7 @@ void ParticleEmitter::releaseRender() {
 					//Vec2 parentPos = this->convertToWorldSpace(Vec2::ZERO);
 					ePar->setPosition(this->worldPos.x - this->runningLayer->getPositionX(), this->worldPos.y - this->runningLayer->getPositionY());
 					ePar->release();
-					ePar->scheduleUpdateWithPriority(int(CCRANDOM_0_1() * 200));
+					ePar->scheduleUpdateWithPriority(1); //int(CCRANDOM_0_1() * 200));
 					// 放完自死
 					ePar->setIsAutoRemoveOnFinish(true);
 				}
@@ -746,8 +754,8 @@ void ParticleEmitter::update(float dt) {
 		this->addRender();
 	}
 	
-	
-
+	// 是否还有子发射器在运动，在工作
+	bool isHaveEmitterParRunning = false;
 	{
 		auto itor = childrenParMap.begin();
 		while (itor != childrenParMap.end()) {
@@ -784,6 +792,8 @@ void ParticleEmitter::update(float dt) {
 					emitterPar->par->setRotation(emitterPar->par->getParent()->getRotation() + emitterPar->pro.rotation.constValue);
 
 					parIndex++;
+
+					isHaveEmitterParRunning = true;
 				}
 				else {
 					emitterPar->par->unscheduleUpdate();
@@ -794,7 +804,8 @@ void ParticleEmitter::update(float dt) {
 					}
 					emitterPar->par->releaseRender();
 					
-					emitterPar->par->resetSystem();
+					//emitterPar->par->resetSystem();
+					emitterPar->par->stopSystem();
 
 					auto tem = cPar->_emitter[parIndex];
 					cPar->_emitter[parIndex] = cPar->_emitter[cPar->_particleCount-1];
@@ -838,7 +849,7 @@ void ParticleEmitter::update(float dt) {
 	}
 
 	// 如果所有的发射属性都TM玩完了，这个发射器也玩完了
-	if (isAllFireProNotActive ) {
+	if (isAllFireProNotActive && !isHaveEmitterParRunning) {
 		_isActive = false;
 		if (!ParticleEmitter::isUiEditorModel) {
 			this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
@@ -1173,7 +1184,8 @@ void tailPro::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document
 	m_rapidjson::Value cObject(m_rapidjson::kObjectType);
 
 	cObject.AddMember("isActive", isActive, allocator);
-	cObject.AddMember("tailName", tailName.c_str(), allocator);
+	
+	cObject.AddMember("tailName", tailName.c_str() , allocator);
 	cObject.AddMember("fade", fade, allocator);
 	cObject.AddMember("minSeg", minSeg, allocator);
 	cObject.AddMember("stroke", stroke, allocator);
@@ -1197,6 +1209,16 @@ void tailPro::readJsonData(m_rapidjson::Document& doc, char* nameKey) {
 			}
 			if (object.HasMember("tailName")) {
 				tailName = object["tailName"].GetString();
+
+				if (tailName != "") {
+					float start = tailName.rfind("\/", tailName.size());
+					if (start > -1) {
+						std::string name = tailName.substr(start + 1, tailName.size());
+						tailName = name;
+					}
+
+					tailName = ParticleEmitter::tailPath + tailName;
+				}
 			}
 			if (object.HasMember("fade")) {
 				fade = object["fade"].GetDouble();
