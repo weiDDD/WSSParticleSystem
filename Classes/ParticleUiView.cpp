@@ -204,6 +204,9 @@ bool ParticleUiView::init() {
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);  //将事件添加到this这个层中
 	this->setTouchEnabled(true);
 
+	ParticleEmitter::setTexturePath("texture/");
+	ParticleEmitter::setTailPath("tail/");
+
 	// 获取纹理图片列表
 	texNames = this->getPngFileName();
 
@@ -218,8 +221,6 @@ bool ParticleUiView::init() {
 	// 设置随机数种子
 	std::srand((unsigned int)time(0));
 
-	ParticleEmitter::setTexturePath("texture/");
-	ParticleEmitter::setTailPath("tail/");
 
 	// 主菜单 面板
 	mainRootNode = GUIReader::getInstance()->widgetFromJsonFile("main_ui.ExportJson");
@@ -1459,7 +1460,7 @@ void ParticleUiView::initUi() {
 			else if(isSingleModeTailPanelOpen) {
 				this->getNowEditingSignalPar()->_tailPro.color = Color3B(rectColor.x, rectColor.y, rectColor.z);
 
-				this->getNowEditingSignalPar()->_tailPro.tailNode->initWithFade(this->getNowEditingSignalPar()->_tailPro.fade, this->getNowEditingSignalPar()->_tailPro.minSeg, this->getNowEditingSignalPar()->_tailPro.stroke, this->getNowEditingSignalPar()->_tailPro.color, "tail/" + this->getNowEditingSignalPar()->_tailPro.tailName);
+				this->getNowEditingSignalPar()->_tailPro.tailNode->initWithFade(this->getNowEditingSignalPar()->_tailPro.fade, this->getNowEditingSignalPar()->_tailPro.minSeg, this->getNowEditingSignalPar()->_tailPro.stroke, this->getNowEditingSignalPar()->_tailPro.color, ParticleEmitter::tailPath + this->getNowEditingSignalPar()->_tailPro.tailName);
 				
 			}
 		}
@@ -4700,19 +4701,19 @@ void ParticleUiView::editBoxTextChanged(ExEditBox* editBox, const std::string& t
 		nowEditingSignalPar->_tailPro.fade = value;
 		//nowEditingSignalPar->_tailPro.refreshTailData();
 
-		nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, "tail/" + nowEditingSignalPar->_tailPro.tailName);
+		nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, ParticleEmitter::tailPath + nowEditingSignalPar->_tailPro.tailName);
 	}
 	else if (editBoxName == "tail_minSeg_input") {
 		nowEditingSignalPar->_tailPro.minSeg = value;
 		//nowEditingSignalPar->_tailPro.refreshTailData();
 
-		nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, "tail/" + nowEditingSignalPar->_tailPro.tailName);
+		nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, ParticleEmitter::tailPath + nowEditingSignalPar->_tailPro.tailName);
 	}
 	else if (editBoxName == "tail_stroke_input") {
 		nowEditingSignalPar->_tailPro.stroke = value;
 		//nowEditingSignalPar->_tailPro.refreshTailData();
 
-		nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, "tail/" + nowEditingSignalPar->_tailPro.tailName);
+		nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, ParticleEmitter::tailPath + nowEditingSignalPar->_tailPro.tailName);
 	}
 
 }
@@ -5245,10 +5246,10 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 			}
 		}
 		else if (name == "tailSpriteList") {
-			nowEditingSignalPar->_tailPro.tailName = tailSpriteNames.at(index);
+			nowEditingSignalPar->_tailPro.tailName = ParticleEmitter::tailPath + tailSpriteNames.at(index);
 			//nowEditingSignalPar->_tailPro.refreshTailData();
 
-			nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, "tail/" + nowEditingSignalPar->_tailPro.tailName);
+			nowEditingSignalPar->_tailPro.tailNode->initWithFade(nowEditingSignalPar->_tailPro.fade, nowEditingSignalPar->_tailPro.minSeg, nowEditingSignalPar->_tailPro.stroke, nowEditingSignalPar->_tailPro.color, nowEditingSignalPar->_tailPro.tailName);
 		}
 		else if (name == "fireAreaMode") {
 			if (index == 0) {
@@ -5440,7 +5441,7 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 		}
 		if (name == "tail_active_checkbox") {
 			nowEditingSignalPar->_tailPro.isActive = true;
-			nowEditingSignalPar->_tailPro.tailName = tailSpriteNames.at(0);
+			nowEditingSignalPar->_tailPro.tailName = ParticleEmitter::tailPath + tailSpriteNames.at(0);
 		}
 		if (name == "addRenderFireProCheckBox") {
 			((CheckBox*)seekByName(mainRootNode, "addEmitterFireProCheckBox"))->setSelectedState(false);
@@ -5636,7 +5637,7 @@ std::vector<std::string> ParticleUiView::getTailSpriteName() {
 	int i = 0;
 
 	string path = ""; //FileUtils::getInstance()->getWritablePath();
-	path.append("tail/*.png");
+	path.append(ParticleEmitter::tailPath + "*.png");
 	WIN32_FIND_DATAA wfd;
 	HANDLE hFind;
 
