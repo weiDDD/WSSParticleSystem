@@ -345,6 +345,9 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 	if (_emitter && _emitter->runningLayer) {
 		_emitterPos = _emitter->convertToWorldSpace(Vec2::ZERO);
 		_emitterPos = _emitter->runningLayer->convertToNodeSpace(_emitterPos);
+
+		// visible
+		this->setVisible(_emitter->isVisible());
 	}
 	bool isHaveParLive = true;
 
