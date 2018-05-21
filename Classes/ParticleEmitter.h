@@ -364,16 +364,18 @@ struct emitterFirePro {
 		_delayTime = 0;
 	}
 	~emitterFirePro() {
-		if (_debugDrawNode_centerPoint) {
+		/*if (_debugDrawNode_centerPoint) {
 			if (_debugDrawNode_centerPoint->getParent()) {
 				_debugDrawNode_centerPoint->removeFromParent();
+				_debugDrawNode_centerPoint = nullptr;
 			}
 		}
 		if (_debugDrawNode_fireAreaMode) {
 			if (_debugDrawNode_fireAreaMode->getParent()) {
 				_debugDrawNode_fireAreaMode->removeFromParent();
+				_debugDrawNode_fireAreaMode = nullptr;
 			}
-		}
+		}*/
 	}
 
 	void stopFirePro() {

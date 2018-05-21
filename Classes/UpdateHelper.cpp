@@ -1037,11 +1037,11 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 	}
 
 	//// --- »æÖÆµ÷ÊÔ¿ò
-	if (!firePro._debugDrawNode_centerPoint) {
+	if (!firePro._debugDrawNode_centerPoint && ParticleEmitter::isUiEditorModel) {
 		firePro._debugDrawNode_centerPoint = DrawNode::create();
 		father->runningLayer->addChild(firePro._debugDrawNode_centerPoint, 600);
 	}
-	if (!firePro._debugDrawNode_fireAreaMode) {
+	if (!firePro._debugDrawNode_fireAreaMode && ParticleEmitter::isUiEditorModel) {
 		firePro._debugDrawNode_fireAreaMode = DrawNode::create();
 		father->runningLayer->addChild(firePro._debugDrawNode_fireAreaMode, 600);
 	}

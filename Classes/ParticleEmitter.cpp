@@ -670,8 +670,8 @@ void ParticleEmitter::releaseRender() {
 					}
 					else {
 						cPar->second->_renderer->removeFromParent();
-						cPar->second->_renderer->release();
 						cPar->second->_renderer->_emitter = nullptr;
+						cPar->second->_renderer->release();
 						cPar->second->_renderer = nullptr;
 					}
 				}
