@@ -36,7 +36,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     if(!glview) {
         glview = GLViewImpl::create("WS-ParticleSystem");
         director->setOpenGLView(glview);
-		glview->setFrameSize(1600,1000);
+		glview->setFrameSize(1500,900);
 		glview->setDesignResolutionSize(1600, 1000, kResolutionNoBorder);
     }
 

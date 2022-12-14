@@ -3,6 +3,12 @@
 #include "UpdateHelper.h"
 using namespace pp;
 
+#define mSin(x) UpdateHelper::getInstance()->getSinCacheValue(x)
+#define mCos(x) UpdateHelper::getInstance()->getCosCacheValue(x)
+
+//#define mSin(x) sinf(x / 180 * P_PI)
+//#define mCos(x) cosf(x / 180 * P_PI)
+
 // 渲染是否由本类来渲染，TRUE 就是本类来渲染, false交给cocos
 static bool render_by_this_class = false;
 
@@ -291,7 +297,7 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 				if (_emitter && _emitter->isRunning() && _emitter->runningLayer) {
 					auto firePro = _emitter->getFireProById(flowCircleRadiusFireProId);
 					if (firePro) {
-						offset = Vec2(firePro->_fireArea.inCircleRadius * cosf(p.startToCenterAngle / 180 * P_PI), firePro->_fireArea.inCircleRadius * sinf(p.startToCenterAngle / 180 * P_PI));
+						offset = Vec2(firePro->_fireArea.inCircleRadius * mCos(p.startToCenterAngle), firePro->_fireArea.inCircleRadius * mSin(p.startToCenterAngle));
 					}
 				}
 				newPos = Vec2(newPos.x + offset.x, newPos.y + offset.y);
@@ -370,7 +376,7 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 	{
 		// 有关VAO & VBO 的操作可以不做，因为我们采用的是cocos的渲染命令渲染，而渲染命令里面做了VAO & VBO的操作我们这里不要多此一举，PS:如果自己渲染必须开启
 		if (render_by_this_class) {
-			postStep();
+			//postStep();
 		}
 	}
 
@@ -486,6 +492,8 @@ void ParticleRenderer::setupVBO() {
 	// 得到一个新的缓冲区对象
 	glGenBuffers(2, &_buffersVBO[0]);
 
+	GL::bindVAO(0);
+
 	// 绑定缓冲区 & 初始化缓冲区
 	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
@@ -495,7 +503,7 @@ void ParticleRenderer::setupVBO() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	CHECK_GL_ERROR_DEBUG();
+	//CHECK_GL_ERROR_DEBUG();
 }
 
 bool ParticleRenderer::allocMemory() {
@@ -568,7 +576,8 @@ void ParticleRenderer::draw(Renderer* renderer, const Mat4 &transform, uint32_t 
 		//quad command
 		if (_particleIdx > 0)
 		{
-			_quadCommand.init(_globalZOrder, _texture->getName(), getGLProgramState(), _blendFunc, _quads, _particleIdx, transform, flags);
+			Mat4 newTransform = Mat4();
+			_quadCommand.init(_globalZOrder, _texture->getName(), getGLProgramState(), _blendFunc, _quads, _particleIdx, newTransform, flags);
 			renderer->addCommand(&_quadCommand);
 		}
 	}
@@ -581,19 +590,21 @@ void ParticleRenderer::draw(Renderer* renderer, const Mat4 &transform, uint32_t 
 }
 
 void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
+	Vec2 pos = this->getPosition();
+
+	this->setPosition(Vec2(300,300));
 	///获取shaderstate
 	auto glProgramState = getGLProgramState();
-
-	glProgramState->apply(transform);
-
 	//
-
+	glProgramState->apply(transform);
+	// 应用叠加模式
+	GL::blendFunc(_blendFunc.src, _blendFunc.dst);
+	// 绑定纹理
+	GL::bindTexture2D(_texture->getName());
+	
+	
 	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-
-	GL::bindTexture2D(_texture->getName());
 
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
@@ -607,15 +618,14 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	// tex coords
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, texCoords));
 
-	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
 	//glDrawArrays(GL_TRIANGLE_STRIP, 0, _particleCount * 4);
 
 	glDrawElements(GL_TRIANGLES, (GLsizei)_particleCount*6, GL_UNSIGNED_SHORT, 0);
 
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	//GL::bindTexture2D(0);
-	
 
 }
 
@@ -727,6 +737,7 @@ void ParticleRenderer::updateBlendFunc() {
 }
 
 void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const Vec2& newPosition , float dt) {
+	Vec2 pos = this->getPosition();
 	V3F_C4B_T2F_Quad *quad;
 
 	quad = &(_quads[_particleIdx]);
@@ -801,8 +812,10 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 		if (skewX > 0 || skewY > 0) {
 			float skewMatArray[4] =
 			{
-				(float)sinf(CC_DEGREES_TO_RADIANS(skewY)), (float)sinf(CC_DEGREES_TO_RADIANS(skewX)),
-				(float)cosf(CC_DEGREES_TO_RADIANS(skewX)), (float)cosf(CC_DEGREES_TO_RADIANS(skewY))
+				//(float)sinf(CC_DEGREES_TO_RADIANS(skewY)), (float)sinf(CC_DEGREES_TO_RADIANS(skewX)),
+				//(float)cosf(CC_DEGREES_TO_RADIANS(skewX)), (float)cosf(CC_DEGREES_TO_RADIANS(skewY))
+				(float)mSin(skewY), (float)mSin(skewX),
+				(float)mCos(skewX), (float)mCos(skewY)
 			};
 			// bottom-left
 			myPosMat[0] = 0 + myPosMat[0] * skewMatArray[2];
@@ -825,9 +838,9 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 		GLfloat x = newPosition.x;
 		GLfloat y = newPosition.y;
 
-		GLfloat r = (GLfloat)-CC_DEGREES_TO_RADIANS(rotation);
-		GLfloat cr = cosf(r);
-		GLfloat sr = sinf(r);
+		GLfloat r = (GLfloat)-rotation;
+		GLfloat cr = mCos(r);
+		GLfloat sr = mSin(r);
 		/*GLfloat ax = x1 * cr - y1 * sr + x;
 		GLfloat ay = x1 * sr + y1 * cr + y;
 		GLfloat bx = x2 * cr - y1 * sr + x;
@@ -856,7 +869,7 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 		float ahchorAngle = Vec2( anchorPoint.x - newPosition.x , anchorPoint.y - newPosition.y ).getAngle() / P_PI * 180;
 
 
-		Vec2 rotatedAnchorPoint = Vec2(anchorDis * cosf((-ahchorAngle - rotation)/180*P_PI) , anchorDis * sinf((-ahchorAngle - rotation) / 180 * P_PI));
+		Vec2 rotatedAnchorPoint = Vec2(anchorDis * mCos(-ahchorAngle - rotation) , anchorDis * mSin(-ahchorAngle - rotation));
 
 
 		// bottom-left
@@ -887,8 +900,8 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 		if (skewX > 0 || skewY > 0) {
 			float skewMatArray[4] =
 			{
-				(float)sinf(CC_DEGREES_TO_RADIANS(skewY)), (float)sinf(CC_DEGREES_TO_RADIANS(skewX)),
-				(float)cosf(CC_DEGREES_TO_RADIANS(skewX)), (float)cosf(CC_DEGREES_TO_RADIANS(skewY))
+				(float)mSin(skewY), (float)mSin(skewX),
+				(float)mCos(skewX), (float)mCos(skewY)
 			};
 
 			float myPosMat[8] = {

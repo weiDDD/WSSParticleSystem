@@ -112,15 +112,7 @@ bool HelloWorld::init()
 	/*testLayer = Layer::create();
 	this->addChild(testLayer);*/
 
-	std::vector<float> test;
-	for (int i = 0; i < 10; ++i) {
-		test.push_back(i);
-	}
-	auto itor = test.begin();
-	while (itor != test.end()) {
-		CCLOG("test num:%f", (*itor));
-		itor++;
-	}	
+
 	// cocos2dx 自带的粒子系统测试
 	/*particleSystem = CCParticleFireworks::create();
 	particleSystem->setTexture(CCTextureCache::sharedTextureCache()->addImage("coord_point21.png"));
@@ -140,11 +132,8 @@ bool HelloWorld::init()
 
 	this->runAction( CCSequence::create( CCDelayTime::create(3) , CCCallFunc::create( this, callfunc_selector(HelloWorld::callTest)), NULL));*/
 
-	
-
-	
+	// ui界面创建
 	uiView = ParticleUiView::create(); 
-	
 	this->addChild(uiView);
 	
 	/*for (int i = 0; i < 50; ++i) {
@@ -185,34 +174,6 @@ void HelloWorld::update(float dt){
 
 	//////粒子效果测试
 	
-	/*float skewX = skewSprite->getSkewX();
-	skewSprite->setSkewX(skewX + 1);*/
-
-	/*float skewY = skewSprite->getSkewY();
-	skewSprite->setSkewY(skewY + 1);*/
-
-	/*float rSkewX = skewSprite->getRotationSkewX();
-	skewSprite->setRotationSkewX(rSkewX + 1);*/
-
-	/*Vec3 rRotation = skewSprite->getRotation3D();
-	rRotation.x++;
-	skewSprite->setRotation3D(rRotation);*/
-
-	/*float rSkewY = skewSprite2->getRotationSkewY();
-	skewSprite2->setRotationSkewY(rSkewY + 1);*/
-
-	/*ParticleNode* particle = ParticleNode::create("light.png");
-	particle->time = 2;
-	particle->timeCount = 2;
-	particle->px = 500;
-	particle->py = 800;
-	particle->speed = 5;
-	float angle = 90;
-	particle->moveAngle = angle;
-	particle->speedMoveAngle = 5;
-	particle->acceMoveAngle = -0.1;
-	particle->endSize = Size(10, 10);
-	this->addChild(particle,100);*/
 }
 
 

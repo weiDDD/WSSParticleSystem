@@ -1,5 +1,12 @@
 #include "UpdateHelper.h"
+#include "math.h"
 using namespace pp;
+
+#define mSin(x) UpdateHelper::getInstance()->getSinCacheValue(x)
+#define mCos(x) UpdateHelper::getInstance()->getCosCacheValue(x)
+
+//#define mSin(x) sinf(x / 180 * P_PI)
+//#define mCos(x) cosf(x / 180 * P_PI)
 
 static long getNowTime() {
 	struct timeval now;
@@ -11,8 +18,38 @@ UpdateHelper* UpdateHelper::instance = UpdateHelper::getInstance();
 UpdateHelper* UpdateHelper::getInstance() {
 	if (!instance) {
 		instance = new UpdateHelper();
+		instance->initSinCosChacheValue();
 	}
 	return instance;
+}
+
+void UpdateHelper::initSinCosChacheValue(){
+	for (int i = 0; i <= 360; ++i){
+		float sinValue = sinf(i / 180.0 * P_PI);
+		float cosValue = cosf(i / 180.0 * P_PI);
+		sinAngleCache[i] = sinValue;
+		cosAngleCache[i] = cosValue;
+	}
+}
+
+float UpdateHelper::getSinCacheValue(int angle){
+	while (angle < 0){
+		angle += 360;
+	}
+	while (angle > 360){
+		angle -= 360;
+	}
+	return sinAngleCache[angle];
+}
+
+float UpdateHelper::getCosCacheValue(int angle){
+	while (angle < 0){
+		angle += 360;
+	}
+	while (angle > 360){
+		angle -= 360;
+	}
+	return cosAngleCache[angle];
 }
 
 void UpdateHelper::changePolygonToTriangleVec(std::vector<Vec2>& polygonPoints, std::vector<triangle>* triangleVec) {
@@ -237,8 +274,8 @@ void UpdateHelper::updateParticleMove(particleProperty& p,float dt) {
 		moveAngle = p.moveAngle.constValue;
 	}
 
-	p.speedX = speed * cosf(moveAngle / 180.0 * P_PI);
-	p.speedY = speed * sinf(moveAngle / 180.0 * P_PI);
+	p.speedX = speed * mCos(moveAngle);
+	p.speedY = speed * mSin(moveAngle);
 	// 重力 X
 	float gravityX = p.gravityX.getParticleVarietyValue(nowTimePrecent);
 	p.gravitySpeedX += gravityX*dt;
@@ -601,7 +638,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	else if (firePro._fireArea.fAreaType == fireAreaType::circle) {
 		float randAngle = CCRANDOM_0_1() * 360;
 		float randRadius = firePro._fireArea.inCircleRadius + CCRANDOM_0_1() * (firePro._fireArea.outCircleRadius - firePro._fireArea.inCircleRadius);
-		Vec2 randPos = Vec2(emitterPos.x + randRadius * cosf(randAngle / 180 * P_PI), emitterPos.y + randRadius * sinf(randAngle / 180 * P_PI));
+		Vec2 randPos = Vec2(emitterPos.x + randRadius * mCos(randAngle), emitterPos.y + randRadius * mSin(randAngle));
 		particle->pos.x = randPos.x;
 		particle->pos.y = randPos.y;
 		particle->startPos = particle->pos;
@@ -711,7 +748,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 			// 按角度转过去
 			float nowAngle = Vec2(randX - pointA.x, randY - pointA.y).getAngle() / P_PI * 180;
 			float nowDis = Vec2(randX, randY).getDistance(pointA);
-			Vec2 realPoint = Vec2(pointA.x + nowDis * cosf((nowAngle + angleOffset) / 180.0 * P_PI), pointA.y + nowDis * sinf((nowAngle + angleOffset) / 180.0 * P_PI));
+			Vec2 realPoint = Vec2(pointA.x + nowDis * mCos(nowAngle + angleOffset), pointA.y + nowDis * mSin(nowAngle + angleOffset));
 			particle->pos.x = emitterPos.x + realPoint.x;
 			particle->pos.y = emitterPos.y + realPoint.y;
 			particle->startPos = particle->pos;
@@ -763,7 +800,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 		// 按角度转过去
 		float nowAngle = Vec2(randX - pointA.x, randY - pointA.y).getAngle() / 3.14 * 180;
 		float nowDis = Vec2(randX, randY).getDistance(pointA);
-		Vec2 realPoint = Vec2(pointA.x + nowDis * cosf((nowAngle + angleOffset) / 180.0 * P_PI), pointA.y + nowDis * sinf((nowAngle + angleOffset) / 180.0 * P_PI));
+		Vec2 realPoint = Vec2(pointA.x + nowDis * mCos(nowAngle + angleOffset), pointA.y + nowDis * mSin(nowAngle + angleOffset));
 		particle->pos.x = emitterPos.x + realPoint.x;
 		particle->pos.y = emitterPos.y + realPoint.y;
 		particle->startPos = particle->pos;
@@ -783,7 +820,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 			float angle = offsetPos.getAngle() / P_PI * 180;
 			float dis = offsetPos.getDistance(Vec2(0, 0));
-			Vec2 newPos = Vec2(emitterPos.x + dis*cosf((-rotation + angle) / 180 * M_PI), emitterPos.y + dis*sinf((-rotation + angle) / 180 * M_PI));
+			Vec2 newPos = Vec2(emitterPos.x + dis*mCos(-rotation + angle), emitterPos.y + dis*mSin(-rotation + angle));
 			particle->pos = newPos;
 
 		}
@@ -791,8 +828,8 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	// 如果跟随圆形发射区域，位置为0，它的真实位置为 现在内半径*角度 + pos
 	if (firePro._isFlowCircleRadius) {
-		particle->pos.x = particle->pos.x - firePro._fireArea.inCircleRadius * cosf(particle->startToCenterAngle / 180 * P_PI);
-		particle->pos.y = particle->pos.y - firePro._fireArea.inCircleRadius * sinf(particle->startToCenterAngle / 180 * P_PI);
+		particle->pos.x = particle->pos.x - firePro._fireArea.inCircleRadius * mCos(particle->startToCenterAngle);
+		particle->pos.y = particle->pos.y - firePro._fireArea.inCircleRadius * mSin(particle->startToCenterAngle);
 	}
 
 	particle->emitterPos = emitterPos;
@@ -805,8 +842,8 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 		particle->rotationPosOffset = Vec2(0, 0);
 	}
 	else {
-		particle->rotationPosOffset = Vec2(emitterDis*cosf((startAngle - emitterRotation) / 180 * P_PI) - (particle->startPos.x - particle->emitterPos.x),
-			emitterDis*sinf((startAngle - emitterRotation) / 180 * P_PI) - (particle->startPos.y - particle->emitterPos.y));
+		particle->rotationPosOffset = Vec2(emitterDis*mCos(startAngle - emitterRotation) - (particle->startPos.x - particle->emitterPos.x),
+			emitterDis*mSin(startAngle - emitterRotation) - (particle->startPos.y - particle->emitterPos.y));
 	}
 
 	// 处理锚点
