@@ -10,7 +10,7 @@ using namespace pp;
 //#define mCos(x) cosf(x / 180 * P_PI)
 
 // 渲染是否由本类来渲染，TRUE 就是本类来渲染, false交给cocos
-static bool render_by_this_class = false;
+static bool render_by_this_class = true;
 
 int ParticleRenderer::updatePriority = 0;
 
@@ -486,6 +486,7 @@ void ParticleRenderer::setupVBOandVAO() {
 
 	CHECK_GL_ERROR_DEBUG();
 }
+// VBO对象是显卡GPU上的高速内存缓存对象
 void ParticleRenderer::setupVBO() {
 	// 删除 显卡上的缓冲区对象
 	glDeleteBuffers(2, &_buffersVBO[0]);
@@ -494,7 +495,7 @@ void ParticleRenderer::setupVBO() {
 
 	GL::bindVAO(0);
 
-	// 绑定缓冲区 & 初始化缓冲区
+	//将内存中数据，缓存到GPU中， 绑定缓冲区 & 初始化缓冲区
 	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _totalParticles, _quads, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -570,14 +571,17 @@ void ParticleRenderer::postStep() {
 void ParticleRenderer::draw(Renderer* renderer, const Mat4 &transform, uint32_t flags) {
 	//CCASSERT(_particleIdx == 0 || _particleIdx == _particleCount, "Abnormal error in particle quad");
 	if (render_by_this_class) {
-		this->onDraw(transform, flags);
+		//this->onDraw(transform, flags);
+		//使用自定义渲染命令渲染，可以避免zorder顺序不对的问题
+		_customCommand.init(_globalZOrder);
+		_customCommand.func = CC_CALLBACK_0(ParticleRenderer::onDraw, this, transform, flags);
+		renderer->addCommand(&_customCommand);
 	}
 	else {
 		//quad command
 		if (_particleIdx > 0)
 		{
-			Mat4 newTransform = Mat4();
-			_quadCommand.init(_globalZOrder, _texture->getName(), getGLProgramState(), _blendFunc, _quads, _particleIdx, newTransform, flags);
+			_quadCommand.init(_globalZOrder, _texture->getName(), getGLProgramState(), _blendFunc, _quads, _particleIdx, transform, flags);
 			renderer->addCommand(&_quadCommand);
 		}
 	}
@@ -590,9 +594,6 @@ void ParticleRenderer::draw(Renderer* renderer, const Mat4 &transform, uint32_t 
 }
 
 void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
-	Vec2 pos = this->getPosition();
-
-	this->setPosition(Vec2(300,300));
 	///获取shaderstate
 	auto glProgramState = getGLProgramState();
 	//
@@ -602,31 +603,47 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	// 绑定纹理
 	GL::bindTexture2D(_texture->getName());
 	
-	
-	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
-
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
+	// 应用transform
+	unsigned int start = 0;
+	unsigned int end = _totalParticles;
+	for (unsigned int i = start; i<end; i++)
+	{
+		// bottom-left vertex:
+		transform.transformPoint(_quads[i].bl.vertices, &_quads[i].bl.vertices);
+		// bottom-right vertex:
+		transform.transformPoint(_quads[i].br.vertices, &_quads[i].br.vertices);
+		// top-left vertex:
+		transform.transformPoint(_quads[i].tl.vertices, &_quads[i].tl.vertices);
+		// top-right vertex:
+		transform.transformPoint(_quads[i].tr.vertices, &_quads[i].tr.vertices);
+	}
+
+	// 绑定到VBO的数据
+	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
+	// 设置数据
+	glBufferData(GL_ARRAY_BUFFER, sizeof(_quads[0]) * _particleCount, _quads, GL_DYNAMIC_DRAW);
+	
 #define quadSize sizeof(_quads[0].bl)
-	// vertices
+	// vertices 设置读取坐标数据的指针
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, vertices));
 
-	// colors
+	// colors 设置读取颜色数据的指针
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, colors));
 
-	// tex coords
+	// tex coords 设置读取uv数据的指针
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, texCoords));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, _particleCount * 4);
 
 	glDrawElements(GL_TRIANGLES, (GLsizei)_particleCount*6, GL_UNSIGNED_SHORT, 0);
+	//glDrawElements(GL_LINES, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
+	//glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
 
-
+	// 解绑VBO数据
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 }
 
 void ParticleRenderer::setTexture(Texture2D* texture) {
