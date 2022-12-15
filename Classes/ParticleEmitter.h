@@ -291,12 +291,12 @@ struct tailPro {
 		color = Color3B(255, 255, 255);
 	}
 	~tailPro() {
-		if (tailNode) {
+		/*if (tailNode) {
 			if (tailNode->getParent()) {
 				tailNode->removeFromParent();
 			}
 			tailNode = nullptr;
-		}
+		}*/
 	}
 	// 刷新拖尾
 	void refreshTailData();
@@ -364,16 +364,18 @@ struct emitterFirePro {
 		_delayTime = 0;
 	}
 	~emitterFirePro() {
-		if (_debugDrawNode_centerPoint) {
+		/*if (_debugDrawNode_centerPoint) {
 			if (_debugDrawNode_centerPoint->getParent()) {
 				_debugDrawNode_centerPoint->removeFromParent();
+				_debugDrawNode_centerPoint = nullptr;
 			}
 		}
 		if (_debugDrawNode_fireAreaMode) {
 			if (_debugDrawNode_fireAreaMode->getParent()) {
 				_debugDrawNode_fireAreaMode->removeFromParent();
+				_debugDrawNode_fireAreaMode = nullptr;
 			}
-		}
+		}*/
 	}
 
 	void stopFirePro() {
@@ -731,6 +733,11 @@ class ParticleEmitter : public Node
 		// 纹理的路径
 		static void setTexturePath(std::string path);
 		static std::string texturePath;
+
+		// 拖尾的路径
+		static void setTailPath(std::string path);
+		static std::string tailPath;
+
 	private:
 
 		// 是否在发射完后自动死亡

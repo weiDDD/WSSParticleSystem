@@ -1017,7 +1017,7 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 	// ÍÏÎ²
 	if (firePro._tailPro.isActive) {
 		if (!firePro._tailPro.tailNode) {
-			firePro._tailPro.tailNode = MotionStreak::create(firePro._tailPro.fade, firePro._tailPro.minSeg, firePro._tailPro.stroke, firePro._tailPro.color, "tail/" + firePro._tailPro.tailName);
+			firePro._tailPro.tailNode = MotionStreak::create(firePro._tailPro.fade, firePro._tailPro.minSeg, firePro._tailPro.stroke, firePro._tailPro.color, firePro._tailPro.tailName);
 			father->runningLayer->addChild(firePro._tailPro.tailNode , father->getLocalZOrder()-1);
 		}
 		else {
@@ -1037,11 +1037,11 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 	}
 
 	//// --- »æÖÆµ÷ÊÔ¿ò
-	if (!firePro._debugDrawNode_centerPoint) {
+	if (!firePro._debugDrawNode_centerPoint && ParticleEmitter::isUiEditorModel) {
 		firePro._debugDrawNode_centerPoint = DrawNode::create();
 		father->runningLayer->addChild(firePro._debugDrawNode_centerPoint, 600);
 	}
-	if (!firePro._debugDrawNode_fireAreaMode) {
+	if (!firePro._debugDrawNode_fireAreaMode && ParticleEmitter::isUiEditorModel) {
 		firePro._debugDrawNode_fireAreaMode = DrawNode::create();
 		father->runningLayer->addChild(firePro._debugDrawNode_fireAreaMode, 600);
 	}

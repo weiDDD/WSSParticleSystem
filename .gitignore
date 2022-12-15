@@ -1487,5 +1487,4 @@ proj.win32/particleProject170810(3).vspx
 proj.win32/particleProject170810.vspx
 proj.win32/particleProject2.psess
 proj.win32/particleProject3.psess
-proj.win32/.vs/particleProject/v16/ipch/AutoPCH/3e9ff2d84951e1a7/APPDELEGATE.ipch
-proj.win32/.vs/particleProject/v16/Browse.VC.db
+runtime/
