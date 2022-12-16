@@ -416,6 +416,11 @@ private:
 	// 编辑单一粒子属性的面板
 	Widget* singleRootNode;
 
+	// 渲染模式
+	CheckBox* chkBoxRenderModeLine;
+	CheckBox* chkBoxRenderModeTri;
+	CheckBox* chkBoxRenderModeTriStrip;
+
 	// 源混合模式的下拉列表
 	DropDownList* sourceBlend;
 	DropDownList* destBlend;

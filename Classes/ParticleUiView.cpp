@@ -800,6 +800,47 @@ void ParticleUiView::initUi() {
 	((ScrollView*)seekByName(singleRootNode, "top_pro_layer"))->setBounceEnabled(false);
 	seekByName(singleRootNode, "fireProLayer")->setVisible(false);
 	this->setFireProLayerVisible(false);
+
+	auto fireProLayer = seekByName(singleRootNode, "fireProLayer");
+
+	// 加一个渲染模式相关的
+	chkBoxRenderModeLine = CheckBox::create("coord_point2.png", "coord_point22.png");
+	chkBoxRenderModeLine->setPosition(Vec2(50, -20));
+	chkBoxRenderModeLine->setSelectedState(false);
+	chkBoxRenderModeLine->addEventListener(CC_CALLBACK_2(ParticleUiView::checkBoxEvent, this));
+	chkBoxRenderModeLine->setName("chkBoxRenderModeLine");
+	fireProLayer->addChild(chkBoxRenderModeLine);
+
+	auto TextRenderModeLine = Text::create("lines","AmericanTypewriter",20);
+	TextRenderModeLine->setAnchorPoint(Vec2(0, 0.5));
+	TextRenderModeLine->setPosition(Vec2(70, -20));
+	fireProLayer->addChild(TextRenderModeLine);
+
+	chkBoxRenderModeTri = CheckBox::create("coord_point2.png", "coord_point22.png");
+	chkBoxRenderModeTri->setPosition(Vec2(50, -50));
+	chkBoxRenderModeTri->setSelectedState(false);
+	chkBoxRenderModeTri->addEventListener(CC_CALLBACK_2(ParticleUiView::checkBoxEvent, this));
+	chkBoxRenderModeTri->setName("chkBoxRenderModeTri");
+	fireProLayer->addChild(chkBoxRenderModeTri);
+
+	auto TextRenderModeTri = Text::create("triangles", "AmericanTypewriter", 20);
+	TextRenderModeTri->setAnchorPoint(Vec2(0, 0.5));
+	TextRenderModeTri->setPosition(Vec2(70, -50));
+	fireProLayer->addChild(TextRenderModeTri);
+
+	chkBoxRenderModeTriStrip = CheckBox::create("coord_point2.png", "coord_point22.png");
+	chkBoxRenderModeTriStrip->setPosition(Vec2(50, -80));
+	chkBoxRenderModeTriStrip->setSelectedState(false);
+	chkBoxRenderModeTriStrip->addEventListener(CC_CALLBACK_2(ParticleUiView::checkBoxEvent, this));
+	chkBoxRenderModeTriStrip->setName("chkBoxRenderModeTriStrip");
+	fireProLayer->addChild(chkBoxRenderModeTriStrip);
+
+	auto TextRenderModeTriStrip = Text::create("triangle_strip", "AmericanTypewriter", 20);
+	TextRenderModeTriStrip->setAnchorPoint(Vec2(0, 0.5));
+	TextRenderModeTriStrip->setPosition(Vec2(70, -80));
+	fireProLayer->addChild(TextRenderModeTriStrip);
+
+
 	seekByName(singleRootNode, "fireStartProPanel")->setVisible(false);
 	seekByName(singleRootNode, "fireStartProPanel")->setTouchEnabled(false);
 
@@ -3847,6 +3888,22 @@ void ParticleUiView::initSingleParUi() {
 		((CheckBox*)seekByName(singleRootNode, "moveMode_free"))->setSelectedState(false);
 		((CheckBox*)seekByName(singleRootNode, "moveMode_relative"))->setSelectedState(true);
 	}
+	// 渲染模式
+	if (nowEditingSignalPar->_renderMode == renderMode::LINES) {
+		chkBoxRenderModeLine->setSelectedState(true);
+		chkBoxRenderModeTri->setSelectedState(false);
+		chkBoxRenderModeTriStrip->setSelectedState(false);
+	}
+	else if (nowEditingSignalPar->_renderMode == renderMode::TRIANGLES) {
+		chkBoxRenderModeLine->setSelectedState(false);
+		chkBoxRenderModeTri->setSelectedState(true);
+		chkBoxRenderModeTriStrip->setSelectedState(false);
+	}
+	else if (nowEditingSignalPar->_renderMode == renderMode::TRIANGLE_STRIP) {
+		chkBoxRenderModeLine->setSelectedState(false);
+		chkBoxRenderModeTri->setSelectedState(false);
+		chkBoxRenderModeTriStrip->setSelectedState(true);
+	}
 	// 角度模式
 	if (nowEditingSignalPar->_angleType == fireAngleType::local) {
 		((CheckBox*)seekByName(singleRootNode, "angleMode_global"))->setSelectedState(false);
@@ -5396,6 +5453,39 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 
 			singlePar->addRender(true);
 		}
+		if (name == "chkBoxRenderModeLine") {
+			chkBoxRenderModeTri->setSelectedState(false);
+			chkBoxRenderModeTriStrip->setSelectedState(false);
+
+			// 需要 将render 清理再加进来
+			singlePar->clearRender();
+			singlePar->resetSystem();
+			nowEditingSignalPar->_renderMode = renderMode::LINES;
+
+			singlePar->addRender(true);
+		}
+		if (name == "chkBoxRenderModeTri") {
+			chkBoxRenderModeLine->setSelectedState(false);
+			chkBoxRenderModeTriStrip->setSelectedState(false);
+
+			// 需要 将render 清理再加进来
+			singlePar->clearRender();
+			singlePar->resetSystem();
+			nowEditingSignalPar->_renderMode = renderMode::TRIANGLES;
+
+			singlePar->addRender(true);
+		}
+		if (name == "chkBoxRenderModeTriStrip") {
+			chkBoxRenderModeLine->setSelectedState(false);
+			chkBoxRenderModeTri->setSelectedState(false);
+
+			// 需要 将render 清理再加进来
+			singlePar->clearRender();
+			singlePar->resetSystem();
+			nowEditingSignalPar->_renderMode = renderMode::TRIANGLE_STRIP;
+
+			singlePar->addRender(true);
+		}
 		if (name == "angleMode_global") {
 			((CheckBox*)seekByName(singleRootNode, "angleMode_local"))->setSelectedState(false);
 			nowEditingSignalPar->_angleType = fireAngleType::global;
@@ -5493,6 +5583,15 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 			nowEditingSignalPar->_positionType = positionType::FREE;
 
 			singlePar->addRender(true);
+		}
+		if (name == "chkBoxRenderModeLine") {
+			chkBoxRenderModeLine->setSelectedState(true);
+		}
+		if (name == "chkBoxRenderModeTri") {
+			chkBoxRenderModeTri->setSelectedState(true);
+		}
+		if (name == "chkBoxRenderModeTriStrip") {
+			chkBoxRenderModeTriStrip->setSelectedState(true);
 		}
 		if (name == "angleMode_global") {
 			((CheckBox*)seekByName(singleRootNode, "angleMode_local"))->setSelectedState(true);
