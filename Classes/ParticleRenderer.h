@@ -244,6 +244,12 @@ namespace PRender {
 		RELATIVE,
 	};
 
+	// 渲染模式
+	enum renderMode {
+		TRIANGLES,
+		TRIANGLE_STRIP,
+		LINES
+	};
 
 	class ParticleRenderer :public Node, public TextureProtocol
 	{
@@ -316,6 +322,9 @@ namespace PRender {
 
 		void onDraw(const Mat4& transform, uint32_t flags);
 
+		// 设置渲染模式
+		void setRenderMode(renderMode mode){ _renderMode = mode; }
+
 		// 停在所有的粒子
 		void stopAllParticles();
 
@@ -326,7 +335,7 @@ namespace PRender {
 
 		bool isFlowCircleRadius;
 		int flowCircleRadiusFireProId;
-
+		
 	private:
 		//////------ 绘制相关
 		/** conforms to CocosNodeTexture protocol */
@@ -336,7 +345,7 @@ namespace PRender {
 
 		// 是否alpha * rgb
 		bool _opacityModifyRGB;
-
+		// VAO & VBO 相关
 		V3F_C4B_T2F_Quad    *_quads;        // quads to be rendered
 		GLushort            *_indices;      // indices 顶点索引
 		GLuint              _VAOname;
@@ -346,6 +355,8 @@ namespace PRender {
 
 		CustomCommand _customCommand;
 		/////////---------------
+		// 渲染模式
+		renderMode _renderMode;
 
 		// 放完是否自动死亡
 		bool _isAutoRemoveOnFinish;

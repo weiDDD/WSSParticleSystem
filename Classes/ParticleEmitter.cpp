@@ -597,6 +597,7 @@ void ParticleEmitter::addRender(bool isCreateNew /*= false*/) {
 					cPar->second->_renderer->setIsAutoRemoveOnFinish(false);
 					cPar->second->_renderer->_emitter = this;
 					cPar->second->_renderer->setPosition(Vec2::ZERO);
+					cPar->second->_renderer->setRenderMode(firePro->_renderMode);
 					
 					cPar->second->_renderer->setTexture(CCTextureCache::sharedTextureCache()->addImage(firePro->_texName));
 
@@ -994,6 +995,16 @@ bool emitterFirePro::writeJsonData(m_rapidjson::Document& object, m_rapidjson::D
 	else if (_positionType == positionType::RELATIVE) {
 		object.AddMember("positionType", "relative", allocator);
 	}
+	// 渲染模式
+	if (_renderMode == renderMode::LINES) {
+		object.AddMember("renderMode", "lines", allocator);
+	}
+	else if (_renderMode == renderMode::TRIANGLES) {
+		object.AddMember("renderMode", "triangles", allocator);
+	}
+	else if (_renderMode == renderMode::TRIANGLE_STRIP) {
+		object.AddMember("renderMode", "triangle_strip", allocator);
+	}
 	// 混合模式
 	object.AddMember("sourceBlend", _sourceBlend, allocator);
 	object.AddMember("destBlend", _destBlend, allocator);
@@ -1093,6 +1104,18 @@ void emitterFirePro::readJsonData(m_rapidjson::Document& doc) {
 		}
 
 		_texName = ParticleEmitter::texturePath + _texName;
+	}
+	if (doc.HasMember("renderMode")) {
+		std::string renderModeStr = doc["renderMode"].GetString();
+		if (renderModeStr == "lines"){
+			_renderMode = renderMode::LINES;
+		}
+		else if (renderModeStr == "triangles"){
+			_renderMode = renderMode::TRIANGLES;
+		}
+		else if (renderModeStr == "triangle_strip"){
+			_renderMode = renderMode::TRIANGLE_STRIP;
+		}
 	}
 	if (doc.HasMember("texAnchorPoint")) {
 		_texAnchorPoint.x = doc["texAnchorPoint"]["x"].GetDouble();

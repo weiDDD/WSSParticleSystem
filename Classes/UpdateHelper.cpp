@@ -1179,7 +1179,6 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 		cPar.setTotalParticles(firePro.nowMaxParticleNum , father, firePro._emitterFileName);
 		//this->setTotalParticles(firePro.nowMaxParticleNum);
 	}
-
 	// 设置运动模式
 	if (firePro.nowPositionType != firePro._positionType) {
 		cPar.setPositionType(firePro._positionType);

@@ -201,6 +201,7 @@ ParticleRenderer::ParticleRenderer()
 , _emitterPos(Vec2(0,0))
 , _emitter(nullptr)
 , _emitterAngle(0)
+, _renderMode(renderMode::TRIANGLES)
 {
 	_positionType = positionType::RELATIVE;
 	isFlowCircleRadius = false;
@@ -637,9 +638,15 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
 
-	glDrawElements(GL_TRIANGLES, (GLsizei)_particleCount*6, GL_UNSIGNED_SHORT, 0);
-	//glDrawElements(GL_LINES, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
-	//glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
+	if (_renderMode == renderMode::TRIANGLES){
+		glDrawElements(GL_TRIANGLES, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
+	}
+	else if (_renderMode == renderMode::TRIANGLE_STRIP){
+		glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
+	}
+	else if (_renderMode == renderMode::LINES){
+		glDrawElements(GL_LINES, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
+	}
 
 	// 解绑VBO数据
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

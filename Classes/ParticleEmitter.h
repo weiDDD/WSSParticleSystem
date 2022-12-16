@@ -351,6 +351,7 @@ struct emitterFirePro {
 		nowMaxParticleNum = 0;
 
 		_texName = "";
+		_renderMode = renderMode::TRIANGLES;
 		_texAnchorPoint = Vec2(0.5, 0.5);
 		_maxParticleNum = 100;
 		_angleType = fireAngleType::global;
@@ -449,7 +450,8 @@ struct emitterFirePro {
 	std::string _emitterFileName;
 	//纹理
 	std::string _texName;
-
+	// 渲染模式
+	renderMode _renderMode;
 	// 纹理锚点
 	Vec2 _texAnchorPoint;
 
