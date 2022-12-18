@@ -240,7 +240,14 @@ void ParticleRenderer::onEnter() {
 	if (ParticleRenderer::updatePriority > 200) {
 		ParticleRenderer::updatePriority = 0;
 	}*/
+	//this->setShaderFile("gray.vsh", "gray.fsh");
 
+	/*this->setShaderFile("drawEdge.vsh", "drawEdge.fsh");
+	this->setFloatArg("outlineSize", 0.03);
+	this->setVec3Arg("outlineColor", Vec3(1,0,0));
+	this->setFloatArg("circleLightAngle", 0);*/
+
+	
 	//this->scheduleUpdate();
 }
 
@@ -597,13 +604,75 @@ void ParticleRenderer::draw(Renderer* renderer, const Mat4 &transform, uint32_t 
 void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	///获取shaderstate
 	auto glProgramState = getGLProgramState();
-	//
+	
+	/////遍历所有的参数map，将其设值
+	std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
+	while (floatItor != floatArgMap.end()){
+		std::string argKeyName = floatItor->first;
+		float value = floatItor->second;
+		glProgramState->setUniformFloat(argKeyName, value);
+		floatItor++;
+	}
+
+	std::map <std::string, int>::iterator intItor = intArgMap.begin();
+	while (intItor != intArgMap.end()){
+		std::string argKeyName = intItor->first;
+		int value = intItor->second;
+		glProgramState->setUniformInt(argKeyName, value);
+		intItor++;
+	}
+
+	std::map <std::string, Vec2>::iterator vec2Itor = vec2ArgMap.begin();
+	while (vec2Itor != vec2ArgMap.end()){
+		std::string argKeyName = vec2Itor->first;
+		Vec2 value = vec2Itor->second;
+		glProgramState->setUniformVec2(argKeyName, value);
+		vec2Itor++;
+	}
+
+	std::map <std::string, Vec3>::iterator vec3Itor = vec3ArgMap.begin();
+	while (vec3Itor != vec3ArgMap.end()){
+		std::string argKeyName = vec3Itor->first;
+		Vec3 value = vec3Itor->second;
+		glProgramState->setUniformVec3(argKeyName, value);
+		vec3Itor++;
+	}
+
+	std::map <std::string, Vec4>::iterator vec4Itor = vec4ArgMap.begin();
+	while (vec4Itor != vec4ArgMap.end()){
+		std::string argKeyName = vec4Itor->first;
+		Vec4 value = vec4Itor->second;
+		glProgramState->setUniformVec4(argKeyName, value);
+		vec4Itor++;
+	}
+
+
+	///应用GLProgram,顶点属性和Uniform参数到渲染管线
 	glProgramState->apply(transform);
+
+	// 数组 , 这个必须放到apply的后面那个
+	std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
+	while (floatVecItor != floatVecArgMap.end()) {
+		std::string argKeyName = floatVecItor->first;
+		floatVec value = (floatVec)floatVecItor->second;
+		GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
+
+		//const float test[5] = { 0.2f,0.4f,0.6f,0.8f,1.0f };
+		glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // 设置1个float类型的v（代表数组）
+		//getGLProgram()->setUniformLocationWith1fv(loc , (const GLfloat*)test , (GLsizei)3);  // setUniformLocationWith1fv
+		floatVecItor++;
+	}
+
 	// 应用叠加模式
 	GL::blendFunc(_blendFunc.src, _blendFunc.dst);
 	// 绑定纹理
 	GL::bindTexture2D(_texture->getName());
 	
+	///多重纹理设置，获取了一个内置的uniform变量，并向其中传入数据。下两行的1代表第二层纹理，0为默认纹理
+	GLuint testTexUniform = glGetUniformLocation(getGLProgram()->getProgram(), "CC_Texture1");
+	GL::bindTexture2DN(1, tex);
+	glUniform1i(testTexUniform, 1);
+
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
 	// 应用transform
@@ -1037,3 +1106,144 @@ void ParticleRenderer::setTotalParticles(int tp) {
 	}
 
 }
+
+void ParticleRenderer::setFloatArg(std::string argKeyName, float value){
+	std::map<std::string, float>::iterator itor = floatArgMap.find(argKeyName);
+	///没有找到则新增
+	if (itor == floatArgMap.end()){
+		floatArgMap.insert(std::make_pair(argKeyName, value));
+	}
+	else{
+		itor->second = value;
+	}
+}
+void ParticleRenderer::setIntArg(std::string argKeyName, int value){
+	std::map<std::string, int>::iterator itor = intArgMap.find(argKeyName);
+	///没有找到则新增
+	if (itor == intArgMap.end()){
+		intArgMap.insert(std::make_pair(argKeyName, value));
+	}
+	else{
+		itor->second = value;
+	}
+}
+
+void ParticleRenderer::setVec2Arg(std::string argKeyName, Vec2 value){
+	std::map<std::string, Vec2>::iterator itor = vec2ArgMap.find(argKeyName);
+	///没有找到则新增
+	if (itor == vec2ArgMap.end()){
+		vec2ArgMap.insert(std::make_pair(argKeyName, value));
+	}
+	else{
+		itor->second = value;
+	}
+}
+
+void ParticleRenderer::setVec3Arg(std::string argKeyName, Vec3 value){
+	std::map<std::string, Vec3>::iterator itor = vec3ArgMap.find(argKeyName);
+	///没有找到则新增
+	if (itor == vec3ArgMap.end()){
+		vec3ArgMap.insert(std::make_pair(argKeyName, value));
+	}
+	else{
+		itor->second = value;
+	}
+}
+
+void ParticleRenderer::setVec4Arg(std::string argKeyName, Vec4 value){
+	std::map<std::string, Vec4>::iterator itor = vec4ArgMap.find(argKeyName);
+	///没有找到则新增
+	if (itor == vec4ArgMap.end()){
+		vec4ArgMap.insert(std::make_pair(argKeyName, value));
+	}
+	else{
+		itor->second = value;
+	}
+}
+
+void ParticleRenderer::setIntVecArg(std::string argKeyName, const int* ptr, ssize_t size) {
+	std::map<std::string, intVec>::iterator itor = intVecArgMap.find(argKeyName);
+	///没有找到则新增,有则修改
+	if (itor == intVecArgMap.end()) {
+		intVecArgMap.insert(std::make_pair(argKeyName, intVec(ptr, size)));
+	}
+	else {
+		itor->second = intVec(ptr, size);
+	}
+}
+
+void ParticleRenderer::setIntVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size) {
+	std::map<std::string, intVec>::iterator itor = intVecArgMap.find(argKeyName);
+	///没有找到则新增,有则修改
+	//const float* fPtr = (const float*)ptr;
+	const ssize_t s = size;
+	static int *iVec = new int(s);
+	auto vecitor = ptr.begin();
+	int index = 0;
+	while (vecitor != ptr.end())
+	{
+		iVec[index] = float(ptr.at(index).asInt());
+		index++;
+		vecitor++;
+	}
+
+	if (itor == intVecArgMap.end()) {
+		intVecArgMap.insert(std::make_pair(argKeyName, intVec(&iVec[0], size)));
+	}
+	else {
+		itor->second = intVec(&iVec[0], size);
+	}
+
+}
+
+// 
+void ParticleRenderer::setFloatVecArg(std::string argKeyName, float* ptr, ssize_t size) {
+	std::map<std::string, floatVec>::iterator itor = floatVecArgMap.find(argKeyName);
+	///没有找到则新增,有则修改
+	const float* fPtr = (const float*)ptr;
+	if (itor == floatVecArgMap.end()) {
+		floatVecArgMap.insert(std::make_pair(argKeyName, floatVec(fPtr, size)));
+	}
+	else {
+		itor->second = floatVec(fPtr, size);
+	}
+
+}
+
+void ParticleRenderer::setFloatVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size) {
+	std::map<std::string, floatVec>::iterator itor = floatVecArgMap.find(argKeyName);
+	///没有找到则新增,有则修改
+	//const float* fPtr = (const float*)ptr;
+	const ssize_t s = size;
+	static float *fVec = new float(s);
+	auto vecitor = ptr.begin();
+	int index = 0;
+	while (vecitor != ptr.end())
+	{
+		fVec[index] = float(ptr.at(index).asDouble());
+		index++;
+		vecitor++;
+	}
+
+	if (itor == floatVecArgMap.end()) {
+		floatVecArgMap.insert(std::make_pair(argKeyName, floatVec(&fVec[0], size)));
+	}
+	else {
+		itor->second = floatVec(&fVec[0], size);
+	}
+
+}
+
+
+
+////哦，好像没用
+void ParticleRenderer::clearAllArgMap(){
+	floatArgMap.clear();
+	intArgMap.clear();
+	vec2ArgMap.clear();
+	vec3ArgMap.clear();
+	vec4ArgMap.clear();
+	intVecArgMap.clear();
+	floatVecArgMap.clear();
+}
+
