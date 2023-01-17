@@ -255,6 +255,8 @@ bool ParticleUiView::init() {
 	singlePar->setPosition(Vec2(500,500));
 	this->addChild(singlePar);
 
+	this->setScale(0.5);
+
 	// -- 加载列表的第一个文件
 	nowFileName = "json/" + fileNames.at(0);
 
@@ -600,6 +602,11 @@ void ParticleUiView::initUi() {
 	seekByName(mainRootNode, "saveSingleParFileBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			FileCenter::getInstance()->writeJsonData(nowFileName, this->getSignalPar());
+			
+			if (singlePar != nullptr){
+				singlePar->removeFromParent();
+				singlePar = nullptr;
+			}
 		}
 	});
 

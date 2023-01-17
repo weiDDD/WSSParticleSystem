@@ -587,14 +587,15 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//Vec2 emitterPos = this->convertToWorldSpace(Vec2::ZERO);
 	Vec2 emitterPos = Vec2(0, 0);
-	if (firePro._positionType == positionType::RELATIVE) {
+	/*if (firePro._positionType == positionType::RELATIVE) {
 		emitterPos = Vec2(0, 0);
 	}
 	else if (firePro._positionType == positionType::FREE) {
 		emitterPos = father->convertToWorldSpace(Vec2::ZERO);
 
 		emitterPos = father->runningLayer->convertToNodeSpace(emitterPos);
-	}
+
+	}*/
 
 
 	//Î»ÖÃ
@@ -833,6 +834,8 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	}
 
 	particle->emitterPos = emitterPos;
+	particle->emitterStartPos = father->getPosition();
+	particle->nowEmitterPos = father->getPosition();
 
 	float startAngle = Vec2(particle->pos.x - emitterPos.x, particle->pos.y - emitterPos.y).getAngle() / P_PI * 180;
 	float emitterRotation = father->getRotation();

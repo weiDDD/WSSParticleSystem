@@ -292,7 +292,12 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 				//	float angleOff = -angle - _emitterAngle; // 
 				//	newPos = Vec2(dis*cosf(-angleOff / 180 * P_PI), dis*sinf(-angleOff / 180 * P_PI));
 				//}
-	
+				Vec2 nowEmitterPos = p.nowEmitterPos;
+				if (_emitter) {
+					nowEmitterPos = _emitter->getPosition();
+				}
+				p.nowEmitterPos = nowEmitterPos;
+				newPos = Vec2(p.pos.x + p.emitterStartPos.x - nowEmitterPos.x, p.pos.y + p.emitterStartPos.y - nowEmitterPos.y);
 			}
 			else if (_positionType == positionType::RELATIVE)
 			{
