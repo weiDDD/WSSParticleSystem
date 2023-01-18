@@ -255,7 +255,7 @@ bool ParticleUiView::init() {
 	singlePar->setPosition(Vec2(500,500));
 	this->addChild(singlePar);
 
-	this->setScale(0.5);
+	//this->setScale(0.5);
 
 	// -- 加载列表的第一个文件
 	nowFileName = "json/" + fileNames.at(0);

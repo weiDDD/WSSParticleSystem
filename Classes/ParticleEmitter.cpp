@@ -755,7 +755,7 @@ void ParticleEmitter::update(float dt) {
 		}
 		//this->runningLayer->setScale(0.5);
 		this->addRender();
-		this->setScale(0.5);
+		//this->setScale(0.5);
 	}
 	
 	// 是否还有子发射器在运动，在工作
