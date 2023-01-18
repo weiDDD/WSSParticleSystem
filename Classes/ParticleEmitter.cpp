@@ -242,7 +242,6 @@ ParticleEmitter::ParticleEmitter()
 	_isActive = false;
 	_isAutoRemoveOnFinish = false;
 	worldPos = Vec2(0, 0);
-
 	fScaleX = 0;
 	fScaleY = 0;
 }
@@ -601,12 +600,12 @@ void ParticleEmitter::addRender(bool isCreateNew /*= false*/) {
 					
 					cPar->second->_renderer->setTexture(CCTextureCache::sharedTextureCache()->addImage(firePro->_texName));
 
-					if (firePro->_positionType == positionType::FREE) {
-						this->runningLayer->addChild(cPar->second->_renderer, firePro->_localZorder);
-					}
-					else if (firePro->_positionType == positionType::RELATIVE) {
+					//if (firePro->_positionType == positionType::FREE) {
+					//	this->runningLayer->addChild(cPar->second->_renderer, firePro->_localZorder);
+					//}
+					//else if (firePro->_positionType == positionType::RELATIVE) {
 						this->addChild(cPar->second->_renderer, firePro->_localZorder);
-					}
+					//}
 
 				}
 			}
@@ -627,7 +626,7 @@ void ParticleEmitter::releaseRender() {
 				if (cPar->second->_renderer)
 				{
 					if (this->runningLayer && this->runningLayer->isRunning()) {
-						if (firePro->_positionType == positionType::FREE) {
+						/*if (firePro->_positionType == positionType::FREE) {
 							if (UpdateHelper::getInstance()->getValueFromEmitterVarietyValue(firePro->_life, *firePro) >= 1000) {
 								cPar->second->_renderer->removeFromParent();
 								cPar->second->_renderer->release();
@@ -640,9 +639,8 @@ void ParticleEmitter::releaseRender() {
 								cPar->second->_renderer->_emitter = nullptr;
 								cPar->second->_renderer = nullptr;
 							}
-
-						}
-						else if (firePro->_positionType == positionType::RELATIVE) {
+						}*/
+						//else if (firePro->_positionType == positionType::RELATIVE) {
 							if (UpdateHelper::getInstance()->getValueFromEmitterVarietyValue(firePro->_life, *firePro) >= 1000) {
 								// 如果是生命值无限长的话，那么就得直接删掉这个render
 								cPar->second->_renderer->removeFromParent();
@@ -652,22 +650,26 @@ void ParticleEmitter::releaseRender() {
 							}
 							else {
 								// 不是无限长的生命，需要加到runningLayer上自死亡
-								
-								cPar->second->_renderer->removeFromParent();
-								this->runningLayer->addChild(cPar->second->_renderer);
-								//Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
-								//parentPos = this->runningLayer->convertToNodeSpace(parentPos);
-								cPar->second->_renderer->setPosition(this->worldPos.x - this->runningLayer->getPositionX(), this->worldPos.y - this->runningLayer->getPositionY());
-								cPar->second->_renderer->scheduleUpdateWithPriority(1);
+								auto render = cPar->second->_renderer;
 
-								cPar->second->_renderer->setScaleX(fScaleX);
-								cPar->second->_renderer->setScaleY(fScaleY);
+								render->removeFromParent();
+								this->runningLayer->addChild(render);
+								Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
+								parentPos = this->runningLayer->convertToNodeSpace(parentPos);
+								render->setPosition(parentPos.x, parentPos.y);
+								//render->setPosition(this->worldPos.x - this->runningLayer->getPositionX(), this->worldPos.y - this->runningLayer->getPositionY());
+								render->scheduleUpdateWithPriority(1);
+
+								render->setScale(this->getScale());
+
+								//render->setScaleX(fScaleX);
+								//render->setScaleY(fScaleY);
 								// 放完自死
-								cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
-								cPar->second->_renderer->_emitter = nullptr;
+								render->setIsAutoRemoveOnFinish(true);
+								render->_emitter = nullptr;
 								cPar->second->_renderer = nullptr;
 							}
-						}
+						//}
 					}
 					else {
 						cPar->second->_renderer->removeFromParent();
@@ -738,7 +740,6 @@ void ParticleEmitter::clearRender() {
 	}
 }
 
-
 void ParticleEmitter::update(float dt) {
 	//CC_PROFILER_START_CATEGORY(kProfilerCategoryParticles, "NEW ParticleSystem - update");
 	
@@ -752,7 +753,9 @@ void ParticleEmitter::update(float dt) {
 				break;
 			}
 		}
+		//this->runningLayer->setScale(0.5);
 		this->addRender();
+		//this->setScale(0.5);
 	}
 	
 	// 是否还有子发射器在运动，在工作

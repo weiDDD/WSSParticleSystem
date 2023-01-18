@@ -203,6 +203,10 @@ namespace PRender {
 		float gravitySpeedX;
 		float gravitySpeedY;
 
+		// 发射开始时，发射器的pos
+		Vec2 emitterStartPos;
+		Vec2 nowEmitterPos;
+
 		// 加速度
 		particleVarietyValue acc;
 		//运动角度
