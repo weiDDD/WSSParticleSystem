@@ -408,16 +408,18 @@ void UpdateHelper::setParticleVarietyValue(particleVarietyValue &pValue, emitter
 	{
 		pValue.pType = particlePropertyType::curve;
 		pValue.curvePoints.clear();
+		pValue.curvePoints.swap(std::vector<Vec2>());
 		pValue.isSetCurveKB = false;
 
 		int index = 0;
 
-		Vec3* itor = &eValue.curvePoints[0];
+		auto itor = eValue.curvePoints.begin();
 		int size = eValue.curvePoints.size();
 		pValue.curvePoints.reserve(size);
-		for (itor; index < size; ++itor) {
-			float z = itor->z;
-			pValue.curvePoints.emplace_back(Vec2( itor->x, itor->y - z + CCRANDOM_0_1() * 2 * z));
+		while (itor != eValue.curvePoints.end()) {
+			float zz = (*itor).z;
+			pValue.curvePoints.push_back(Vec2((*itor).x, (*itor).y - zz + CCRANDOM_0_1() * 2 * zz));
+			itor++;
 			++index;
 		}
 
@@ -543,10 +545,11 @@ void UpdateHelper::setParticleVarietyColorValue(particleColorValue &pValue, emit
 	{
 		pValue.pType = particlePropertyType::curve;
 		pValue.curveColors.clear();
+		pValue.curveColors.swap(std::vector<colorCurvePoint>());
 
 		colorCurvePoint* itor = &eValue.curveColors[0];
 		int size = eValue.curveColors.size();
-		pValue.curveColors.reserve(size);
+		//pValue.curveColors.reserve(size);
 		int index = 0;
 		for (itor; index < size; ++itor) {
 			colorCurvePoint colorPoint;
@@ -1087,75 +1090,79 @@ void UpdateHelper::updateFirePro(ParticleEmitter* father , emitterFirePro& fireP
 		father->runningLayer->addChild(firePro._debugDrawNode_fireAreaMode, 600);
 	}
 
-	if (ParticleEmitter::isUseDrawNode == false) {
-		firePro._debugDrawNode_centerPoint->clear();
-		firePro._debugDrawNode_fireAreaMode->clear();
-		//这句话只是让 nowFireAreaData 这个值变得不同
-		firePro.nowFireAreaData.inRect.width = -1;
-	}
-	else {
-		Vec2 fatherPos = father->convertToWorldSpace(Vec2::ZERO);
-		fatherPos = father->runningLayer->convertToNodeSpace(fatherPos);
+	if (firePro._debugDrawNode_centerPoint && firePro._debugDrawNode_fireAreaMode) {
+		if (ParticleEmitter::isUseDrawNode == false) {
 
-		firePro._debugDrawNode_centerPoint->setPosition(fatherPos);
-		firePro._debugDrawNode_centerPoint->setRotation(father->getRotation());
-		firePro._debugDrawNode_fireAreaMode->setPosition(fatherPos);
-		firePro._debugDrawNode_fireAreaMode->setRotation(father->getRotation());
-
-		firePro._debugDrawNode_centerPoint->clear();
-		firePro._debugDrawNode_centerPoint->drawDot(Vec2(0, 0), 3, Color4F(1, 0, 1, 1));
-		// 绘制发射区域
-		if (firePro.nowFireAreaData != firePro._fireArea) {
-			firePro.nowFireAreaData = firePro._fireArea;
-
+			firePro._debugDrawNode_centerPoint->clear();
 			firePro._debugDrawNode_fireAreaMode->clear();
-			if (firePro.nowFireAreaData.fAreaType == fireAreaType::rect) {
-				firePro._debugDrawNode_fireAreaMode->drawRect(Vec2(-firePro.nowFireAreaData.outRect.width / 2, -firePro.nowFireAreaData.outRect.height / 2), Vec2(firePro.nowFireAreaData.outRect.width / 2, firePro.nowFireAreaData.outRect.height / 2), Color4F(1, 0, 0, 1));
-				firePro._debugDrawNode_fireAreaMode->drawRect(Vec2(-firePro.nowFireAreaData.inRect.width / 2, -firePro.nowFireAreaData.inRect.height / 2), Vec2(firePro.nowFireAreaData.inRect.width / 2, firePro.nowFireAreaData.inRect.height / 2), Color4F(1, 1, 0, 1));
-			}
-			else if (firePro.nowFireAreaData.fAreaType == fireAreaType::circle) {
-				firePro._debugDrawNode_fireAreaMode->drawCircle(Vec2(0, 0), firePro.nowFireAreaData.outCircleRadius, 0, 100, false, Color4F(1, 0, 0, 1));
-				firePro._debugDrawNode_fireAreaMode->drawCircle(Vec2(0, 0), firePro.nowFireAreaData.inCircleRadius, 0, 100, false, Color4F(1, 1, 0, 1));
-			}
-			else if (firePro.nowFireAreaData.fAreaType == fireAreaType::polygon) {
-				Vec2* pointVec = new Vec2[100];
 
-				int index = 0;
-				for (int i = 0; i < firePro.nowFireAreaData.polygonPoints.size(); ++i) {
-					pointVec[index] = firePro.nowFireAreaData.polygonPoints[i];
-					index++;
+			//这句话只是让 nowFireAreaData 这个值变得不同
+			firePro.nowFireAreaData.inRect.width = -1;
+		}
+		else {
+			Vec2 fatherPos = father->convertToWorldSpace(Vec2::ZERO);
+			fatherPos = father->runningLayer->convertToNodeSpace(fatherPos);
+
+			firePro._debugDrawNode_centerPoint->setPosition(fatherPos);
+			firePro._debugDrawNode_centerPoint->setRotation(father->getRotation());
+			firePro._debugDrawNode_fireAreaMode->setPosition(fatherPos);
+			firePro._debugDrawNode_fireAreaMode->setRotation(father->getRotation());
+
+			firePro._debugDrawNode_centerPoint->clear();
+			firePro._debugDrawNode_centerPoint->drawDot(Vec2(0, 0), 3, Color4F(1, 0, 1, 1));
+			// 绘制发射区域
+			if (firePro.nowFireAreaData != firePro._fireArea) {
+				firePro.nowFireAreaData = firePro._fireArea;
+
+				firePro._debugDrawNode_fireAreaMode->clear();
+				if (firePro.nowFireAreaData.fAreaType == fireAreaType::rect) {
+					firePro._debugDrawNode_fireAreaMode->drawRect(Vec2(-firePro.nowFireAreaData.outRect.width / 2, -firePro.nowFireAreaData.outRect.height / 2), Vec2(firePro.nowFireAreaData.outRect.width / 2, firePro.nowFireAreaData.outRect.height / 2), Color4F(1, 0, 0, 1));
+					firePro._debugDrawNode_fireAreaMode->drawRect(Vec2(-firePro.nowFireAreaData.inRect.width / 2, -firePro.nowFireAreaData.inRect.height / 2), Vec2(firePro.nowFireAreaData.inRect.width / 2, firePro.nowFireAreaData.inRect.height / 2), Color4F(1, 1, 0, 1));
 				}
-				if (index > 0) {
-					firePro._debugDrawNode_fireAreaMode->drawPolygon(pointVec, index, Color4F(0, 1, 1, 0), 1, Color4F(1, 0, 0, 1));
+				else if (firePro.nowFireAreaData.fAreaType == fireAreaType::circle) {
+					firePro._debugDrawNode_fireAreaMode->drawCircle(Vec2(0, 0), firePro.nowFireAreaData.outCircleRadius, 0, 100, false, Color4F(1, 0, 0, 1));
+					firePro._debugDrawNode_fireAreaMode->drawCircle(Vec2(0, 0), firePro.nowFireAreaData.inCircleRadius, 0, 100, false, Color4F(1, 1, 0, 1));
+				}
+				else if (firePro.nowFireAreaData.fAreaType == fireAreaType::polygon) {
+					Vec2* pointVec = new Vec2[100];
 
-					for (int i = 0; i < firePro._fireArea.polygonTriangleVec.size(); ++i) {
-						triangle triangleData = firePro._fireArea.polygonTriangleVec[i];
-						Vec2 point1 = triangleData.point1;
-						Vec2 point2 = triangleData.point2;
-						Vec2 point3 = triangleData.point3;
+					int index = 0;
+					for (int i = 0; i < firePro.nowFireAreaData.polygonPoints.size(); ++i) {
+						pointVec[index] = firePro.nowFireAreaData.polygonPoints[i];
+						index++;
+					}
+					if (index > 0) {
+						firePro._debugDrawNode_fireAreaMode->drawPolygon(pointVec, index, Color4F(0, 1, 1, 0), 1, Color4F(1, 0, 0, 1));
 
-						Vec2* pointVec = new Vec2[3];
-						pointVec[0] = point1;
-						pointVec[1] = point2;
-						pointVec[2] = point3;
-						firePro._debugDrawNode_fireAreaMode->drawPolygon(pointVec, 3, Color4F(CCRANDOM_0_1(), CCRANDOM_0_1(), CCRANDOM_0_1(), 0.6), 1, Color4F(0, 0, 0, 0));
+						for (int i = 0; i < firePro._fireArea.polygonTriangleVec.size(); ++i) {
+							triangle triangleData = firePro._fireArea.polygonTriangleVec[i];
+							Vec2 point1 = triangleData.point1;
+							Vec2 point2 = triangleData.point2;
+							Vec2 point3 = triangleData.point3;
+
+							Vec2* pointVec = new Vec2[3];
+							pointVec[0] = point1;
+							pointVec[1] = point2;
+							pointVec[2] = point3;
+							firePro._debugDrawNode_fireAreaMode->drawPolygon(pointVec, 3, Color4F(CCRANDOM_0_1(), CCRANDOM_0_1(), CCRANDOM_0_1(), 0.6), 1, Color4F(0, 0, 0, 0));
+						}
+
+					}
+				}
+				else if (firePro.nowFireAreaData.fAreaType == fireAreaType::lines) {
+
+					for (int i = 0; i < firePro.nowFireAreaData.linePoints.size() - 1; ++i) {
+						Vec2 pointA;
+						Vec2 pointB;
+
+						pointA = firePro.nowFireAreaData.linePoints[i];
+						pointB = firePro.nowFireAreaData.linePoints[i + 1];
+
+						firePro._debugDrawNode_fireAreaMode->drawSegment(pointA, pointB, 1, Color4F(1, 0, 0, 1));
+
 					}
 
 				}
-			}
-			else if (firePro.nowFireAreaData.fAreaType == fireAreaType::lines) {
-
-				for (int i = 0; i < firePro.nowFireAreaData.linePoints.size() - 1; ++i) {
-					Vec2 pointA;
-					Vec2 pointB;
-
-					pointA = firePro.nowFireAreaData.linePoints[i];
-					pointB = firePro.nowFireAreaData.linePoints[i + 1];
-
-					firePro._debugDrawNode_fireAreaMode->drawSegment(pointA, pointB, 1, Color4F(1, 0, 0, 1));
-
-				}
-
 			}
 		}
 	}

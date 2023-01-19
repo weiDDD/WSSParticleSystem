@@ -47,12 +47,13 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 			int kbSize = curveKB.size();
 			if (kbSize > 0) {
 				curveKB.clear();
+				curveKB.swap(std::vector<Vec2>());
 				kbSize = 0;
 				curveKbFirstPoint = nullptr;
 			}
 			if (kbSize <= 0) {
 
-				curveKB.reserve(curvePointSize - 1);
+				//curveKB.reserve(curvePointSize - 1);
 
 				for (int i = 0; i < curvePointSize - 1; ++i) {
 					Vec2 left = curvePoints[i];
