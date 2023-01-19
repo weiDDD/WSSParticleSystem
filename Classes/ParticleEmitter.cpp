@@ -244,6 +244,7 @@ ParticleEmitter::ParticleEmitter()
 	worldPos = Vec2(0, 0);
 	fScaleX = 0;
 	fScaleY = 0;
+
 }
 
 ParticleEmitter::~ParticleEmitter() {
@@ -768,7 +769,7 @@ void ParticleEmitter::update(float dt) {
 				cPar->_renderer->update(dt);
 			}
 
-			Vec2 emitterPos = this->convertToWorldSpace(Vec2::ZERO);
+			//Vec2 emitterPos = this->convertToWorldSpace(Vec2::ZERO);
 			int parIndex = 0;
 			while (parIndex < cPar->_particleCount) {
 				auto emitterPar = cPar->_emitter[parIndex];
@@ -781,7 +782,17 @@ void ParticleEmitter::update(float dt) {
 						emitterPar->par->setPosition(emitterPar->pro.pos);
 					}
 					else if (cPar->_positionType == positionType::FREE) {
-						emitterPar->par->setPosition(Vec2(emitterPar->pro.pos.x - emitterPos.x , emitterPar->pro.pos.y - emitterPos.y));
+						// 由于子发射器添加在这个发射器上，得使用位置便宜回去
+						Vec2 nowEmitterPos = this->convertToWorldSpace(Vec2::ZERO);
+						float scaleX = this->getScaleX();
+						float scaleY = this->getScaleY();
+						emitterPar->pro.nowEmitterPos = nowEmitterPos;
+						Vec2 offsetPos = Vec2((emitterPar->pro.emitterStartPos.x - nowEmitterPos.x) / scaleX, (emitterPar->pro.emitterStartPos.y - nowEmitterPos.y) / scaleY);
+						
+						Vec2 newPos = Vec2(emitterPar->pro.pos.x + offsetPos.x, emitterPar->pro.pos.y + offsetPos.y);
+
+						CCLOG("offsetPos:%.2f,%.2f", offsetPos.x, offsetPos.y);
+						emitterPar->par->setPosition(newPos);
 					}
 					
 					// 更新旋转
@@ -804,7 +815,15 @@ void ParticleEmitter::update(float dt) {
 					emitterPar->par->setVisible(false);
 
 					if (cPar->_positionType == positionType::FREE) {
-						emitterPar->par->setPosition(Vec2(emitterPar->pro.pos.x - emitterPos.x, emitterPar->pro.pos.y - emitterPos.y));
+						Vec2 nowEmitterPos = this->convertToWorldSpace(Vec2::ZERO);
+						float scaleX = this->getScaleX();
+						float scaleY = this->getScaleY();
+						emitterPar->pro.nowEmitterPos = nowEmitterPos;
+						Vec2 offsetPos = Vec2((emitterPar->pro.emitterStartPos.x - nowEmitterPos.x) / scaleX, (emitterPar->pro.emitterStartPos.y - nowEmitterPos.y) / scaleY);
+
+						Vec2 newPos = Vec2(emitterPar->pro.pos.x + offsetPos.x, emitterPar->pro.pos.y + offsetPos.y);
+
+						emitterPar->par->setPosition(newPos);
 					}
 					emitterPar->par->releaseRender();
 					

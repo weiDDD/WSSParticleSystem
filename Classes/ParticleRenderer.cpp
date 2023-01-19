@@ -296,7 +296,7 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 				float scaleX = 1.0;
 				float scaleY = 1.0;
 				if (_emitter) {
-					nowEmitterPos = _emitter->getPosition();
+					nowEmitterPos = _emitter->convertToWorldSpace(Vec2::ZERO);
 					scaleX = _emitter->getScaleX();
 					scaleY = _emitter->getScaleY();
 				}

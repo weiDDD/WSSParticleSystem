@@ -602,11 +602,6 @@ void ParticleUiView::initUi() {
 	seekByName(mainRootNode, "saveSingleParFileBtn")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
 		if (eType == Widget::TouchEventType::ENDED) {
 			FileCenter::getInstance()->writeJsonData(nowFileName, this->getSignalPar());
-			
-			if (singlePar != nullptr){
-				singlePar->removeFromParent();
-				singlePar = nullptr;
-			}
 		}
 	});
 
@@ -5232,6 +5227,8 @@ void ParticleUiView::onTouchMoved(cocos2d::CCTouch* pTouch, cocos2d::CCEvent* pE
 		
 		if (editMode == EditMode::single && singlePar) {
 			singlePar->setPosition(location);
+
+			//this->setPosition(location);
 		}
 	}
 

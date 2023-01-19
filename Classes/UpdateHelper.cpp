@@ -833,9 +833,10 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 		particle->pos.y = particle->pos.y - firePro._fireArea.inCircleRadius * mSin(particle->startToCenterAngle);
 	}
 
+	Vec2 emitterWorldPos = father->convertToWorldSpace(Vec2::ZERO);
 	particle->emitterPos = emitterPos;
-	particle->emitterStartPos = father->getPosition();
-	particle->nowEmitterPos = father->getPosition();
+	particle->emitterStartPos = emitterWorldPos;
+	particle->nowEmitterPos = emitterWorldPos;
 
 	float startAngle = Vec2(particle->pos.x - emitterPos.x, particle->pos.y - emitterPos.y).getAngle() / P_PI * 180;
 	float emitterRotation = father->getRotation();
