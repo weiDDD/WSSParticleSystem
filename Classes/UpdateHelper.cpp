@@ -408,7 +408,8 @@ void UpdateHelper::setParticleVarietyValue(particleVarietyValue &pValue, emitter
 	{
 		pValue.pType = particlePropertyType::curve;
 		pValue.curvePoints.clear();
-		pValue.curvePoints.swap(std::vector<Vec2>());
+		//pValue.curvePoints.swap(std::vector<Vec2>());
+		pValue.curvePoints.shrink_to_fit();
 		pValue.isSetCurveKB = false;
 
 		int index = 0;
@@ -545,7 +546,8 @@ void UpdateHelper::setParticleVarietyColorValue(particleColorValue &pValue, emit
 	{
 		pValue.pType = particlePropertyType::curve;
 		pValue.curveColors.clear();
-		pValue.curveColors.swap(std::vector<colorCurvePoint>());
+		//pValue.curveColors.swap(std::vector<colorCurvePoint>());
+		pValue.curveColors.shrink_to_fit();
 
 		colorCurvePoint* itor = &eValue.curveColors[0];
 		int size = eValue.curveColors.size();

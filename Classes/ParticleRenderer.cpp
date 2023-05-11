@@ -47,7 +47,8 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 			int kbSize = curveKB.size();
 			if (kbSize > 0) {
 				curveKB.clear();
-				curveKB.swap(std::vector<Vec2>());
+				//curveKB.swap(std::vector<Vec2>());
+				curveKB.shrink_to_fit();
 				kbSize = 0;
 				curveKbFirstPoint = nullptr;
 			}

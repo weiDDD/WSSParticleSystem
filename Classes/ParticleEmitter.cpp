@@ -791,7 +791,6 @@ void ParticleEmitter::update(float dt) {
 						
 						Vec2 newPos = Vec2(emitterPar->pro.pos.x + offsetPos.x, emitterPar->pro.pos.y + offsetPos.y);
 
-						CCLOG("offsetPos:%.2f,%.2f", offsetPos.x, offsetPos.y);
 						emitterPar->par->setPosition(newPos);
 					}
 					
