@@ -467,7 +467,10 @@ namespace PRender {
 		// 发射器的旋转角度
 		float _emitterAngle;
 
-
+		// 发射器的缩放
+		float _emitterScaleX;
+		float _emitterScaleY;
+			
 	};
 
 }

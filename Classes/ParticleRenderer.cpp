@@ -203,6 +203,8 @@ ParticleRenderer::ParticleRenderer()
 , _emitterPos(Vec2(0,0))
 , _emitter(nullptr)
 , _emitterAngle(0)
+, _emitterScaleX(1.0)
+, _emitterScaleY(1.0)
 , _renderMode(renderMode::TRIANGLES)
 {
 	_positionType = positionType::RELATIVE;
@@ -294,17 +296,17 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 				//	float angleOff = -angle - _emitterAngle; // 
 				//	newPos = Vec2(dis*cosf(-angleOff / 180 * P_PI), dis*sinf(-angleOff / 180 * P_PI));
 				//}
+
+				
 				Vec2 nowEmitterPos = p.nowEmitterPos;
-				float scaleX = 1.0;
-				float scaleY = 1.0;
+
 				if (_emitter) {
-					nowEmitterPos = _emitter->convertToWorldSpace(Vec2::ZERO);
-					scaleX = _emitter->getScaleX();
-					scaleY = _emitter->getScaleY();
+					nowEmitterPos = _emitterPos; //_emitter->convertToWorldSpace(Vec2::ZERO);
 				}
 				p.nowEmitterPos = nowEmitterPos;
 
-				newPos = Vec2(p.pos.x + (p.emitterStartPos.x - nowEmitterPos.x) / scaleX, p.pos.y + (p.emitterStartPos.y - nowEmitterPos.y)/ scaleY);
+				newPos = Vec2(p.pos.x + (p.emitterStartPos.x - nowEmitterPos.x) * _emitterScaleX, p.pos.y + (p.emitterStartPos.y - nowEmitterPos.y) * _emitterScaleY);
+				
 			}
 			else if (_positionType == positionType::RELATIVE)
 			{
@@ -368,9 +370,12 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 	// getWorldToNodeTransform()方法可以将世界坐标转换到一个Node的本地坐标来
 	//Mat4 worldToNodeTM = getWorldToNodeTransform();
 	
-	if (_emitter && _emitter->runningLayer) {
+	if (_emitter) {
 		_emitterPos = _emitter->convertToWorldSpace(Vec2::ZERO);
-		_emitterPos = _emitter->runningLayer->convertToNodeSpace(_emitterPos);
+		//_emitterPos = _emitter->runningLayer->convertToNodeSpace(_emitterPos);
+		
+		_emitterScaleX = 1.0 / _emitter->getScaleX();
+		_emitterScaleY = 1.0 /_emitter->getScaleY();
 
 		// visible
 		this->setVisible(_emitter->isVisible());

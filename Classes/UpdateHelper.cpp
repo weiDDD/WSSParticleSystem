@@ -5,6 +5,8 @@ using namespace pp;
 #define mSin(x) UpdateHelper::getInstance()->getSinCacheValue(x)
 #define mCos(x) UpdateHelper::getInstance()->getCosCacheValue(x)
 
+#define eps 1e-10
+
 //#define mSin(x) sinf(x / 180 * P_PI)
 //#define mCos(x) cosf(x / 180 * P_PI)
 
@@ -259,9 +261,11 @@ void UpdateHelper::updateParticleMove(particleProperty& p,float dt) {
 
 	// 加速度
 	if (p.speed.pType == particlePropertyType::constValue) {
-		float acc = p.acc.getParticleVarietyValue(nowTimePrecent); 
-		p.speed.constValue += acc * dt;
-		speed = p.speed.constValue;
+		float acc = p.acc.getParticleVarietyValue(nowTimePrecent);
+		if (acc > eps || acc < -eps) {
+			p.speed.constValue += acc * dt;
+			speed = p.speed.constValue;
+		}
 	}
 	// 移动角度
 	float moveAngle = p.moveAngle.getParticleVarietyValue(nowTimePrecent); 
@@ -270,23 +274,27 @@ void UpdateHelper::updateParticleMove(particleProperty& p,float dt) {
 	if (p.moveAngle.pType == particlePropertyType::constValue) {
 		// 角速度
 		float moveAngleSpeed = p.angleSpeed.getParticleVarietyValue(nowTimePrecent); 
-		p.moveAngle.constValue += moveAngleSpeed * dt;
-		moveAngle = p.moveAngle.constValue;
+		if (moveAngleSpeed > eps || moveAngleSpeed < -eps) {
+			p.moveAngle.constValue += moveAngleSpeed * dt;
+			moveAngle = p.moveAngle.constValue;
+		}
 	}
 
 	p.speedX = speed * mCos(moveAngle);
 	p.speedY = speed * mSin(moveAngle);
 	// 重力 X
 	float gravityX = p.gravityX.getParticleVarietyValue(nowTimePrecent);
-	p.gravitySpeedX += gravityX*dt;
-
+	if (gravityX > eps || gravityX < -eps) {
+		p.gravitySpeedX += gravityX * dt;
+	}
 	// 重力 Y
 	float gravityY = p.gravityY.getParticleVarietyValue(nowTimePrecent);
-	p.gravitySpeedY += gravityY*dt;
+	if (gravityY > eps || gravityY < -eps) {
+		p.gravitySpeedY += gravityY * dt;
+	}
 
-
-	p.pos.x += p.speedX * dt + p.gravitySpeedX*dt;
-	p.pos.y += p.speedY * dt + p.gravitySpeedY*dt;
+	p.pos.x += (p.speedX + p.gravitySpeedX)*dt;
+	p.pos.y += (p.speedY + p.gravitySpeedY)*dt;
 	
 }
 

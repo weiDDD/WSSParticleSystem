@@ -762,6 +762,9 @@ void ParticleEmitter::update(float dt) {
 	// 是否还有子发射器在运动，在工作
 	bool isHaveEmitterParRunning = false;
 	{
+		// 由于子发射器添加在这个发射器上，得使用位置便宜回去
+		Vec2 nowEmitterPos = this->convertToWorldSpace(Vec2::ZERO);
+
 		auto itor = childrenParMap.begin();
 		while (itor != childrenParMap.end()) {
 			auto cPar = (*itor).second;
@@ -783,7 +786,7 @@ void ParticleEmitter::update(float dt) {
 					}
 					else if (cPar->_positionType == positionType::FREE) {
 						// 由于子发射器添加在这个发射器上，得使用位置便宜回去
-						Vec2 nowEmitterPos = this->convertToWorldSpace(Vec2::ZERO);
+						//Vec2 nowEmitterPos = this->convertToWorldSpace(Vec2::ZERO);
 						float scaleX = this->getScaleX();
 						float scaleY = this->getScaleY();
 						emitterPar->pro.nowEmitterPos = nowEmitterPos;
@@ -814,7 +817,7 @@ void ParticleEmitter::update(float dt) {
 					emitterPar->par->setVisible(false);
 
 					if (cPar->_positionType == positionType::FREE) {
-						Vec2 nowEmitterPos = this->convertToWorldSpace(Vec2::ZERO);
+						//Vec2 nowEmitterPos = this->convertToWorldSpace(Vec2::ZERO);
 						float scaleX = this->getScaleX();
 						float scaleY = this->getScaleY();
 						emitterPar->pro.nowEmitterPos = nowEmitterPos;
