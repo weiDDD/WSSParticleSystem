@@ -65,6 +65,8 @@ namespace PRender {
 			
 		}
 
+		void resetData();
+
 		// 刷新一次地址的指针，因为当这个结构体被拷贝时会导致指针改变，curveKbFirstPoint指向不正确的地址
 		void refreshPointer();
 
@@ -123,6 +125,8 @@ namespace PRender {
 		// 刷新一次地址的指针，因为当这个结构体被拷贝时会导致指针改变，curveKbFirstPoint指向不正确的地址
 		void refreshPointer();
 
+		void resetData();
+
 		// 获取粒子 颜色 属性的函数
 		Color3B getParticleVarietyValue(float nowTime);
 
@@ -155,6 +159,22 @@ namespace PRender {
 		void resetData() {
 			gravitySpeedX = 0;
 			gravitySpeedY = 0;
+
+			speed.resetData();
+			acc.resetData();
+			moveAngle.resetData();
+			angleSpeed.resetData();
+			gravityX.resetData();
+			gravityY.resetData();
+			size.resetData();
+			rotation.resetData();
+			rotationSpeed.resetData();
+			skewX.resetData();
+			skewXSpeed.resetData();
+			skewY.resetData();
+			skewYSpeed.resetData();
+			alpha.resetData();
+			color.resetData();
 		}
 
 		void refreshPointer() {

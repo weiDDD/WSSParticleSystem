@@ -32,26 +32,35 @@ void particleVarietyValue::refreshPointer() {
 	}
 }
 
+void particleVarietyValue::resetData() {
+	//if (!isSetCurveKB) {
+		int kbSize = curveKB.size();
+		if (kbSize > 0) {
+			curveKB.clear();
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
+			//
+			curveKB.swap(std::vector<Vec2>());
+#else
+			curveKB.shrink_to_fit();
+#endif
+
+			kbSize = 0;
+			curveKbFirstPoint = nullptr;
+		}
+		
+
+	//}
+}
+
 float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 	if (pType == particlePropertyType::constValue) {
 		return constValue;
 	}
 	else if (pType == particlePropertyType::curve) {
 		// 曲线数据
-		// 当前的时间
-		//float nowTime = (p.live - p.timeToLive) / p.live * 100;  // 当前经过的时间 在全部总生命中的百分比
-		nowTime = (nowTime < 0) ? 0 : nowTime;
-		nowTime = (nowTime > 100) ? 100 : nowTime;
-		// 设置KB
+
 		if (!isSetCurveKB) {
 			int kbSize = curveKB.size();
-			if (kbSize > 0) {
-				curveKB.clear();
-				//curveKB.swap(std::vector<Vec2>());
-				curveKB.shrink_to_fit();
-				kbSize = 0;
-				curveKbFirstPoint = nullptr;
-			}
 			if (kbSize <= 0) {
 
 				//curveKB.reserve(curvePointSize - 1);
@@ -61,7 +70,7 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 					Vec2 right = curvePoints[i + 1];
 
 					float k = (right.y - left.y) / ((right.x - left.x));
-					float b = left.y - k*left.x;
+					float b = left.y - k * left.x;
 
 					curveKB.push_back(Vec2(k, b));
 					++kbSize;
@@ -72,8 +81,14 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 			if (kbSize > 0) {
 				curveKbFirstPoint = &curveKB[0];
 			}
-
 		}
+
+		// 当前的时间
+		//float nowTime = (p.live - p.timeToLive) / p.live * 100;  // 当前经过的时间 在全部总生命中的百分比
+		nowTime = (nowTime < 0) ? 0 : nowTime;
+		nowTime = (nowTime > 100) ? 100 : nowTime;
+		// 设置KB
+		
 
 		//获取曲线数据，如果当前时间百分比 小于最左边的 那么 返回 constAndDelta 的数据；如果大于了最右边的 那么 返回 (n - right) % (right - left)
 		if (nowTime < curveLeftPointX) {
@@ -113,6 +128,10 @@ void particleColorValue::refreshPointer() {
 	if (curveColors.size() > 0) {
 		curveColorsFirstPtr = &curveColors[0];
 	}
+}
+
+void particleColorValue::resetData() {
+
 }
 
 Color3B particleColorValue::getParticleVarietyValue(float nowTime) {
@@ -298,14 +317,14 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 				//}
 
 				
-				Vec2 nowEmitterPos = p.nowEmitterPos;
+				//Vec2 nowEmitterPos = p.nowEmitterPos;
 
-				if (_emitter) {
-					nowEmitterPos = _emitterPos; //_emitter->convertToWorldSpace(Vec2::ZERO);
-				}
-				p.nowEmitterPos = nowEmitterPos;
+				//if (_emitter) {
+				//	nowEmitterPos = _emitterPos; //_emitter->convertToWorldSpace(Vec2::ZERO);
+				//}
+				//p.nowEmitterPos = nowEmitterPos;
 
-				newPos = Vec2(p.pos.x + (p.emitterStartPos.x - nowEmitterPos.x) * _emitterScaleX, p.pos.y + (p.emitterStartPos.y - nowEmitterPos.y) * _emitterScaleY);
+				newPos = Vec2(p.pos.x + (p.emitterStartPos.x - _emitterPos.x) * _emitterScaleX, p.pos.y + (p.emitterStartPos.y - _emitterPos.y) * _emitterScaleY);
 				
 			}
 			else if (_positionType == positionType::RELATIVE)

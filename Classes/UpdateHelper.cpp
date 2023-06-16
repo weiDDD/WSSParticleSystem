@@ -2,8 +2,7 @@
 #include "math.h"
 using namespace pp;
 
-#define mSin(x) UpdateHelper::getInstance()->getSinCacheValue(x)
-#define mCos(x) UpdateHelper::getInstance()->getCosCacheValue(x)
+
 
 #define eps 1e-10
 
@@ -17,6 +16,10 @@ static long getNowTime() {
 }
 
 UpdateHelper* UpdateHelper::instance = UpdateHelper::getInstance();
+
+#define mSin(x) instance->getSinCacheValue(x)
+#define mCos(x) instance->getCosCacheValue(x)
+
 UpdateHelper* UpdateHelper::getInstance() {
 	if (!instance) {
 		instance = new UpdateHelper();
@@ -254,7 +257,7 @@ void UpdateHelper::changePolygonToTriangleVec(std::vector<Vec2>& polygonPoints, 
 // 更新粒子的运动
 void UpdateHelper::updateParticleMove(particleProperty& p,float dt) {
 	// 当前经过的时间 在全部总生命中的百分比
-	float nowTimePrecent = (p.live - p.timeToLive) / p.live * 100;
+	float nowTimePrecent = 100 - p.timeToLive / p.live * 100;  //(p.live - p.timeToLive) / p.live * 100;
 
 	// 速度
 	float speed = p.speed.getParticleVarietyValue(nowTimePrecent);
@@ -416,8 +419,12 @@ void UpdateHelper::setParticleVarietyValue(particleVarietyValue &pValue, emitter
 	{
 		pValue.pType = particlePropertyType::curve;
 		pValue.curvePoints.clear();
-		//pValue.curvePoints.swap(std::vector<Vec2>());
+		
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
+		pValue.curvePoints.swap(std::vector<Vec2>());
+#else
 		pValue.curvePoints.shrink_to_fit();
+#endif
 		pValue.isSetCurveKB = false;
 
 		int index = 0;
@@ -554,8 +561,12 @@ void UpdateHelper::setParticleVarietyColorValue(particleColorValue &pValue, emit
 	{
 		pValue.pType = particlePropertyType::curve;
 		pValue.curveColors.clear();
-		//pValue.curveColors.swap(std::vector<colorCurvePoint>());
+		//
+#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
+		pValue.curveColors.swap(std::vector<colorCurvePoint>());
+#else
 		pValue.curveColors.shrink_to_fit();
+#endif
 
 		colorCurvePoint* itor = &eValue.curveColors[0];
 		int size = eValue.curveColors.size();
