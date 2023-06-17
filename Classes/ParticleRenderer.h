@@ -62,7 +62,6 @@ namespace PRender {
 			curveKbFirstPoint = nullptr;
 		}
 		~particleVarietyValue() {
-			
 		}
 
 		void resetData();
@@ -213,6 +212,8 @@ namespace PRender {
 		Vec2 pos;
 		// 锚点
 		Vec2 anchorPoint;
+		float anchorPointDis;// 锚点距离(0.5,0.5)的距离
+		float anchorPointAngle;// 锚点距离(0.5,0.5)的角度
 		// 粒子的发射器,开始的位置
 		Vec2 startPos;
 		//速度

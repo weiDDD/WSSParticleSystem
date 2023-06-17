@@ -2,7 +2,9 @@
 #include "math.h"
 using namespace pp;
 
-
+static bool isInitAngleCache = false;
+static float sinAngleCache[361];
+static float cosAngleCache[361];
 
 #define eps 1e-10
 
@@ -17,13 +19,13 @@ static long getNowTime() {
 
 UpdateHelper* UpdateHelper::instance = UpdateHelper::getInstance();
 
-#define mSin(x) instance->getSinCacheValue(x)
-#define mCos(x) instance->getCosCacheValue(x)
+#define mSin(x) UpdateHelper::getSinCacheValue(x)
+#define mCos(x) UpdateHelper::getCosCacheValue(x)
 
 UpdateHelper* UpdateHelper::getInstance() {
 	if (!instance) {
 		instance = new UpdateHelper();
-		instance->initSinCosChacheValue();
+		
 	}
 	return instance;
 }
@@ -37,7 +39,12 @@ void UpdateHelper::initSinCosChacheValue(){
 	}
 }
 
+
 float UpdateHelper::getSinCacheValue(int angle){
+	if (!isInitAngleCache) {
+		isInitAngleCache = true;
+		UpdateHelper::initSinCosChacheValue();
+	}
 	while (angle < 0){
 		angle += 360;
 	}
@@ -48,6 +55,10 @@ float UpdateHelper::getSinCacheValue(int angle){
 }
 
 float UpdateHelper::getCosCacheValue(int angle){
+	if (!isInitAngleCache) {
+		isInitAngleCache = true;
+		UpdateHelper::initSinCosChacheValue();
+	}
 	while (angle < 0){
 		angle += 360;
 	}
@@ -439,14 +450,11 @@ void UpdateHelper::setParticleVarietyValue(particleVarietyValue &pValue, emitter
 			++index;
 		}
 
+		// 
+		
 
-		/*auto itor = eValue.curvePoints.begin();
-		while (itor != eValue.curvePoints.end()) {
-			pValue.curvePoints.push_back(Vec2((*itor).x, (*itor).y - (*itor).z + CCRANDOM_0_1() * 2 * (*itor).z));
-			
-			++index;
-			++itor;
-		}*/
+
+
 
 
 		pValue.curvePointFirstPoint = &pValue.curvePoints[0];
@@ -876,6 +884,9 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	// 处理锚点
 	particle->anchorPoint = firePro._texAnchorPoint;
+	particle->anchorPointDis = particle->anchorPoint.getDistance(Vec2(0.5, 0.5));
+
+	particle->anchorPointAngle = Vec2(particle->anchorPoint.x - 0.5, particle->anchorPoint.y - 0.5).getAngle() / P_PI * 180;
 
 	// 是否锁定旋转角度到移动角度上
 	particle->isLockRotationToMoveAngle = firePro._isLockRotationToMoveAngle;

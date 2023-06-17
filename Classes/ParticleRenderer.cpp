@@ -3,11 +3,13 @@
 #include "UpdateHelper.h"
 using namespace pp;
 
-#define mSin(x) UpdateHelper::getInstance()->getSinCacheValue(x)
-#define mCos(x) UpdateHelper::getInstance()->getCosCacheValue(x)
+#define mSin(x) UpdateHelper::getSinCacheValue(x)
+#define mCos(x) UpdateHelper::getCosCacheValue(x)
 
 //#define mSin(x) sinf(x / 180 * P_PI)
 //#define mCos(x) cosf(x / 180 * P_PI)
+
+#define eps 1e-10
 
 // 渲染是否由本类来渲染，TRUE 就是本类来渲染, false交给cocos
 static bool render_by_this_class = true;
@@ -60,35 +62,32 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 		// 曲线数据
 
 		if (!isSetCurveKB) {
+			isSetCurveKB = true;
+
 			int kbSize = curveKB.size();
 			if (kbSize <= 0) {
-
-				//curveKB.reserve(curvePointSize - 1);
 
 				for (int i = 0; i < curvePointSize - 1; ++i) {
 					Vec2 left = curvePoints[i];
 					Vec2 right = curvePoints[i + 1];
 
 					float k = (right.y - left.y) / ((right.x - left.x));
-					float b = left.y - k * left.x;
+					float b = 0;//left.y - k * left.x;
 
 					curveKB.push_back(Vec2(k, b));
 					++kbSize;
 				}
 			}
-			isSetCurveKB = true;
-
+			
 			if (kbSize > 0) {
 				curveKbFirstPoint = &curveKB[0];
 			}
+			
 		}
 
 		// 当前的时间
-		//float nowTime = (p.live - p.timeToLive) / p.live * 100;  // 当前经过的时间 在全部总生命中的百分比
 		nowTime = (nowTime < 0) ? 0 : nowTime;
 		nowTime = (nowTime > 100) ? 100 : nowTime;
-		// 设置KB
-		
 
 		//获取曲线数据，如果当前时间百分比 小于最左边的 那么 返回 constAndDelta 的数据；如果大于了最右边的 那么 返回 (n - right) % (right - left)
 		if (nowTime < curveLeftPointX) {
@@ -101,23 +100,25 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 				realNowTime = int(nowTime - curveRightPointX) % int(curveRightPointX - curveLeftPointX) + curveLeftPointX;
 			}
 
-
 			int index = 0;
 			Vec2* i = curvePointFirstPoint;
+			Vec2* lastI = i;
 			++i;
 			for (; index < curvePointSize - 1; ++i) {
 				//float leftPosX = i->x;
 				//float leftPosX = *(float*)(i + vec2xOffset);
 				if (realNowTime < i->x) {
 					Vec2* kbVec = curveKbFirstPoint + index;
-					float k = kbVec->x;  // curveKB[index].x;  // 7.1
-					float b = kbVec->y;  //curveKB[index].y;  // 3.7
-					float realPY = k * realNowTime + b;
-					return realPY;
+					//float k = kbVec->x;  // curveKB[index].x;  // 7.1
+					//float b = kbVec->y;  //curveKB[index].y;  // 3.7
+					//float realPY = kbVec->x * realNowTime + kbVec->y;
+					//return kbVec->x * realNowTime + kbVec->y;
+					return (realNowTime - lastI->x) * kbVec->x + lastI->y;
 				}
+				lastI = i;
 				++index;
 			}
-
+			
 		}
 	}
 	return 0;
@@ -877,9 +878,11 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 	float alpha = particle.alpha.getParticleVarietyValue(nowTimePrecent);
 	Color3B m_color = particle.color.getParticleVarietyValue(nowTimePrecent);  
 	Color4B color = Color4B(m_color.r, m_color.g, m_color.b, alpha);
-	color = (_opacityModifyRGB) ? Color4B(color.r * color.a / 255, color.g * color.a / 255, color.b * color.a / 255, color.a) :
-		Color4B(color.r, color.g , color.b , color.a);
 
+	if (_opacityModifyRGB) {
+		float alphaNormal = color.a / 255;
+		color = Color4B(color.r * alphaNormal, color.g * alphaNormal, color.b * alphaNormal, color.a);
+	}
 
 	quad->bl.colors = color;
 	quad->br.colors = color;
@@ -899,7 +902,9 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 		if (particle.rotation.pType == particlePropertyType::constValue) {
 			// 旋转速度
 			float rotationSpeed = particle.rotationSpeed.getParticleVarietyValue(nowTimePrecent);
-			particle.rotation.constValue += rotationSpeed * dt;
+			if (rotationSpeed > eps || rotationSpeed < -eps) {
+				particle.rotation.constValue += rotationSpeed * dt;
+			}
 		}
 	}
 
@@ -910,15 +915,19 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 
 	if (particle.skewX.pType == particlePropertyType::constValue) {
 		// 倾斜角X 速度
-		float skewXSpeed = particle.skewXSpeed.getParticleVarietyValue(nowTimePrecent);  
-		particle.skewX.constValue += skewXSpeed * dt;
+		float skewXSpeed = particle.skewXSpeed.getParticleVarietyValue(nowTimePrecent);
+		if (skewXSpeed > eps || skewXSpeed < -eps) {
+			particle.skewX.constValue += skewXSpeed * dt;
+		}
 	}
 
 	// 倾斜角Y
 	if (particle.skewY.pType == particlePropertyType::constValue) {
 		// 倾斜角Y 速度
-		float skewYSpeed = particle.skewYSpeed.getParticleVarietyValue(nowTimePrecent);  
-		particle.skewY.constValue += skewYSpeed * dt;
+		float skewYSpeed = particle.skewYSpeed.getParticleVarietyValue(nowTimePrecent);
+		if (skewYSpeed > eps || skewYSpeed < -eps) {
+			particle.skewY.constValue += skewYSpeed * dt;
+		}
 	}
 
 	if (rotation != 0)
@@ -947,20 +956,20 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 				(float)mCos(skewX), (float)mCos(skewY)
 			};
 			// bottom-left
-			myPosMat[0] = 0 + myPosMat[0] * skewMatArray[2];
-			myPosMat[1] = 0 + myPosMat[1] * skewMatArray[3];
+			myPosMat[0] *= skewMatArray[2];
+			myPosMat[1] *= skewMatArray[3];
 
 			// bottom-right vertex:
-			myPosMat[2] = 0 + myPosMat[2] * skewMatArray[2];
-			myPosMat[3] = 0 + myPosMat[3] * skewMatArray[3];
+			myPosMat[2] *= skewMatArray[2];
+			myPosMat[3] *= skewMatArray[3];
 
 			// top-left vertex:
-			myPosMat[4] = 0 + myPosMat[4] * skewMatArray[2];
-			myPosMat[5] = 0 + myPosMat[5] * skewMatArray[3];
+			myPosMat[4] *= skewMatArray[2];
+			myPosMat[5] *= skewMatArray[3];
 
 			// top-right vertex:
-			myPosMat[6] = 0 + myPosMat[6] * skewMatArray[2];
-			myPosMat[7] = 0 + myPosMat[7] * skewMatArray[3];
+			myPosMat[6] *= skewMatArray[2];
+			myPosMat[7] *= skewMatArray[3];
 		}
 
 
@@ -993,12 +1002,12 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 		
 
 		// 相对于锚点的偏移量
-		Vec2 anchorPoint = Vec2(newPosition.x + (particle.anchorPoint.x - 0.5)*size , newPosition.y + (particle.anchorPoint.y - 0.5 )*size);
-		float anchorDis = anchorPoint.getDistance(newPosition);
-		float ahchorAngle = Vec2( anchorPoint.x - newPosition.x , anchorPoint.y - newPosition.y ).getAngle() / P_PI * 180;
+		//Vec2 anchorPoint = Vec2(newPosition.x + (particle.anchorPoint.x - 0.5)*size , newPosition.y + (particle.anchorPoint.y - 0.5 )*size);
+		float anchorDis = particle.anchorPointDis * size;
+		//float ahchorAngle = Vec2((particle.anchorPoint.x - 0.5) * size, (particle.anchorPoint.y - 0.5) * size).getAngle() / P_PI * 180;
 
 
-		Vec2 rotatedAnchorPoint = Vec2(anchorDis * mCos(-ahchorAngle - rotation) , anchorDis * mSin(-ahchorAngle - rotation));
+		Vec2 rotatedAnchorPoint = Vec2(anchorDis * mCos(-particle.anchorPointAngle - rotation) , anchorDis * mSin(-particle.anchorPointAngle - rotation));
 
 
 		// bottom-left

@@ -14,12 +14,14 @@ public:
 	static UpdateHelper* instance;
 	static UpdateHelper* getInstance();
 
+
+
 	// 初始化一下sin，cos的缓存数据
-	void initSinCosChacheValue();
+	static void initSinCosChacheValue();
 
 	// 获取缓存的sin,cos值
-	float getSinCacheValue(int angle);
-	float getCosCacheValue(int angle);
+	static float getSinCacheValue(int angle);
+	static float getCosCacheValue(int angle);
 
 	// 将一个多边形划分成三角形集合 , polygonPoints 多边形的点集合 ，triangleVec 最终生成的三角形集合
 	void changePolygonToTriangleVec(std::vector<Vec2>& polygonPoints, std::vector<triangle>* triangleVec);
@@ -44,9 +46,8 @@ public:
 	// 更新一个 发射属性
 	void updateFirePro(ParticleEmitter* father , emitterFirePro& firePro, childrenPar& cPar, float dt);
 
-private:
-	float sinAngleCache[361];
-	float cosAngleCache[361];
+public:
+	
 };
 
 
