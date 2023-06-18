@@ -745,6 +745,8 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, texCoords));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
+
 
 	if (_renderMode == renderMode::TRIANGLES){
 		glDrawElements(GL_TRIANGLES, (GLsizei)_particleCount * 6, GL_UNSIGNED_SHORT, 0);
