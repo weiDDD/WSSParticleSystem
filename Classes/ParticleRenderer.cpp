@@ -880,11 +880,8 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 	float alpha = particle.alpha.getParticleVarietyValue(nowTimePrecent);
 	Color3B m_color = particle.color.getParticleVarietyValue(nowTimePrecent);  
 	Color4B color = Color4B(m_color.r, m_color.g, m_color.b, alpha);
-
-	if (_opacityModifyRGB) {
-		float alphaNormal = color.a / 255;
-		color = Color4B(color.r * alphaNormal, color.g * alphaNormal, color.b * alphaNormal, color.a);
-	}
+	color = (_opacityModifyRGB) ? Color4B(color.r * color.a / 255, color.g * color.a / 255, color.b * color.a / 255, color.a) :
+		Color4B(color.r, color.g, color.b, color.a);
 
 	quad->bl.colors = color;
 	quad->br.colors = color;
