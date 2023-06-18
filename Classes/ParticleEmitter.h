@@ -151,10 +151,12 @@ struct emitterVarietyValue {
 	// 是否给KB赋值了,曲线点改变时，这个值为 false
 	bool isSetCurveKB;
 	// 曲线数据的 k,b值
-	std::vector<Vec2> curveKB;
+	//std::vector<Vec2> curveKB;
 	// 发射时的粒子属性的曲线数据的  上下随机曲线的K，B值 , 因为发射时的粒子属性如果是曲线数据，那么render得到的数据是这个曲线中的一个值，所以需要保存一下这个上下随机曲线的KB值，保证性能
-	std::vector<Vec2> randUpCurveKB;
-	std::vector<Vec2> randDownCurveKB;
+	//std::vector<Vec2> randUpCurveKB;
+	//std::vector<Vec2> randDownCurveKB;
+
+	// 记录每个曲线
 
 };
 

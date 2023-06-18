@@ -25,7 +25,7 @@ UpdateHelper* UpdateHelper::instance = UpdateHelper::getInstance();
 UpdateHelper* UpdateHelper::getInstance() {
 	if (!instance) {
 		instance = new UpdateHelper();
-		
+		UpdateHelper::initSinCosChacheValue();
 	}
 	return instance;
 }
@@ -41,30 +41,32 @@ void UpdateHelper::initSinCosChacheValue(){
 
 
 float UpdateHelper::getSinCacheValue(int angle){
-	if (!isInitAngleCache) {
-		isInitAngleCache = true;
-		UpdateHelper::initSinCosChacheValue();
-	}
+
 	while (angle < 0){
 		angle += 360;
 	}
 	while (angle > 360){
 		angle -= 360;
 	}
+
+	/*angle = fmod(angle, 360.0);
+	if (angle < 0)
+		angle += 360.0;*/
 	return sinAngleCache[angle];
 }
 
 float UpdateHelper::getCosCacheValue(int angle){
-	if (!isInitAngleCache) {
-		isInitAngleCache = true;
-		UpdateHelper::initSinCosChacheValue();
-	}
+
 	while (angle < 0){
 		angle += 360;
 	}
 	while (angle > 360){
 		angle -= 360;
 	}
+
+	/*angle = fmod(angle, 360.0);
+	if (angle < 0)
+		angle += 360.0;*/
 	return cosAngleCache[angle];
 }
 
@@ -342,12 +344,14 @@ float UpdateHelper::getValueFromEmitterVarietyValue(emitterVarietyValue& value ,
 		float nowTimeInDuration = firePro._elapsed;
 		// 设置KB
 		if (!value.isSetCurveKB) {
-			int kbSize = value.curveKB.size();
+			value.isSetCurveKB = true;
+
+			/*int kbSize = value.curveKB.size();
 			if (kbSize > 0) {
 				value.curveKB.clear();
 				kbSize = 0;
-			}
-			if (kbSize == 0) {
+			}*/
+			/*if (kbSize == 0) {
 				int size = (value.curvePoints).size();
 				for (int i = 0; i < size - 1; ++i) {
 					Vec3 left = (value.curvePoints)[i];
@@ -356,14 +360,14 @@ float UpdateHelper::getValueFromEmitterVarietyValue(emitterVarietyValue& value ,
 					float b = left.y - k*left.x;
 					value.curveKB.push_back(Vec2(k, b));
 				}
-			}
+			}*/
 			// 上下随机线的KB
-			int randUpKbSize = value.randUpCurveKB.size();
+			/*int randUpKbSize = value.randUpCurveKB.size();
 			if (randUpKbSize > 0) {
 				value.randUpCurveKB.clear();
 				randUpKbSize = 0;
-			}
-			if (randUpKbSize == 0) {
+			}*/
+			/*if (randUpKbSize == 0) {
 
 				int size = (value.curvePoints).size();
 				for (int i = 0; i < size - 1; ++i) {
@@ -373,14 +377,14 @@ float UpdateHelper::getValueFromEmitterVarietyValue(emitterVarietyValue& value ,
 					float b = left.y + left.z - k*left.x;
 					value.randUpCurveKB.push_back(Vec2(k, b));
 				}
-			}
+			}*/
 			//
-			int randDownKbSize = value.randDownCurveKB.size();
+			/*int randDownKbSize = value.randDownCurveKB.size();
 			if (randDownKbSize > 0) {
 				value.randDownCurveKB.clear();
 				randDownKbSize = 0;
-			}
-			if (randDownKbSize == 0) {
+			}*/
+			/*if (randDownKbSize == 0) {
 
 				int size = (value.curvePoints).size();
 				for (int i = 0; i < size - 1; ++i) {
@@ -390,30 +394,40 @@ float UpdateHelper::getValueFromEmitterVarietyValue(emitterVarietyValue& value ,
 					float b = left.y - left.z - k*left.x;
 					value.randDownCurveKB.push_back(Vec2(k, b));
 				}
-			}
+			}*/
 
-			value.isSetCurveKB = true;
+			
 		}
 
 		//获取曲线数据
 		int size = ((value).curvePoints).size();
 		for (int i = 0; i < size - 1; ++i) {
+			Vec3 lastPos = ((value).curvePoints)[i];
 			Vec3 pos = ((value).curvePoints)[i + 1];
 			float inDurationX = nowTimeInDuration / firePro._duration;
 			if (inDurationX < pos.x) {
-				//float k = (*(value).curveKB).at(i).x;
-				//float b = (*(value).curveKB).at(i).y;
-				//float realPY = k*nowTimeInDuration + b;
 				// 根据发射周期时间点对应的上下的随机线的值来 设置 发射开始时的粒子属性
-				float upK = ((value).randUpCurveKB)[i].x;
+				/*float upK = ((value).randUpCurveKB)[i].x;
 				float upB = ((value).randUpCurveKB)[i].y;
 				float upY = upK*inDurationX + upB;
 
 				float downK = ((value).randDownCurveKB)[i].x;
 				float downB = ((value).randDownCurveKB)[i].y;
-				float downY = downK*inDurationX + downB;
+				float downY = downK*inDurationX + downB;*/
 
-				return downY + CCRANDOM_0_1() * (upY - downY);
+				//
+				float leftDownY = lastPos.y - lastPos.z;
+				float leftUpY = lastPos.y + lastPos.z;
+				float rightDownY = pos.y - pos.z;
+				float rightUpY = pos.y + pos.z;
+
+				float dx = inDurationX - lastPos.x;
+
+				float leftY = leftDownY + CCRANDOM_0_1() * 2 * lastPos.z;
+				float rightY = rightDownY + CCRANDOM_0_1() * 2 * pos.z;
+
+				//return downY + CCRANDOM_0_1() * (upY - downY);
+				return leftY + dx * ((rightY - leftY) / (pos.x - lastPos.x));
 			}
 		}
 
@@ -438,24 +452,22 @@ void UpdateHelper::setParticleVarietyValue(particleVarietyValue &pValue, emitter
 #endif
 		pValue.isSetCurveKB = false;
 
-		int index = 0;
+		//int index = 0;
 
 		auto itor = eValue.curvePoints.begin();
 		int size = eValue.curvePoints.size();
 		pValue.curvePoints.reserve(size);
-		while (itor != eValue.curvePoints.end()) {
-			float zz = (*itor).z;
-			pValue.curvePoints.push_back(Vec2((*itor).x, (*itor).y - zz + CCRANDOM_0_1() * 2 * zz));
-			itor++;
-			++index;
+
+		for(int i=0;i< size; ++i){
+		//while (itor != eValue.curvePoints.end()) {
+			auto data = eValue.curvePoints[i];
+			float zz = data.z;
+			pValue.curvePoints.push_back(Vec2(data.x, data.y - zz + CCRANDOM_0_1() * 2 * zz));
+			//itor++;
+			//++index;
 		}
 
 		// 
-		
-
-
-
-
 
 		pValue.curvePointFirstPoint = &pValue.curvePoints[0];
 		pValue.curvePointSize = pValue.curvePoints.size();

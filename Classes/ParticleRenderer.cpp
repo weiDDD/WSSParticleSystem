@@ -74,7 +74,7 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 					float k = (right.y - left.y) / ((right.x - left.x));
 					float b = 0;//left.y - k * left.x;
 
-					curveKB.push_back(Vec2(k, b));
+					curveKB.emplace_back(Vec2(k, b));
 					++kbSize;
 				}
 			}
@@ -643,7 +643,7 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	auto glProgramState = getGLProgramState();
 	
 	/////遍历所有的参数map，将其设值
-	std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
+	/*std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
 	while (floatItor != floatArgMap.end()){
 		std::string argKeyName = floatItor->first;
 		float value = floatItor->second;
@@ -681,34 +681,36 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 		Vec4 value = vec4Itor->second;
 		glProgramState->setUniformVec4(argKeyName, value);
 		vec4Itor++;
-	}
+	}*/
 
 
 	///应用GLProgram,顶点属性和Uniform参数到渲染管线
 	glProgramState->apply(transform);
 
 	// 数组 , 这个必须放到apply的后面那个
-	std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
-	while (floatVecItor != floatVecArgMap.end()) {
-		std::string argKeyName = floatVecItor->first;
-		floatVec value = (floatVec)floatVecItor->second;
-		GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
+	//std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
+	//while (floatVecItor != floatVecArgMap.end()) {
+	//	std::string argKeyName = floatVecItor->first;
+	//	floatVec value = (floatVec)floatVecItor->second;
+	//	GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
 
-		//const float test[5] = { 0.2f,0.4f,0.6f,0.8f,1.0f };
-		glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // 设置1个float类型的v（代表数组）
-		//getGLProgram()->setUniformLocationWith1fv(loc , (const GLfloat*)test , (GLsizei)3);  // setUniformLocationWith1fv
-		floatVecItor++;
-	}
+	//	//const float test[5] = { 0.2f,0.4f,0.6f,0.8f,1.0f };
+	//	glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // 设置1个float类型的v（代表数组）
+	//	//getGLProgram()->setUniformLocationWith1fv(loc , (const GLfloat*)test , (GLsizei)3);  // setUniformLocationWith1fv
+	//	floatVecItor++;
+	//}
+
+	
+	// 绑定纹理
+	GL::bindTexture2D(_texture->getName());
 
 	// 应用叠加模式
 	GL::blendFunc(_blendFunc.src, _blendFunc.dst);
-	// 绑定纹理
-	GL::bindTexture2D(_texture->getName());
 	
 	///多重纹理设置，获取了一个内置的uniform变量，并向其中传入数据。下两行的1代表第二层纹理，0为默认纹理
-	GLuint testTexUniform = glGetUniformLocation(getGLProgram()->getProgram(), "CC_Texture1");
+	/*GLuint testTexUniform = glGetUniformLocation(getGLProgram()->getProgram(), "CC_Texture1");
 	GL::bindTexture2DN(1, tex);
-	glUniform1i(testTexUniform, 1);
+	glUniform1i(testTexUniform, 1);*/
 
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
@@ -952,7 +954,7 @@ void ParticleRenderer::updateQuadWithParticle(particleProperty& particle, const 
 			{
 				//(float)sinf(CC_DEGREES_TO_RADIANS(skewY)), (float)sinf(CC_DEGREES_TO_RADIANS(skewX)),
 				//(float)cosf(CC_DEGREES_TO_RADIANS(skewX)), (float)cosf(CC_DEGREES_TO_RADIANS(skewY))
-				(float)mSin(skewY), (float)mSin(skewX),
+				0,0,//(float)mSin(skewY), (float)mSin(skewX), // no use , so //
 				(float)mCos(skewX), (float)mCos(skewY)
 			};
 			// bottom-left

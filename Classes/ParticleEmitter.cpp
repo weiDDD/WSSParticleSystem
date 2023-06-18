@@ -907,7 +907,6 @@ void ParticleEmitter::stopSystem() {
 void ParticleEmitter::resetSystem() {
 	_isActive = true;
 
-
 	{
 		auto itor = fireProVec.begin();
 		while (itor != fireProVec.end()) {
@@ -922,6 +921,8 @@ void ParticleEmitter::resetSystem() {
 			itor++;
 		}
 	}
+
+	this->scheduleUpdate();
 
 	//firePro._elapsed = 0;
 	//_renderer->stopAllParticles();
