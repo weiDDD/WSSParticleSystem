@@ -744,6 +744,7 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	// tex coords 设置读取uv数据的指针
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, quadSize, (GLvoid*)offsetof(V3F_C4B_T2F, texCoords));
 
+	// 绑定顶点索引的数组
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffersVBO[1]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _totalParticles * 6, _indices, GL_STATIC_DRAW);
 
