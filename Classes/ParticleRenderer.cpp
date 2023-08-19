@@ -264,8 +264,14 @@ void ParticleRenderer::onEnter() {
 	if (ParticleRenderer::updatePriority > 200) {
 		ParticleRenderer::updatePriority = 0;
 	}*/
+	this->setShaderFile("shader/default.vsh", "shader/default.fsh");
+
 	//this->setShaderFile("gray.vsh", "gray.fsh");
 
+	//this->setShaderFile("shader/drawEdge.vsh", "shader/drawEdge.fsh");
+	//this->setFloatArg("outlineSize", 0.03);
+	//this->setVec3Arg("outlineColor", Vec3(1.0, 0.0, 0.0));
+	
 	/*this->setShaderFile("drawEdge.vsh", "drawEdge.fsh");
 	this->setFloatArg("outlineSize", 0.03);
 	this->setVec3Arg("outlineColor", Vec3(1,0,0));
@@ -643,7 +649,7 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	auto glProgramState = getGLProgramState();
 	
 	/////遍历所有的参数map，将其设值
-	/*std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
+	std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
 	while (floatItor != floatArgMap.end()){
 		std::string argKeyName = floatItor->first;
 		float value = floatItor->second;
@@ -681,24 +687,22 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 		Vec4 value = vec4Itor->second;
 		glProgramState->setUniformVec4(argKeyName, value);
 		vec4Itor++;
-	}*/
+	}
 
 
 	///应用GLProgram,顶点属性和Uniform参数到渲染管线
 	glProgramState->apply(transform);
 
 	// 数组 , 这个必须放到apply的后面那个
-	//std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
-	//while (floatVecItor != floatVecArgMap.end()) {
-	//	std::string argKeyName = floatVecItor->first;
-	//	floatVec value = (floatVec)floatVecItor->second;
-	//	GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
+	std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
+	while (floatVecItor != floatVecArgMap.end()) {
+		std::string argKeyName = floatVecItor->first;
+		floatVec value = (floatVec)floatVecItor->second;
+		GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
 
-	//	//const float test[5] = { 0.2f,0.4f,0.6f,0.8f,1.0f };
-	//	glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // 设置1个float类型的v（代表数组）
-	//	//getGLProgram()->setUniformLocationWith1fv(loc , (const GLfloat*)test , (GLsizei)3);  // setUniformLocationWith1fv
-	//	floatVecItor++;
-	//}
+		glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // 设置1个float类型的v（代表数组）
+		floatVecItor++;
+	}
 
 	
 	// 绑定纹理
@@ -715,19 +719,19 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
 	// 应用transform
-	unsigned int start = 0;
-	unsigned int end = _totalParticles;
-	for (unsigned int i = start; i<end; i++)
-	{
-		// bottom-left vertex:
-		transform.transformPoint(_quads[i].bl.vertices, &_quads[i].bl.vertices);
-		// bottom-right vertex:
-		transform.transformPoint(_quads[i].br.vertices, &_quads[i].br.vertices);
-		// top-left vertex:
-		transform.transformPoint(_quads[i].tl.vertices, &_quads[i].tl.vertices);
-		// top-right vertex:
-		transform.transformPoint(_quads[i].tr.vertices, &_quads[i].tr.vertices);
-	}
+	//unsigned int start = 0;
+	//unsigned int end = _totalParticles;
+	//for (unsigned int i = start; i<end; i++)
+	//{
+	//	// bottom-left vertex:
+	//	transform.transformPoint(_quads[i].bl.vertices, &_quads[i].bl.vertices);
+	//	// bottom-right vertex:
+	//	transform.transformPoint(_quads[i].br.vertices, &_quads[i].br.vertices);
+	//	// top-left vertex:
+	//	transform.transformPoint(_quads[i].tl.vertices, &_quads[i].tl.vertices);
+	//	// top-right vertex:
+	//	transform.transformPoint(_quads[i].tr.vertices, &_quads[i].tr.vertices);
+	//}
 
 	// 绑定到VBO的数据
 	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);

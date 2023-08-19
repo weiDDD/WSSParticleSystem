@@ -365,6 +365,9 @@ struct emitterFirePro {
 		_isLoop = false;
 		_preFireDuration = 0;
 		_delayTime = 0;
+
+		vshName = "";
+		fshName = "";
 	}
 	~emitterFirePro() {
 		/*if (_debugDrawNode_centerPoint) {
@@ -558,6 +561,9 @@ struct emitterFirePro {
 	// 粒子生命周期内的颜色值
 	emitterColorValue _colorOfLife;
 
+	//--------- shader
+	std::string vshName;
+	std::string fshName;
 };
 
 // 子发射器结构体
@@ -580,6 +586,11 @@ struct childrenPar {
 	void setTexture(Texture2D* texture) {
 		if (_renderer) {
 			_renderer->setTexture(texture);
+		}
+	}
+	void setShaderFile(std::string vName, std::string fName) {
+		if (_renderer) {
+			_renderer->setShaderFile(vName, fName);
 		}
 	}
 	void setTotalParticles(int tp, Node* father, std::string emitterFileName);
@@ -611,6 +622,7 @@ struct childrenPar {
 			return _totalParticles;
 		}
 	}
+
 	particleProperty* addParticle(Node* father, std::string emitterFileName, int localZorder);
 
 	void updateOneParticle(particleProperty& p, float dt, bool isUpdateRender = true);
@@ -742,6 +754,7 @@ class ParticleEmitter : public Node
 		static void setTailPath(std::string path);
 		static std::string tailPath;
 
+		
 	private:
 
 		// 是否在发射完后自动死亡
@@ -798,6 +811,7 @@ class ParticleEmitter : public Node
 		void setFirepro_colorValue_pushMoreValue(int id, std::string valueType, float color_r, float color_g, float color_b);
 		void setFirePro_colorValue_pushCurveValue(int id, std::string valueType, float x, float color_r, float color_g, float color_b, float randcolor_r, float randcolor_g, float randcolor_b);
 
+		void setShaderFile(int id ,std::string vName, std::string fName);
 	};
 	
 

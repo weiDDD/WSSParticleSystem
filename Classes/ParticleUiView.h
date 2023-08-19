@@ -149,6 +149,8 @@ public:
 	std::vector<std::string> getRefSpriteName();
 	// 读tail文件夹	////获取指定文件夹下的.png文件
 	std::vector<std::string> getTailSpriteName();
+	// 读shader文件夹	////获取指定文件夹下的.vsh文件
+	std::vector<std::string> getShaderName();
 
 	// 搜索定位一个节点下名为 xxx 的节点
 	Widget* seekByName(Widget* rootNode , std::string name);
@@ -391,6 +393,9 @@ private:
 	// 拖尾图片的vector
 	std::vector<std::string> tailSpriteNames;
 
+	// shader 的vector
+	std::vector<std::string> shaderNames;
+
 	// 纹理下拉框
 	DropDownList* textureList;
 
@@ -408,6 +413,8 @@ private:
 
 	// 拖尾图片的下拉框
 	DropDownList* tailSpriteList;
+
+	DropDownList* shaderList;
 
 	// 编辑模式
 	EditMode editMode;

@@ -1,6 +1,8 @@
 #include "ParticleUiView.h"
 #include "FileCenter.h"
 
+#include <regex>
+
 using namespace ui;
 ParticleUiView::ParticleUiView() {
 	refSprite = nullptr;
@@ -217,6 +219,8 @@ bool ParticleUiView::init() {
 	refSpriteNames = this->getRefSpriteName();
 
 	tailSpriteNames = this->getTailSpriteName();
+
+	shaderNames = this->getShaderName();
 
 	// 设置随机数种子
 	std::srand((unsigned int)time(0));
@@ -650,6 +654,29 @@ void ParticleUiView::initUi() {
 		}
 		refSpriteList->setName("refSpriteList");
 		refSpriteList->setItemCallBack(CC_CALLBACK_2(ParticleUiView::onDropDownList, this, refSpriteList));
+	}
+
+	{
+		//----- shader 的下拉框
+		LabelTTF* initLabel = LabelTTF::create("shader", "Arial", 22);
+		//设置显示栏目的size  
+		auto textureSprite = seekByName(mainRootNode, "bgSprite");
+		Size size = CCSizeMake(textureSprite->getContentSize().width * textureSprite->getScaleX(), textureSprite->getContentSize().height * textureSprite->getScaleY());
+		shaderList = DropDownList::create(initLabel, size, shaderNames.size() + 1);
+		shaderList->setPosition(textureSprite->getPositionX() - size.width / 2 - 500, textureSprite->getPositionY() - size.height / 2);
+		shaderList->setSwallowsTouches(true);
+		textureSprite->getParent()->addChild(shaderList, textureSprite->getLocalZOrder());
+
+
+		////根据读出的纹理png文件的名字，来创建对应的label
+		std::vector<std::string>::iterator texItor = shaderNames.begin();
+		while (texItor != shaderNames.end()) {
+			auto label = LabelTTF::create((*texItor), "Arial", 22);
+			shaderList->addLabel(label);
+			texItor++;
+		}
+		shaderList->setName("shaderList");
+		shaderList->setItemCallBack(CC_CALLBACK_2(ParticleUiView::onDropDownList, this, shaderList));
 	}
 
 	seekByName(mainRootNode, "addParFileToScrollView")->addTouchEventListener([this](Ref* pSender, Widget::TouchEventType eType) {
@@ -5306,6 +5333,23 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 				topNode->addChild(refSprite, -100);
 			}
 		}
+		else if (name == "shaderList") {
+			std::string shaderVshName = shaderNames.at(index);
+
+			std::regex txt_regex("([a-zA-Z]+)\\.vsh");
+			std::smatch matchResult;
+			bool isMatch = std::regex_match(shaderVshName, matchResult, txt_regex);
+			if (isMatch && matchResult.size() > 0) {
+				nowEditingSignalPar->vshName = "shader/" + std::string(matchResult[1]) + ".vsh";
+				nowEditingSignalPar->fshName = "shader/" + std::string(matchResult[1]) + ".fsh";
+
+				//singlePar->setShaderFile(nowEditingSignalPar->vshName, nowEditingSignalPar->fshName);
+
+				singlePar->clearRender();
+				singlePar->resetSystem();
+				singlePar->addRender(true);
+			}
+		}
 		else if (name == "tailSpriteList") {
 			nowEditingSignalPar->_tailPro.tailName = ParticleEmitter::tailPath + tailSpriteNames.at(index);
 			//nowEditingSignalPar->_tailPro.refreshTailData();
@@ -5761,3 +5805,30 @@ std::vector<std::string> ParticleUiView::getTailSpriteName() {
 	return texList;
 }
 
+std::vector<std::string> ParticleUiView::getShaderName() {
+	std::vector<std::string> texList;
+	const int maxNum = 300;
+	char pngList[maxNum][100];
+	int i = 0;
+
+	string path = ""; //FileUtils::getInstance()->getWritablePath();
+	path.append("shader/*.vsh");
+	WIN32_FIND_DATAA wfd;
+	HANDLE hFind;
+
+	for (int i = 0; i < path.size(); ++i)
+	{
+		if ('/' == path[i])
+			path[i] = '\\';
+	}
+
+	hFind = FindFirstFileA((LPCSTR)path.c_str(), &wfd);
+	do {
+		strcpy(pngList[i], (char*)wfd.cFileName);
+		texList.push_back(pngList[i]);
+		if (++i >= maxNum) break;
+	} while (FindNextFileA(hFind, &wfd));
+	FindClose(hFind);
+
+	return texList;
+}

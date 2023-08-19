@@ -608,6 +608,10 @@ void ParticleEmitter::addRender(bool isCreateNew /*= false*/) {
 						this->addChild(cPar->second->_renderer, firePro->_localZorder);
 					//}
 
+					if (firePro->vshName != "" && firePro->fshName != "") {
+						cPar->second->_renderer->setShaderFile(firePro->vshName, firePro->fshName);
+					}
+
 				}
 			}
 		}
@@ -1091,6 +1095,10 @@ bool emitterFirePro::writeJsonData(m_rapidjson::Document& object, m_rapidjson::D
 	_alphaOfLife.writeJsonData(object, allocator, "alphaOfLife");
 	_colorOfLife.writeJsonData(object, allocator, "colorOfLife");
 
+	// 纹理
+	object.AddMember("shaderVsh", vshName.c_str(), allocator);
+	object.AddMember("shaderFsh", fshName.c_str(), allocator);
+
 	return true;
 }
 
@@ -1228,6 +1236,13 @@ void emitterFirePro::readJsonData(m_rapidjson::Document& doc) {
 	_skewYSpeedOfLife.readJsonData(doc, "skewYSpeedOfLife");
 	_alphaOfLife.readJsonData(doc, "alphaOfLife");
 	_colorOfLife.readJsonData(doc, "colorOfLife");
+
+	if (doc.HasMember("shaderVsh")) {
+		vshName = doc["shaderVsh"].GetString();
+	}
+	if (doc.HasMember("shaderFsh")) {
+		fshName = doc["shaderFsh"].GetString();
+	}
 
 }
 ////---------------------------------------------------------------------------------------------------------------------------------------
@@ -2165,6 +2180,20 @@ void ParticleEmitter::readJsonDataFromFile(std::string filename) {
 		std::string path = filename.substr(0, start + 1);
 		ParticleEmitter::sourcePath = path;
 		//CCLOG("-------------------ParticleEmitter::sourcePath :%s", ParticleEmitter::sourcePath);
+	}
+}
+
+void ParticleEmitter::setShaderFile(int id, std::string vName, std::string fName) {
+	auto firePro = this->getFireProById(id);
+	if (firePro) {
+		firePro->vshName = vName;
+		firePro->fshName = fName;
+	}
+
+	auto map_itor = childrenParMap.find(id);
+	if (map_itor != childrenParMap.end()) {
+		auto cPar = (*map_itor).second;
+		cPar->setShaderFile(vName, fName);
 	}
 }
 
