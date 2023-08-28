@@ -210,6 +210,7 @@ std::vector<ParticleRenderer*> ParticleRenderer::renderCache(maxCacheSize, nullp
 ParticleRenderer::ParticleRenderer() 
 : _blendFunc(BlendFunc::ALPHA_PREMULTIPLIED)
 , _texture(nullptr)
+, texture(nullptr)
 , _particles(nullptr)
 , _opacityModifyRGB(false)
 , _quads(nullptr)
@@ -265,6 +266,8 @@ void ParticleRenderer::onEnter() {
 		ParticleRenderer::updatePriority = 0;
 	}*/
 	this->setShaderFile("shader/default.vsh", "shader/default.fsh");
+
+	this->setSecondTex("dog.png");
 
 	//this->setShaderFile("gray.vsh", "gray.fsh");
 
@@ -712,9 +715,11 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	GL::blendFunc(_blendFunc.src, _blendFunc.dst);
 	
 	///多重纹理设置，获取了一个内置的uniform变量，并向其中传入数据。下两行的1代表第二层纹理，0为默认纹理
-	/*GLuint testTexUniform = glGetUniformLocation(getGLProgram()->getProgram(), "CC_Texture1");
-	GL::bindTexture2DN(1, tex);
-	glUniform1i(testTexUniform, 1);*/
+	if (texture) {
+		GLuint testTexUniform = glGetUniformLocation(getGLProgram()->getProgram(), "CC_Texture1");
+		GL::bindTexture2DN(1, tex);
+		glUniform1i(testTexUniform, 1);
+	}
 
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 

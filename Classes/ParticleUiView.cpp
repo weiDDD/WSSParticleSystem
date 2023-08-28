@@ -5336,7 +5336,7 @@ void ParticleUiView::onDropDownList(Object* list, ui::Widget::TouchEventType typ
 		else if (name == "shaderList") {
 			std::string shaderVshName = shaderNames.at(index);
 
-			std::regex txt_regex("([a-zA-Z]+)\\.vsh");
+			std::regex txt_regex("([a-zA-Z_]+)\\.vsh");
 			std::smatch matchResult;
 			bool isMatch = std::regex_match(shaderVshName, matchResult, txt_regex);
 			if (isMatch && matchResult.size() > 0) {
