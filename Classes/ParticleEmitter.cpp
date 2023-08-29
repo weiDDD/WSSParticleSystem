@@ -2197,6 +2197,51 @@ void ParticleEmitter::setShaderFile(int id, std::string vName, std::string fName
 	}
 }
 
+void ParticleEmitter::setSecondTex(int id, std::string name) {
+	auto map_itor = childrenParMap.find(id);
+	if (map_itor != childrenParMap.end()) {
+		auto cPar = (*map_itor).second;
+		cPar->setSecondTex(name);
+	}
+}
+
+void ParticleEmitter::setFloatArg(int id, std::string argKeyName, float value) {
+	auto map_itor = childrenParMap.find(id);
+	if (map_itor != childrenParMap.end()) {
+		auto cPar = (*map_itor).second;
+		cPar->setFloatArg(argKeyName, value);
+	}
+}
+
+void ParticleEmitter::setIntArg(int id, std::string argKeyName, int value) {
+	auto map_itor = childrenParMap.find(id);
+	if (map_itor != childrenParMap.end()) {
+		auto cPar = (*map_itor).second;
+		cPar->setIntArg(argKeyName, value);
+	}
+}
+void ParticleEmitter::setVec2Arg(int id, std::string argKeyName, Vec2 value) {
+	auto map_itor = childrenParMap.find(id);
+	if (map_itor != childrenParMap.end()) {
+		auto cPar = (*map_itor).second;
+		cPar->setVec2Arg(argKeyName, value);
+	}
+}
+void ParticleEmitter::setVec3Arg(int id, std::string argKeyName, Vec3 value) {
+	auto map_itor = childrenParMap.find(id);
+	if (map_itor != childrenParMap.end()) {
+		auto cPar = (*map_itor).second;
+		cPar->setVec3Arg(argKeyName, value);
+	}
+}
+void ParticleEmitter::setVec4Arg(int id, std::string argKeyName, Vec4 value) {
+	auto map_itor = childrenParMap.find(id);
+	if (map_itor != childrenParMap.end()) {
+		auto cPar = (*map_itor).second;
+		cPar->setVec4Arg(argKeyName, value);
+	}
+}
+
 //////////////////////////////////////
 //// 接口定义，双方都用的
 //

@@ -622,6 +622,36 @@ struct childrenPar {
 			return _totalParticles;
 		}
 	}
+	void setSecondTex(std::string name) {
+		if (_renderer) {
+			_renderer->setSecondTex(name);
+		}
+	}
+	void setFloatArg(std::string argKeyName, float value) {
+		if (_renderer) {
+			_renderer->setFloatArg(argKeyName, value);
+		}
+	}
+	void setIntArg(std::string argKeyName, int value) {
+		if (_renderer) {
+			_renderer->setIntArg(argKeyName, value);
+		}
+	}
+	void setVec2Arg(std::string argKeyName, Vec2 value) {
+		if (_renderer) {
+			_renderer->setVec2Arg(argKeyName, value);
+		}
+	}
+	void setVec3Arg(std::string argKeyName, Vec3 value) {
+		if (_renderer) {
+			_renderer->setVec3Arg(argKeyName, value);
+		}
+	}
+	void setVec4Arg(std::string argKeyName, Vec4 value) {
+		if (_renderer) {
+			_renderer->setVec4Arg(argKeyName, value);
+		}
+	}
 
 	particleProperty* addParticle(Node* father, std::string emitterFileName, int localZorder);
 
@@ -812,6 +842,14 @@ class ParticleEmitter : public Node
 		void setFirePro_colorValue_pushCurveValue(int id, std::string valueType, float x, float color_r, float color_g, float color_b, float randcolor_r, float randcolor_g, float randcolor_b);
 
 		void setShaderFile(int id ,std::string vName, std::string fName);
+
+		void setSecondTex(int id, std::string name);
+
+		void setFloatArg(int id, std::string argKeyName, float value);
+		void setIntArg(int id, std::string argKeyName, int value);
+		void setVec2Arg(int id, std::string argKeyName, Vec2 value);
+		void setVec3Arg(int id, std::string argKeyName, Vec3 value);
+		void setVec4Arg(int id, std::string argKeyName, Vec4 value);
 	};
 	
 

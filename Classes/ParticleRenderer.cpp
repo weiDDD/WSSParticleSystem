@@ -267,7 +267,7 @@ void ParticleRenderer::onEnter() {
 	}*/
 	this->setShaderFile("shader/default.vsh", "shader/default.fsh");
 
-	this->setSecondTex("dog.png");
+	//this->setSecondTex("dog.png");
 
 	//this->setShaderFile("gray.vsh", "gray.fsh");
 
