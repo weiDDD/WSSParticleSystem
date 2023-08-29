@@ -72,4 +72,14 @@ int register_all_particle_system(lua_State* tolua_S);
 
 
 
+
+
+
+
+
+
+
+
+
+
 #endif // __particle_system_h__

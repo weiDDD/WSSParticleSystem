@@ -103,6 +103,15 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] setFloatArg 
+-- @param self
+-- @param #int id
+-- @param #string argKeyName
+-- @param #float value
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] clearData 
 -- @param self
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
@@ -148,6 +157,15 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] setVec2Arg 
+-- @param self
+-- @param #int id
+-- @param #string argKeyName
+-- @param #vec2_table value
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] setChildrenParNewId 
 -- @param self
 -- @param #int oldid
@@ -185,6 +203,15 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] setVec3Arg 
+-- @param self
+-- @param #int id
+-- @param #string argKeyName
+-- @param #vec3_table value
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] getFireProById 
 -- @param self
 -- @param #int id
@@ -206,10 +233,28 @@
         
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] setVec4Arg 
+-- @param self
+-- @param #int id
+-- @param #string argKeyName
+-- @param #vec4_table value
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] setFirePro_delayTime 
 -- @param self
 -- @param #int id
 -- @param #float delay
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
+-- @function [parent=#ParticleEmitter] setShaderFile 
+-- @param self
+-- @param #int id
+-- @param #string vName
+-- @param #string fName
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
@@ -233,6 +278,14 @@
 -- @param #m_rapidjson.GenericDocument<m_rapidjson.UTF8<char>, m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator> > object
 -- @param #m_rapidjson.MemoryPoolAllocator<m_rapidjson.CrtAllocator> allocator
 -- @return bool#bool ret (return value: bool)
+        
+--------------------------------
+-- 
+-- @function [parent=#ParticleEmitter] setSecondTex 
+-- @param self
+-- @param #int id
+-- @param #string name
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
 -- 
@@ -365,6 +418,12 @@
 
 --------------------------------
 -- 
+-- @function [parent=#ParticleEmitter] getFatherScale 
+-- @param self
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
 -- @function [parent=#ParticleEmitter] setFirePro_fireArea_pushLinePoint 
 -- @param self
 -- @param #int id
@@ -409,6 +468,15 @@
 -- @param self
 -- @param #int id
 -- @param #bool isLock
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
+-- 
+-- @function [parent=#ParticleEmitter] setIntArg 
+-- @param self
+-- @param #int id
+-- @param #string argKeyName
+-- @param #int value
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
@@ -460,6 +528,13 @@
 -- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
         
 --------------------------------
+-- 
+-- @function [parent=#ParticleEmitter] setTailPath 
+-- @param self
+-- @param #string path
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
+--------------------------------
 -- @overload self, bool         
 -- @overload self         
 -- @function [parent=#ParticleEmitter] create
@@ -467,6 +542,13 @@
 -- @param #bool isInstance
 -- @return ParticleEmitter#ParticleEmitter ret (return value: pp.ParticleEmitter)
 
+--------------------------------
+-- 
+-- @function [parent=#ParticleEmitter] setTexturePath 
+-- @param self
+-- @param #string path
+-- @return ParticleEmitter#ParticleEmitter self (return value: pp.ParticleEmitter)
+        
 --------------------------------
 -- 
 -- @function [parent=#ParticleEmitter] setSourcePath 
