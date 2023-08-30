@@ -9,7 +9,7 @@ const float speed = 0.2;
 const float speed_x = 0.3;  
 const float speed_y = 0.3;  
  
-const float intensity = 1;       //强度
+const float intensity = 1.0;       //强度
 const float frequency = 10.0;    //频率 
 
 const int angle = 7; 
@@ -18,7 +18,7 @@ const float delta = 20.0;
 const float intence = 400.0;  
 const float emboss = 0.022;
  
-const float sampleNum = 10;
+const float sampleNum = 10.0;
 
 varying vec2 v_texCoord;
  
@@ -51,7 +51,7 @@ void main(void)
 	vec2 p = (v_texCoord.xy), c1 = p, c2 = p;  
     float cc1 = col(c1);  
 	
-    float offset = (2 * PI) / (frequency * sampleNum);
+    float offset = (2.0 * PI) / (frequency * sampleNum);
 
 	// c2表示一个偏移的位置，然后算出c2的cos值跟 c1的差值。如果是平缓的地方差值越小，陡峭的地方差值越大。
     c2.x += offset;
