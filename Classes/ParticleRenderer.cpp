@@ -227,6 +227,7 @@ ParticleRenderer::ParticleRenderer()
 , _emitterScaleX(1.0)
 , _emitterScaleY(1.0)
 , _renderMode(renderMode::TRIANGLES)
+, _isSetCacheTransform(false)
 {
 	_positionType = positionType::RELATIVE;
 	isFlowCircleRadius = false;
@@ -383,6 +384,7 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 				this->release();
 			}
 			else {
+				this->clearData();
 				ParticleRenderer::renderCache.at(ParticleRenderer::cacheSize) = this;
 				++ParticleRenderer::cacheSize;
 			}
@@ -694,7 +696,13 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 
 
 	///应用GLProgram,顶点属性和Uniform参数到渲染管线
-	glProgramState->apply(transform);
+	if (!_isSetCacheTransform) {
+		cacheTransform = transform;
+		glProgramState->apply(transform);
+	}
+	else {
+		glProgramState->apply(cacheTransform);
+	}
 
 	// 数组 , 这个必须放到apply的后面那个
 	std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
@@ -1303,3 +1311,6 @@ void ParticleRenderer::clearAllArgMap(){
 	floatVecArgMap.clear();
 }
 
+void ParticleRenderer::clearData() {
+	_isSetCacheTransform = false;
+}

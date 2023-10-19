@@ -43,6 +43,7 @@ void childrenPar::setTotalParticles(int tp, Node* father,std::string emitterFile
 				if (emitterFileName != "") {
 					ePar->par->readJsonData(FileCenter::getInstance()->readJsonData(ParticleEmitter::sourcePath + emitterFileName));
 				}
+				ePar->par->setIsChildEmitter(true);
 				ePar->par->unscheduleUpdate();
 				//ePar->par->setVisible(false);
 				ePar->par->setPosition(-1000,-1000);
@@ -244,7 +245,7 @@ ParticleEmitter::ParticleEmitter()
 	worldPos = Vec2(0, 0);
 	fScaleX = 0;
 	fScaleY = 0;
-
+	_isChildEmitter = false;
 }
 
 ParticleEmitter::~ParticleEmitter() {
@@ -664,8 +665,12 @@ void ParticleEmitter::releaseRender() {
 								render->setPosition(parentPos.x, parentPos.y);
 								//render->setPosition(this->worldPos.x - this->runningLayer->getPositionX(), this->worldPos.y - this->runningLayer->getPositionY());
 								render->scheduleUpdateWithPriority(1);
+								
+								render->setRotation(this->getRotation());
 
 								render->setScale(this->getScale());
+
+								render->setCacheTransform();
 
 								//render->setScaleX(fScaleX);
 								//render->setScaleY(fScaleY);
@@ -877,7 +882,7 @@ void ParticleEmitter::update(float dt) {
 		}
 	}
 
-	if (this->getParent()) {
+	if (_isChildEmitter && this->getParent()) {
 		this->setRotation(this->getParent()->getRotation());
 	}
 

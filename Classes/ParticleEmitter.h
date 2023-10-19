@@ -784,7 +784,9 @@ class ParticleEmitter : public Node
 		static void setTailPath(std::string path);
 		static std::string tailPath;
 
-		
+		void setIsChildEmitter(bool flag) {
+			_isChildEmitter = flag;
+		}
 	private:
 
 		// 是否在发射完后自动死亡
@@ -792,6 +794,9 @@ class ParticleEmitter : public Node
 
 		// 粒子 发射器 系统是否激活
 		bool _isActive;
+
+		// 是否作为子发射器
+		bool _isChildEmitter;
 
 		/////////////////------ 作为子粒子发射器的属性相关
 		std::map<int, childrenPar*> childrenParMap;

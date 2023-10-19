@@ -439,6 +439,12 @@ namespace PRender {
 		////清掉所有的参数
 		void clearAllArgMap();
 
+		void clearData();
+
+		void setCacheTransform() {
+			_isSetCacheTransform = true;
+		}
+
 		///第二层纹理
 		Texture2D* texture;
 		GLuint tex;
@@ -491,7 +497,9 @@ namespace PRender {
 		// 发射器的缩放
 		float _emitterScaleX;
 		float _emitterScaleY;
-			
+
+		cocos2d::Mat4 cacheTransform;
+		bool _isSetCacheTransform;
 	};
 
 }
