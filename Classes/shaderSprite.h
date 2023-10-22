@@ -1,10 +1,10 @@
 /*\
-	ÎºÊÀË³
+	é­ä¸–é¡º
 
- ±¾Àà£¬ÒÑ¾­ÊµÏÖ£¬
-	1.ÀûÓÃÍ¼Æ¬µÄ»ìºÏÄ£Ê½À´´ïµ½Ò»¶¨µÄÍ¼Æ¬µş¼ÓĞ§¹û
-	2.Ê¹Ò»ÕÅÍ¼Æ¬±ä»Ò£¬Ê¹ÓÃµÄÊÇgray.vsh;gray.fsh
-	3.Ê¹Ò»ÕÅÍ¼Æ¬¸Ä±äÆäHSLÖµ£¬Ê¹Æä¸ü¼ÓµÄìÅ¿á
+ æœ¬ç±»ï¼Œå·²ç»å®ç°ï¼Œ
+	1.åˆ©ç”¨å›¾ç‰‡çš„æ··åˆæ¨¡å¼æ¥è¾¾åˆ°ä¸€å®šçš„å›¾ç‰‡å åŠ æ•ˆæœ
+	2.ä½¿ä¸€å¼ å›¾ç‰‡å˜ç°ï¼Œä½¿ç”¨çš„æ˜¯gray.vsh;gray.fsh
+	3.ä½¿ä¸€å¼ å›¾ç‰‡æ”¹å˜å…¶HSLå€¼ï¼Œä½¿å…¶æ›´åŠ çš„ç‚«é…·
 	....
 
 */
@@ -20,7 +20,7 @@ public:
 	ShaderSprite();
 	virtual ~ShaderSprite();
 
-	// int ÀàĞÍÊı×é£¬°üÀ¨¿ªÊ¼Ö¸Õë£¬ºÍÊı×é´óĞ¡
+	// int ç±»å‹æ•°ç»„ï¼ŒåŒ…æ‹¬å¼€å§‹æŒ‡é’ˆï¼Œå’Œæ•°ç»„å¤§å°
 	struct intVec {
 		intVec(const int* f, int s) {
 			vec = (const int*)f;
@@ -29,13 +29,23 @@ public:
 		const int* vec;
 		GLsizei size;
 	};
-	// float ÀàĞÍÊı×é£¬°üÀ¨¿ªÊ¼Ö¸Õë£¬ºÍÊı×é´óĞ¡
+	// float ç±»å‹æ•°ç»„ï¼ŒåŒ…æ‹¬å¼€å§‹æŒ‡é’ˆï¼Œå’Œæ•°ç»„å¤§å°
 	struct floatVec {
-		floatVec(const float* f, int s) {
-			vec = (const float*)f;
+		floatVec(float* f, int s) {
+			//vec = (float*)f;
+
+			vec = (float*)malloc(s * sizeof(float));
+			for (int i = 0; i < s; ++i) {
+				vec[i] = float(f[i]);
+			}
+
 			size = (GLsizei)s;
 		}
-		const float* vec;
+		/*~floatVec() {
+			free( vec );
+		}*/
+		
+		float* vec;
 		GLsizei size;
 	};
 
@@ -46,7 +56,7 @@ public:
 	virtual void draw(Renderer* renderer,const Mat4 &transform,uint32_t flags) override;
 	void onDraw(const Mat4& transform,uint32_t flags);
 	////
-	////ÉèÖÃshaderÎÄ¼ş
+	////è®¾ç½®shaderæ–‡ä»¶
 	std::string vshName = "";
 	std::string fshName = "";
 	void setShaderFile(std::string vName, std::string fName){
@@ -54,13 +64,13 @@ public:
 		fshName = fName;
 
 		auto pProgram = GLProgram::createWithFilenames(vshName, fshName);
-		///´´½¨shaderstate  shader×´Ì¬
+		///åˆ›å»ºshaderstate  shaderçŠ¶æ€
 		auto glprogramstate = GLProgramState::getOrCreateWithGLProgram(pProgram);
-		///ÉèÖÃshader
+		///è®¾ç½®shader
 		setGLProgramState(glprogramstate);
 	}
 
-	////ÉèÖÃµÚ¶şÖØÎÆÀí
+	////è®¾ç½®ç¬¬äºŒé‡çº¹ç†
 	void setSecondTex(std::string name){
 		auto image = new (std::nothrow) Image();
 		std::string fullpath = FileUtils::getInstance()->fullPathForFilename(name);
@@ -75,39 +85,39 @@ public:
 		//tex = Director::getInstance()->getTextureCache()->addImage(name)->getName();
 	}
 
-	/////ËùÓĞ²ÎÊıµÄmap
-	std::map<std::string, float> floatArgMap;    ///floatÀàĞÍµÄ²ÎÊıµÄmap
+	/////æ‰€æœ‰å‚æ•°çš„map
+	std::map<std::string, float> floatArgMap;    ///floatç±»å‹çš„å‚æ•°çš„map
 	std::map<std::string, int> intArgMap;
 	std::map<std::string, Vec2> vec2ArgMap;
 	std::map<std::string, Vec3> vec3ArgMap;
 	std::map<std::string, Vec4> vec4ArgMap;
 
-	///ÏòÍâ²¿Ìá¹©ÉèÖÃÉÏÃæ²ÎÊıµÄ½Ó¿Ú
+	///å‘å¤–éƒ¨æä¾›è®¾ç½®ä¸Šé¢å‚æ•°çš„æ¥å£
 	void setFloatArg(std::string argKeyName, float value);
 	void setIntArg(std::string argKeyName, int value);
 	void setVec2Arg(std::string argKeyName, Vec2 value);
 	void setVec3Arg(std::string argKeyName, Vec3 value);
 	void setVec4Arg(std::string argKeyName, Vec4 value);
 
-	// ´«µİÊı×éÊı¾İ , ÔİÊ±Ö»Ö§³Öint ºÍ floatÀàĞÍ
-	// ¸øC++ ¹¤³ÌµÄ½Ó¿Ú
+	// ä¼ é€’æ•°ç»„æ•°æ® , æš‚æ—¶åªæ”¯æŒint å’Œ floatç±»å‹
+	// ç»™C++ å·¥ç¨‹çš„æ¥å£
 	void setIntVecArg(std::string argKeyName,const int* ptr , ssize_t size);
-	// ¸ølua µÄ½Ó¿Ú
+	// ç»™lua çš„æ¥å£
 	void setIntVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size);
 	std::map<std::string, intVec> intVecArgMap;
 
 
 
-	// ¸øC++ ¹¤³ÌµÄ½Ó¿Ú
+	// ç»™C++ å·¥ç¨‹çš„æ¥å£
 	void setFloatVecArg(std::string argKeyName, float* ptr, ssize_t size);
-	// ¸ølua µÄ½Ó¿Ú
+	// ç»™lua çš„æ¥å£
 	void setFloatVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size);
 	std::map<std::string, floatVec> floatVecArgMap;
 
-	////ÇåµôËùÓĞµÄ²ÎÊı
+	////æ¸…æ‰æ‰€æœ‰çš„å‚æ•°
 	void clearAllArgMap();
 
-	///µÚ¶ş²ãÎÆÀí
+	///ç¬¬äºŒå±‚çº¹ç†
 	Texture2D* texture;
 	GLuint tex;
 
