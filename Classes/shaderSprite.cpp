@@ -42,14 +42,14 @@ bool ShaderSprite::initWithTexture(CCTexture2D* pTexture, const CCRect& tRect){
 	do {
 		CC_BREAK_IF(!Sprite::initWithTexture(pTexture, tRect));
 
-		///³õÊ¼µÄshaderÎÄ¼şºÍµÚ¶ş¸öÎÆÀí
+		///åˆå§‹çš„shaderæ–‡ä»¶å’Œç¬¬äºŒä¸ªçº¹ç†
 		//auto pProgram = GLProgram::createWithFilenames("godLight.vsh", "godLight.fsh");
 
 		//tex = Director::getInstance()->getTextureCache()->addImage("frostBg.png")->getName();		
 
-		///´´½¨shaderstate  shader×´Ì¬
+		///åˆ›å»ºshaderstate  shaderçŠ¶æ€
 		//auto glprogramstate = GLProgramState::getOrCreateWithGLProgram(pProgram);
-		///ÉèÖÃshader
+		///è®¾ç½®shader
 		//setGLProgramState(glprogramstate);
 
 	
@@ -73,10 +73,10 @@ void ShaderSprite::draw(Renderer* renderer, const Mat4 &transform, uint32_t flag
 }
 
 void ShaderSprite::onDraw(const Mat4& transform,uint32_t flags){
-	///»ñÈ¡shaderstate
+	///è·å–shaderstate
 	auto glProgramState = getGLProgramState();
 
-	/////±éÀúËùÓĞµÄ²ÎÊımap£¬½«ÆäÉèÖµ
+	/////éå†æ‰€æœ‰çš„å‚æ•°mapï¼Œå°†å…¶è®¾å€¼
 	std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
 	while (floatItor != floatArgMap.end()){
 		std::string argKeyName = floatItor->first;
@@ -118,10 +118,10 @@ void ShaderSprite::onDraw(const Mat4& transform,uint32_t flags){
 	}
 
 	
-	///Ó¦ÓÃGLProgram,¶¥µãÊôĞÔºÍUniform²ÎÊıµ½äÖÈ¾¹ÜÏß
+	///åº”ç”¨GLProgram,é¡¶ç‚¹å±æ€§å’ŒUniformå‚æ•°åˆ°æ¸²æŸ“ç®¡çº¿
 	glProgramState->apply(transform);
 
-	// Êı×é , Õâ¸ö±ØĞë·Åµ½applyµÄºóÃæÄÇ¸ö
+	// æ•°ç»„ , è¿™ä¸ªå¿…é¡»æ”¾åˆ°applyçš„åé¢é‚£ä¸ª
 	std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
 	while (floatVecItor != floatVecArgMap.end()) {
 		std::string argKeyName = floatVecItor->first;
@@ -129,21 +129,21 @@ void ShaderSprite::onDraw(const Mat4& transform,uint32_t flags){
 		GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
 
 																							//const float test[5] = { 0.2f,0.4f,0.6f,0.8f,1.0f };
-		glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // ÉèÖÃ1¸öfloatÀàĞÍµÄv£¨´ú±íÊı×é£©
+		glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // è®¾ç½®1ä¸ªfloatç±»å‹çš„vï¼ˆä»£è¡¨æ•°ç»„ï¼‰
 																			//getGLProgram()->setUniformLocationWith1fv(loc , (const GLfloat*)test , (GLsizei)3);  // setUniformLocationWith1fv
 		floatVecItor++;
 	}
 
-	///ÉèÖÃ»ìºÏÄ£Ê½
+	///è®¾ç½®æ··åˆæ¨¡å¼
 	GL::blendFunc(_blendFunc.src,_blendFunc.dst);
-	//BlendFunc cbl = { GL_ONE, GL_ONE_MINUS_SRC_ALPHA };//ÎÒÒ²²»ÖªµÀ£¬ºÎÊ±¼ÓÁË¸öÕâ¸ö»ìºÏÄ£Ê½
+	//BlendFunc cbl = { GL_ONE, GL_ONE_MINUS_SRC_ALPHA };//æˆ‘ä¹Ÿä¸çŸ¥é“ï¼Œä½•æ—¶åŠ äº†ä¸ªè¿™ä¸ªæ··åˆæ¨¡å¼
 	//this->setBlendFunc(cbl);
 
 	GL::bindTexture2D(_texture->getName());
-	////¼¤»îÃû×ÖÎªposition,color,textureµÄvertex attribute
+	////æ¿€æ´»åå­—ä¸ºposition,color,textureçš„vertex attribute
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
 
-	////_quad Êı¾İÊÇÔÚSpriteÀàµÄinitWithTexture(Texture2D,Rect,bool) ÖĞ¸³ÖµµÄ
+	////_quad æ•°æ®æ˜¯åœ¨Spriteç±»çš„initWithTexture(Texture2D,Rect,bool) ä¸­èµ‹å€¼çš„
 
 	
 
@@ -151,38 +151,38 @@ void ShaderSprite::onDraw(const Mat4& transform,uint32_t flags){
 #define kQuadSize sizeof(_quad.bl)
 	size_t offset = (size_t)&_quad;
 
-	/////ÏÂÃæÓ¦¸ÃÔÚÏò¶¥µãshader´«µİÊı¾İ
+	/////ä¸‹é¢åº”è¯¥åœ¨å‘é¡¶ç‚¹shaderä¼ é€’æ•°æ®
 	///vertex
 	int diff = offsetof(V3F_C4B_T2F, vertices);
 	
-	///glVertexAttribPointerÎª×ÅÉ«Æ÷ÖĞÖ¸¶¨µÄ±äÁ¿ÉèÖÃÃ¿¸ö¶¥µãÊôĞÔ¼°Èı¸öÔªËØµÄÖµµÄÈ¡ÖµÖ¸ÕëÆğÊ¼Î»ÖÃ¡£
-	///²ÎÊıÏê½â£º
-	///1.index:      Ö¸¶¨ÒªĞŞ¸ÄµÄ¶¥µãÊôĞÔµÄË÷ÒıÖµ
-	///2.size:       Ö¸¶¨Ã¿¸ö¶¥µãÊôĞÔµÄ×é¼şÊıÁ¿£¬ÈçpositionÓÉ£¨x,y,z£©×é³ÉÔòÎª3£¬colorÓÉ£¨r,g,b,a£©×é³ÉÔòÎª4
-	///3.type:       Ö¸¶¨Êı×éÖĞÃ¿¸ö×é¼şµÄÊı¾İÀàĞÍ£¬±ÈÈçpositionÖĞµÄx,y,zÊÇÊ²Ã´ÀàĞÍµÄ¡£
-	///4.normalized: Ö¸¶¨µ±±»·ÃÎÊÊ±£¬¹Ì¶¨µãÊı¾İÖµÓ¦¸Ã±»¹éÒ»»¯(GL_TRUE ) »òÖ±½Ó×ª»»Îª¹Ì¶¨Öµ (GL_FALSE)
-	///5.stride:     Ö¸¶¨Á¬Ğø¶¥µãÊôĞÔÖ®¼äµÄÆ«ÒÆÁ¿¡£V3F_C4B_T2F_QuadÀàĞÍÖĞÓĞ4¸öV3F_C4B_T2FÀàĞÍµÄ×óÉÏ£¬ÓÒÉÏ£¬ÓÒÏÂ£¬×óÏÂ£¬ËÄ¸ö¶¥µãµÄÊı¾İ£¬Ã¿¸öV3F_C4B_T2FÖĞÓÖÓĞvertices£¬color£¬texcoordÊı¾İ£»£¡£¡ËùÒÔ´ÓµÚÒ»¸ö×óÉÏµãÖĞµÄV3F_C4B_T2FÖĞµÄverticesÌøµ½ÏÂÒ»¸öÓÒÉÏµãÖĞµÄV3F_C4B_T2FÖĞµÄvertices£¬¼ä¸ôÎªÒ»¸öV3F_C4B_T2FÀàĞÍ³¤¶È
-	///6.pointer:    Ö¸¶¨µÚÒ»¸ö×é¼şÔÚÊı×éµÄµÚÒ»¸ö¶¥µãÊôĞÔÖĞµÄÆ«ÒÆÁ¿¡£Ó¦¸Ã¾ÍÊÇ
-	///ÎªÎ»ÖÃpositionÖ¸¶¨Êı¾İÔ´
+	///glVertexAttribPointerä¸ºç€è‰²å™¨ä¸­æŒ‡å®šçš„å˜é‡è®¾ç½®æ¯ä¸ªé¡¶ç‚¹å±æ€§åŠä¸‰ä¸ªå…ƒç´ çš„å€¼çš„å–å€¼æŒ‡é’ˆèµ·å§‹ä½ç½®ã€‚
+	///å‚æ•°è¯¦è§£ï¼š
+	///1.index:      æŒ‡å®šè¦ä¿®æ”¹çš„é¡¶ç‚¹å±æ€§çš„ç´¢å¼•å€¼
+	///2.size:       æŒ‡å®šæ¯ä¸ªé¡¶ç‚¹å±æ€§çš„ç»„ä»¶æ•°é‡ï¼Œå¦‚positionç”±ï¼ˆx,y,zï¼‰ç»„æˆåˆ™ä¸º3ï¼Œcolorç”±ï¼ˆr,g,b,aï¼‰ç»„æˆåˆ™ä¸º4
+	///3.type:       æŒ‡å®šæ•°ç»„ä¸­æ¯ä¸ªç»„ä»¶çš„æ•°æ®ç±»å‹ï¼Œæ¯”å¦‚positionä¸­çš„x,y,zæ˜¯ä»€ä¹ˆç±»å‹çš„ã€‚
+	///4.normalized: æŒ‡å®šå½“è¢«è®¿é—®æ—¶ï¼Œå›ºå®šç‚¹æ•°æ®å€¼åº”è¯¥è¢«å½’ä¸€åŒ–(GL_TRUE ) æˆ–ç›´æ¥è½¬æ¢ä¸ºå›ºå®šå€¼ (GL_FALSE)
+	///5.stride:     æŒ‡å®šè¿ç»­é¡¶ç‚¹å±æ€§ä¹‹é—´çš„åç§»é‡ã€‚V3F_C4B_T2F_Quadç±»å‹ä¸­æœ‰4ä¸ªV3F_C4B_T2Fç±»å‹çš„å·¦ä¸Šï¼Œå³ä¸Šï¼Œå³ä¸‹ï¼Œå·¦ä¸‹ï¼Œå››ä¸ªé¡¶ç‚¹çš„æ•°æ®ï¼Œæ¯ä¸ªV3F_C4B_T2Fä¸­åˆæœ‰verticesï¼Œcolorï¼Œtexcoordæ•°æ®ï¼›ï¼ï¼æ‰€ä»¥ä»ç¬¬ä¸€ä¸ªå·¦ä¸Šç‚¹ä¸­çš„V3F_C4B_T2Fä¸­çš„verticesè·³åˆ°ä¸‹ä¸€ä¸ªå³ä¸Šç‚¹ä¸­çš„V3F_C4B_T2Fä¸­çš„verticesï¼Œé—´éš”ä¸ºä¸€ä¸ªV3F_C4B_T2Fç±»å‹é•¿åº¦
+	///6.pointer:    æŒ‡å®šç¬¬ä¸€ä¸ªç»„ä»¶åœ¨æ•°ç»„çš„ç¬¬ä¸€ä¸ªé¡¶ç‚¹å±æ€§ä¸­çš„åç§»é‡ã€‚åº”è¯¥å°±æ˜¯
+	///ä¸ºä½ç½®positionæŒ‡å®šæ•°æ®æº
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, kQuadSize, (void*)(offset + diff));
 	///texCoods
 	diff = offsetof(V3F_C4B_T2F,texCoords);
-	///ÎªÎÆÀí(Ä¬ÈÏÎÆÀí) Ö¸¶¨Êı¾İÔ´
+	///ä¸ºçº¹ç†(é»˜è®¤çº¹ç†) æŒ‡å®šæ•°æ®æº
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, kQuadSize, (void*)(offset + diff));
 
-	///¶àÖØÎÆÀíÉèÖÃ£¬»ñÈ¡ÁËÒ»¸öÄÚÖÃµÄuniform±äÁ¿£¬²¢ÏòÆäÖĞ´«ÈëÊı¾İ¡£ÏÂÁ½ĞĞµÄ1´ú±íµÚ¶ş²ãÎÆÀí£¬0ÎªÄ¬ÈÏÎÆÀí
+	///å¤šé‡çº¹ç†è®¾ç½®ï¼Œè·å–äº†ä¸€ä¸ªå†…ç½®çš„uniformå˜é‡ï¼Œå¹¶å‘å…¶ä¸­ä¼ å…¥æ•°æ®ã€‚ä¸‹ä¸¤è¡Œçš„1ä»£è¡¨ç¬¬äºŒå±‚çº¹ç†ï¼Œ0ä¸ºé»˜è®¤çº¹ç†
 	GLuint testTexUniform = glGetUniformLocation(getGLProgram()->getProgram() ,"CC_Texture1");
 	GL::bindTexture2DN(1,tex);
 	glUniform1i(testTexUniform,1);
 
 	///color
 	diff = offsetof(V3F_C4B_T2F, colors);
-	///ÎªÑÕÉ« Ö¸¶¨Êı¾İÔ´
+	///ä¸ºé¢œè‰² æŒ‡å®šæ•°æ®æº
 	glVertexAttribPointer(GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, kQuadSize, (void*)(offset + diff));
-	//»æÖÆÈı½ÇĞÎ£¬ËùÎ½µÄdraw call¾ÍÊÇÖ¸Õâ¸öº¯ÊıµÄµ÷ÓÃ
+	//ç»˜åˆ¶ä¸‰è§’å½¢ï¼Œæ‰€è°“çš„draw callå°±æ˜¯æŒ‡è¿™ä¸ªå‡½æ•°çš„è°ƒç”¨
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	CHECK_GL_ERROR_DEBUG();
-	//Í¨Öªcocos2d-xµÄrender,ÈÃËüÔÚºÏÊÊµÄÊ±ºòµ÷ÓÃÕâĞ©OpenglÃüÁî
+	//é€šçŸ¥cocos2d-xçš„render,è®©å®ƒåœ¨åˆé€‚çš„æ—¶å€™è°ƒç”¨è¿™äº›Openglå‘½ä»¤
 	CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(1, 4);
 
 
@@ -193,7 +193,7 @@ void ShaderSprite::onDraw(const Mat4& transform,uint32_t flags){
 
 void ShaderSprite::setFloatArg(std::string argKeyName, float value){
 	std::map<std::string, float>::iterator itor = floatArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢
 	if (itor == floatArgMap.end()){
 		floatArgMap.insert( std::make_pair(argKeyName, value) );
 	}
@@ -203,7 +203,7 @@ void ShaderSprite::setFloatArg(std::string argKeyName, float value){
 }
 void ShaderSprite::setIntArg(std::string argKeyName, int value){
 	std::map<std::string, int>::iterator itor = intArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢
 	if (itor == intArgMap.end()){
 		intArgMap.insert(std::make_pair(argKeyName, value));
 	}
@@ -214,7 +214,7 @@ void ShaderSprite::setIntArg(std::string argKeyName, int value){
 
 void ShaderSprite::setVec2Arg(std::string argKeyName, Vec2 value){
 	std::map<std::string, Vec2>::iterator itor = vec2ArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢
 	if (itor == vec2ArgMap.end()){
 		vec2ArgMap.insert(std::make_pair(argKeyName, value));
 	}
@@ -225,7 +225,7 @@ void ShaderSprite::setVec2Arg(std::string argKeyName, Vec2 value){
 
 void ShaderSprite::setVec3Arg(std::string argKeyName, Vec3 value){
 	std::map<std::string, Vec3>::iterator itor = vec3ArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢
 	if (itor == vec3ArgMap.end()){
 		vec3ArgMap.insert(std::make_pair(argKeyName, value));
 	}
@@ -236,7 +236,7 @@ void ShaderSprite::setVec3Arg(std::string argKeyName, Vec3 value){
 
 void ShaderSprite::setVec4Arg(std::string argKeyName, Vec4 value){
 	std::map<std::string, Vec4>::iterator itor = vec4ArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢
 	if (itor == vec4ArgMap.end()){
 		vec4ArgMap.insert(std::make_pair(argKeyName, value));
 	}
@@ -247,7 +247,7 @@ void ShaderSprite::setVec4Arg(std::string argKeyName, Vec4 value){
 
 void ShaderSprite::setIntVecArg(std::string argKeyName, const int* ptr, ssize_t size) {
 	std::map<std::string, intVec>::iterator itor = intVecArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö,ÓĞÔòĞŞ¸Ä
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢,æœ‰åˆ™ä¿®æ”¹
 	if (itor == intVecArgMap.end()) {
 		intVecArgMap.insert(std::make_pair(argKeyName, intVec(ptr, size)));
 	}
@@ -258,7 +258,7 @@ void ShaderSprite::setIntVecArg(std::string argKeyName, const int* ptr, ssize_t 
 
 void ShaderSprite::setIntVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size) {
 	std::map<std::string, intVec>::iterator itor = intVecArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö,ÓĞÔòĞŞ¸Ä
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢,æœ‰åˆ™ä¿®æ”¹
 	//const float* fPtr = (const float*)ptr;
 	const ssize_t s = size;
 	static int *iVec = new int(s);
@@ -283,8 +283,8 @@ void ShaderSprite::setIntVecArgLua(std::string argKeyName, const cocos2d::ValueV
 // 
 void ShaderSprite::setFloatVecArg(std::string argKeyName, float* ptr, ssize_t size) {
 	std::map<std::string, floatVec>::iterator itor = floatVecArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö,ÓĞÔòĞŞ¸Ä
-	const float* fPtr = (const float*)ptr;
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢,æœ‰åˆ™ä¿®æ”¹
+	float* fPtr = (float*)ptr;
 	if (itor == floatVecArgMap.end()) {
 		floatVecArgMap.insert(std::make_pair(argKeyName, floatVec(fPtr,size)));
 	}
@@ -296,10 +296,10 @@ void ShaderSprite::setFloatVecArg(std::string argKeyName, float* ptr, ssize_t si
 
 void ShaderSprite::setFloatVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size) {
 	std::map<std::string, floatVec>::iterator itor = floatVecArgMap.find(argKeyName);
-	///Ã»ÓĞÕÒµ½ÔòĞÂÔö,ÓĞÔòĞŞ¸Ä
+	///æ²¡æœ‰æ‰¾åˆ°åˆ™æ–°å¢,æœ‰åˆ™ä¿®æ”¹
 	//const float* fPtr = (const float*)ptr;
 	const ssize_t s = size;
-	static float *fVec = new float(s);
+	float *fVec = (float*)malloc(s * sizeof(float));
 	auto vecitor = ptr.begin();
 	int index = 0;
 	while (vecitor != ptr.end())
@@ -309,18 +309,20 @@ void ShaderSprite::setFloatVecArgLua(std::string argKeyName, const cocos2d::Valu
 		vecitor++;
 	}
 
+	//floatVec value = floatVec(fVec, size);
 	if (itor == floatVecArgMap.end()) {
-		floatVecArgMap.insert(std::make_pair(argKeyName, floatVec(&fVec[0], size)));
+		floatVecArgMap.insert(std::make_pair(argKeyName, floatVec(fVec, size)));
 	}
 	else {
-		itor->second = floatVec(&fVec[0], size);
+		itor->second = floatVec(fVec, size);
 	}
 
+	free(fVec);
 }
 
 
 
-////Å¶£¬ºÃÏñÃ»ÓÃ
+////å“¦ï¼Œå¥½åƒæ²¡ç”¨
 void ShaderSprite::clearAllArgMap(){
 	floatArgMap.clear();    
 	intArgMap.clear();

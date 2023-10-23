@@ -234,6 +234,8 @@ ParticleRenderer::ParticleRenderer()
 	flowCircleRadiusFireProId = 0;
 	// Clear the memory
 	memset(_buffersVBO , 0, sizeof(_buffersVBO));
+
+	
 }
 ParticleRenderer::~ParticleRenderer() {
 	CC_SAFE_FREE(_quads);
@@ -266,7 +268,7 @@ void ParticleRenderer::onEnter() {
 	if (ParticleRenderer::updatePriority > 200) {
 		ParticleRenderer::updatePriority = 0;
 	}*/
-	this->setShaderFile("shader/default.vsh", "shader/default.fsh");
+	
 
 	//this->setSecondTex("dog.png");
 
@@ -495,7 +497,8 @@ bool ParticleRenderer::initWithTotalParticles(int totalParticleNum) {
 		}
 	}
 
-	setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+	//setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));
+	this->setShaderFile("shader/default.vsh", "shader/default.fsh");
 
 	return true;
 }
