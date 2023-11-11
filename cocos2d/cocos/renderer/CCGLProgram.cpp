@@ -101,6 +101,8 @@ const char* GLProgram::ATTRIBUTE_NAME_NORMAL = "a_normal";
 const char* GLProgram::ATTRIBUTE_NAME_BLEND_WEIGHT = "a_blendWeight";
 const char* GLProgram::ATTRIBUTE_NAME_BLEND_INDEX = "a_blendIndex";
 
+static const std::string EMPTY_DEFINE;
+
 GLProgram* GLProgram::createWithByteArrays(const GLchar* vShaderByteArray, const GLchar* fShaderByteArray)
 {
     auto ret = new (std::nothrow) GLProgram();
@@ -115,10 +117,34 @@ GLProgram* GLProgram::createWithByteArrays(const GLchar* vShaderByteArray, const
     return nullptr;
 }
 
+//GLProgram* GLProgram::createWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename)
+//{
+//    auto ret = new (std::nothrow) GLProgram();
+//    if(ret && ret->initWithFilenames(vShaderFilename, fShaderFilename)) {
+//        ret->link();
+//        ret->updateUniforms();
+//        ret->autorelease();
+//        return ret;
+//    }
+//
+//    CC_SAFE_DELETE(ret);
+//    return nullptr;
+//}
+
 GLProgram* GLProgram::createWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename)
 {
+    return createWithFilenames(vShaderFilename, fShaderFilename, EMPTY_DEFINE);
+}
+
+GLProgram* GLProgram::createWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& compileTimeDefines)
+{
+    return createWithFilenames(vShaderFilename, fShaderFilename, EMPTY_DEFINE, compileTimeDefines);
+}
+
+GLProgram* GLProgram::createWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& /*compileTimeHeaders*/, const std::string& compileTimeDefines)
+{
     auto ret = new (std::nothrow) GLProgram();
-    if(ret && ret->initWithFilenames(vShaderFilename, fShaderFilename)) {
+    if (ret && ret->initWithFilenames(vShaderFilename, fShaderFilename, compileTimeDefines)) {
         ret->link();
         ret->updateUniforms();
         ret->autorelease();
@@ -263,7 +289,17 @@ bool GLProgram::initWithPrecompiledProgramByteArray(const GLchar* vShaderByteArr
 }
 #endif
 
-bool GLProgram::initWithFilenames(const std::string &vShaderFilename, const std::string &fShaderFilename)
+bool GLProgram::initWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename)
+{
+    return initWithFilenames(vShaderFilename, fShaderFilename, EMPTY_DEFINE);
+}
+
+bool GLProgram::initWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& compileTimeDefines)
+{
+    return initWithFilenames(vShaderFilename, fShaderFilename, EMPTY_DEFINE, compileTimeDefines);
+}
+
+bool GLProgram::initWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& compileTimeHeaders, const std::string& compileTimeDefines)
 {
     auto fileUtils = FileUtils::getInstance();
     std::string vertexSource = fileUtils->getStringFromFile(FileUtils::getInstance()->fullPathForFilename(vShaderFilename));

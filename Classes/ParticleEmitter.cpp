@@ -237,23 +237,31 @@ void ParticleEmitter::setRunningLayer(Node* layer) {
 	this->addRender();
 }
 
+int ParticleEmitter::fireProCacheSize;
+std::map<std::string, std::vector< std::vector<emitterFirePro*>* >> ParticleEmitter::fireProVecCache;
+
+
 ParticleEmitter::ParticleEmitter()
 {
 	runningLayer = nullptr;
 	_isActive = false;
 	_isAutoRemoveOnFinish = false;
+	fileName = "";
 	worldPos = Vec2(0, 0);
 	fScaleX = 0;
 	fScaleY = 0;
 	_isChildEmitter = false;
+	fireProVec = nullptr;
 }
 
 ParticleEmitter::~ParticleEmitter() {
 	// 当发射器死亡时，将render释放给runningLayer , 
 	//assert(this->runningLayer, "particle Emitter must set runningLayer , runningLayer is null !");
 
-	this->releaseRender();   // 先清理render
-	this->clearData();       // 清理数据
+	//this->releaseRender();   // 先清理render
+	//this->clearData();       // 清理数据
+
+	//printf("test %s", this->fileName);
 }
 
 ParticleEmitter* ParticleEmitter::instance;
@@ -309,8 +317,8 @@ void ParticleEmitter::onEnter() {
 
 }
 void ParticleEmitter::onExit() {
-	this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
-	this->getFatherScale();
+	//this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
+	//this->getFatherScale();
 
 	Node::onExit();
 	//this->unscheduleUpdate();
@@ -340,13 +348,13 @@ emitterFirePro* ParticleEmitter::addOneFirePro(int id,parType type, std::string 
 
 	if (!firePro) {
 		firePro = new emitterFirePro();
-		fireProVec.push_back(firePro);
+		fireProVec->push_back(firePro);
 	}
 
 	firePro->_id = targetId;
 	firePro->_parType = type;
 	
-
+	// 添加 childrenParMap
 	auto itor = childrenParMap.find(targetId);
 	if (itor == childrenParMap.end()) {
 		childrenPar* cPar = new childrenPar();
@@ -380,12 +388,44 @@ bool ParticleEmitter::init() {
 void ParticleEmitter::clearData() {
 	// clear
 	{
-		auto itor = fireProVec.begin();
-		while (itor != fireProVec.end()) {
-			delete (*itor);
-			itor++;
+		// firePro 写入缓存
+		auto itor = fireProVec->begin();
+		while (itor != fireProVec->end()) {
+		 	(*itor)->resetData();
+		 	itor++;
 		}
-		fireProVec.clear();
+
+		auto map_itor = ParticleEmitter::fireProVecCache.find(this->fileName);
+		if (map_itor == ParticleEmitter::fireProVecCache.end()){
+			std::vector<std::vector<emitterFirePro*>*> newFireProList;
+			newFireProList.reserve(100);
+			newFireProList.push_back( fireProVec );
+			ParticleEmitter::fireProVecCache.insert(std::make_pair(this->fileName, newFireProList));
+
+			ParticleEmitter::fireProCacheSize++;
+
+		}
+		else{
+
+			auto fireProList = &(*map_itor).second;
+			fireProList->push_back( fireProVec );
+			ParticleEmitter::fireProCacheSize++;
+
+		}
+
+		
+
+		fireProVec = nullptr;
+
+		///
+		/*auto itor = fireProVec->begin();
+		while (itor != fireProVec->end()) {
+		 	delete (*itor);
+		 	itor++;
+		}
+		fireProVec->clear();
+		delete fireProVec;
+		fireProVec = nullptr;*/
 	}
 
 	auto itor = childrenParMap.begin();
@@ -401,8 +441,8 @@ void ParticleEmitter::clearData() {
 
 void ParticleEmitter::refreshZorder() {
 
-	auto itor = fireProVec.begin();
-	while (itor != fireProVec.end()) {
+	auto itor = fireProVec->begin();
+	while (itor != fireProVec->end()) {
 		auto firePro = (*itor);
 		if (firePro->_parType == parType::render) {
 			auto cPar = childrenParMap.find(firePro->_id);
@@ -545,11 +585,11 @@ void ParticleEmitter::setChildrenParNewId(int oldid, int newid) {
 
 void ParticleEmitter::removeFireProById(int id) {
 	
-	auto itor = fireProVec.begin();
-	while (itor != fireProVec.end()) {
+	auto itor = fireProVec->begin();
+	while (itor != fireProVec->end()) {
 		if (id == (*itor)->_id) {
 			delete (*itor);
-			fireProVec.erase(itor);
+			fireProVec->erase(itor);
 			break;
 		}
 		itor++;
@@ -565,30 +605,26 @@ void ParticleEmitter::removeFireProById(int id) {
 }
 
 void ParticleEmitter::addRender(bool isCreateNew /*= false*/) {
-	auto itor = fireProVec.begin();
-	while (itor != fireProVec.end()) {
+	auto itor = fireProVec->begin();
+	while (itor != fireProVec->end()) {
 		auto firePro = (*itor);
 		if (firePro->_parType == parType::render) {
 			auto cPar = childrenParMap.find(firePro->_id);
 			if (cPar != childrenParMap.end()) {
 				if (!cPar->second->_renderer)
 				{
-					
-					/*cPar->second->_renderer = ParticleRenderer::create();
-					cPar->second->_renderer->initWithTotalParticles(1);
-					cPar->second->_renderer->setTexture(CCTextureCache::sharedTextureCache()->addImage(firePro->_texName));
-					this->addChild(cPar->second->_renderer , firePro->_localZorder);
-					cPar->second->_renderer->_emitter = this;*/
 
+					//printf("cacheSize:%d\n", ParticleRenderer::cacheSize);
+					// 从缓存里面取 ParticleRenderer
 					if (!isCreateNew && ParticleRenderer::cacheSize > 0) {
 						cPar->second->_renderer = ParticleRenderer::renderCache.at(ParticleRenderer::cacheSize - 1) ;
 						ParticleRenderer::renderCache.at(ParticleRenderer::cacheSize - 1) = nullptr;
 						--ParticleRenderer::cacheSize;
 					}
-
+					// 新创建 ParticleRenderer
 					if (!cPar->second->_renderer){
 						cPar->second->_renderer = ParticleRenderer::create();
-						cPar->second->_renderer->initWithTotalParticles(1);
+						cPar->second->_renderer->initWithTotalParticles(10);
 
 						if (firePro->_isFlowCircleRadius) {
 							cPar->second->_renderer->isFlowCircleRadius = true;
@@ -602,15 +638,14 @@ void ParticleEmitter::addRender(bool isCreateNew /*= false*/) {
 					
 					cPar->second->_renderer->setTexture(CCTextureCache::sharedTextureCache()->addImage(firePro->_texName));
 
-					//if (firePro->_positionType == positionType::FREE) {
-					//	this->runningLayer->addChild(cPar->second->_renderer, firePro->_localZorder);
-					//}
-					//else if (firePro->_positionType == positionType::RELATIVE) {
-						this->addChild(cPar->second->_renderer, firePro->_localZorder);
-					//}
-
+					this->addChild(cPar->second->_renderer, firePro->_localZorder);
+					
 					if (firePro->vshName != "" && firePro->fshName != "") {
 						cPar->second->_renderer->setShaderFile(firePro->vshName, firePro->fshName);
+					}
+					else {
+						if(ParticleEmitter::isUiEditorModel)
+						cPar->second->_renderer->setShaderFile("shader/default.vsh", "shader/default.fsh");
 					}
 
 				}
@@ -622,9 +657,10 @@ void ParticleEmitter::addRender(bool isCreateNew /*= false*/) {
 }
 
 void ParticleEmitter::releaseRender() {
+	bool isGetWorldPos = false;
 	//this->worldPos = this->convertToWorldSpace(Vec2::ZERO);
-	auto itor = fireProVec.begin();
-	while (itor != fireProVec.end()) {
+	auto itor = fireProVec->begin();
+	while (itor != fireProVec->end()) {
 		auto firePro = (*itor);
 		if (firePro->_parType == parType::render) {
 			auto cPar = childrenParMap.find(firePro->_id);
@@ -632,21 +668,7 @@ void ParticleEmitter::releaseRender() {
 				if (cPar->second->_renderer)
 				{
 					if (this->runningLayer && this->runningLayer->isRunning()) {
-						/*if (firePro->_positionType == positionType::FREE) {
-							if (UpdateHelper::getInstance()->getValueFromEmitterVarietyValue(firePro->_life, *firePro) >= 1000) {
-								cPar->second->_renderer->removeFromParent();
-								cPar->second->_renderer->release();
-								cPar->second->_renderer->_emitter = nullptr;
-								cPar->second->_renderer = nullptr;
-							}
-							else {
-								cPar->second->_renderer->scheduleUpdateWithPriority(1);
-								cPar->second->_renderer->setIsAutoRemoveOnFinish(true);
-								cPar->second->_renderer->_emitter = nullptr;
-								cPar->second->_renderer = nullptr;
-							}
-						}*/
-						//else if (firePro->_positionType == positionType::RELATIVE) {
+
 							if (UpdateHelper::getInstance()->getValueFromEmitterVarietyValue(firePro->_life, *firePro) >= 1000) {
 								// 如果是生命值无限长的话，那么就得直接删掉这个render
 								cPar->second->_renderer->removeFromParent();
@@ -660,26 +682,18 @@ void ParticleEmitter::releaseRender() {
 
 								render->removeFromParent();
 								this->runningLayer->addChild(render);
-								Vec2 parentPos = this->convertToWorldSpace(Vec2(0, 0));
-								parentPos = this->runningLayer->convertToNodeSpace(parentPos);
-								render->setPosition(parentPos.x, parentPos.y);
-								//render->setPosition(this->worldPos.x - this->runningLayer->getPositionX(), this->worldPos.y - this->runningLayer->getPositionY());
+
 								render->scheduleUpdateWithPriority(1);
 								
-								render->setRotation(this->getRotation());
-
-								render->setScale(this->getScale());
-
 								render->setCacheTransform();
 
-								//render->setScaleX(fScaleX);
-								//render->setScaleY(fScaleY);
 								// 放完自死
 								render->setIsAutoRemoveOnFinish(true);
 								render->_emitter = nullptr;
 								cPar->second->_renderer = nullptr;
+
+								//
 							}
-						//}
 					}
 					else {
 						cPar->second->_renderer->removeFromParent();
@@ -691,6 +705,11 @@ void ParticleEmitter::releaseRender() {
 			}
 		}
 		else {
+			if (!isGetWorldPos) {
+				isGetWorldPos = true;
+				this->worldPos = this->convertToWorldSpace(Vec2::ZERO);
+			}
+
 			auto cPar = childrenParMap.find(firePro->_id);
 			if (cPar != childrenParMap.end()) {
 				for (int i = 0; i < cPar->second->_emitter.size(); ++i) {
@@ -712,6 +731,7 @@ void ParticleEmitter::releaseRender() {
 	}
 }
 
+// 废弃
 void ParticleEmitter::getFatherScale() {
 	fScaleX = 1;
 	fScaleY = 1;
@@ -730,8 +750,8 @@ void ParticleEmitter::getFatherScale() {
 }
 
 void ParticleEmitter::clearRender() {
-	auto itor = fireProVec.begin();
-	while (itor != fireProVec.end()) {
+	auto itor = fireProVec->begin();
+	while (itor != fireProVec->end()) {
 		auto firePro = (*itor);
 		if (firePro->_parType == parType::render) {
 			auto cPar = childrenParMap.find(firePro->_id);
@@ -763,9 +783,9 @@ void ParticleEmitter::update(float dt) {
 				break;
 			}
 		}
-		//this->runningLayer->setScale(0.5);
+
 		this->addRender();
-		//this->setScale(0.5);
+
 	}
 	
 	// 是否还有子发射器在运动，在工作
@@ -871,13 +891,24 @@ void ParticleEmitter::update(float dt) {
 	bool isAllFireProNotActive = true;
 
 
-	for (int i = 0; i < fireProVec.size(); ++i) {
+	for (int i = 0; i < fireProVec->size(); ++i) {
 		//float testTime = getNowTime();
-		UpdateHelper::instance->updateFirePro(this, *(fireProVec[i]), *this->getChildrenParById(fireProVec[i]->_id), dt);
+		UpdateHelper::instance->updateFirePro(this, *(*fireProVec)[i], *this->getChildrenParById((*fireProVec)[i]->_id), dt);
 		
+		// for test
+		//fireProVec[i]->_elapsed += dt;
+		//if (!fireProVec[i]->_isLoop && fireProVec[i]->_elapsed > fireProVec[i]->_duration)
+		//{
+		//	//this->stopSystem();
+		//	fireProVec[i]->_isActive = false;
+		//}
+		//if (fireProVec[i]->_isLoop && fireProVec[i]->_elapsed > fireProVec[i]->_duration) {
+		//	fireProVec[i]->_elapsed -= fireProVec[i]->_duration;
+		//}
+
 		//float testTime2 = getNowTime();
 		//CCLOG("-=-=-=-=-=-=- debug time:%f", (testTime2 - testTime));
-		if (fireProVec[i]->_isActive == true) {
+		if ((*fireProVec)[i]->_isActive == true) {
 			isAllFireProNotActive = false;
 		}
 	}
@@ -890,8 +921,8 @@ void ParticleEmitter::update(float dt) {
 	if (isAllFireProNotActive && !isHaveEmitterParRunning) {
 		_isActive = false;
 		if (!ParticleEmitter::isUiEditorModel) {
-			this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
-			this->getFatherScale();
+			//this->worldPos = this->convertToWorldSpace(Vec2(0, 0));
+			//this->getFatherScale();
 
 			this->releaseRender();   // 先清理render
 			this->clearData();       // 清理数据
@@ -917,8 +948,8 @@ void ParticleEmitter::resetSystem() {
 	_isActive = true;
 
 	{
-		auto itor = fireProVec.begin();
-		while (itor != fireProVec.end()) {
+		auto itor = fireProVec->begin();
+		while (itor != fireProVec->end()) {
 			(*itor)->resetData();
 			itor++;
 		}
@@ -941,8 +972,8 @@ void ParticleEmitter::resetSystem() {
 }
 
 bool ParticleEmitter::writeJsonData(m_rapidjson::Document& object, m_rapidjson::Document::AllocatorType& allocator) {
-	auto itor = fireProVec.begin();
-	while (itor != fireProVec.end()) {
+	auto itor = fireProVec->begin();
+	while (itor != fireProVec->end()) {
 		m_rapidjson::Value cObject(m_rapidjson::kObjectType);
 
 		(*itor)->writeJsonData((m_rapidjson::Document&)cObject, allocator);
@@ -956,6 +987,8 @@ bool ParticleEmitter::writeJsonData(m_rapidjson::Document& object, m_rapidjson::
 void ParticleEmitter::readJsonData(m_rapidjson::Document& doc) {
 	//this->clearData();
 	this->runningLayer = nullptr;
+
+	this->fireProVec = new std::vector<emitterFirePro*>;
 
 	/////
 	if (doc.IsArray()) {
@@ -1467,15 +1500,14 @@ void emitterVarietyValue::writeJsonData(m_rapidjson::Document& object, m_rapidjs
 	else if (pType == emitterPropertyType::curve) {
 		cObject.AddMember("pType", "curve", allocator);
 
-		if (curvePoints.size() <= 0) {
+		if (mCurveLine.pointNum <= 0) {
 			return;
 		}
 
 		// 创建一个数组
 		m_rapidjson::Value curvePointsArray(m_rapidjson::kArrayType);
-		auto itor = curvePoints.begin();
+		/*auto itor = curvePoints.begin();
 		while (itor != curvePoints.end()) {
-			
 			m_rapidjson::Value curvePointObject(m_rapidjson::kObjectType);
 
 			curvePointObject.AddMember("x", (*itor).x, allocator);
@@ -1484,7 +1516,20 @@ void emitterVarietyValue::writeJsonData(m_rapidjson::Document& object, m_rapidjs
 
 			curvePointsArray.PushBack(curvePointObject, allocator);
 			itor++;
+		}*/
+
+		for (int i = 0; i < mCurveLine.pointNum; ++i) {
+			if (i < MAX_CURVE_NUM) {
+				m_rapidjson::Value curvePointObject(m_rapidjson::kObjectType);
+
+				curvePointObject.AddMember("x", mCurveLine.points[i].x, allocator);
+				curvePointObject.AddMember("y", mCurveLine.points[i].y, allocator);
+				curvePointObject.AddMember("z", mCurveLine.points[i].z, allocator);
+
+				curvePointsArray.PushBack(curvePointObject, allocator);
+			}
 		}
+		//}
 
 		cObject.AddMember("curvePoints", curvePointsArray, allocator);
 	}
@@ -1498,8 +1543,8 @@ void emitterVarietyValue::writeJsonData(m_rapidjson::Document& object, m_rapidjs
 void emitterVarietyValue::readJsonData(m_rapidjson::Document& doc, char* nameKey) {
 	pType = emitterPropertyType::oneConstant;
 	constValues.clear();
-	curvePoints.clear();
-	isSetCurveKB = false;
+	//curvePoints.clear();
+	//isSetCurveKB = false;
 
 	if (doc.HasMember(nameKey)) {
 		if (doc[nameKey].IsObject()) {
@@ -1525,17 +1570,32 @@ void emitterVarietyValue::readJsonData(m_rapidjson::Document& doc, char* nameKey
 			}
 			else if (typeStr == "curve") {
 				pType = emitterPropertyType::curve;
-				curvePoints.clear();
+				//curvePoints.clear();
 
 				m_rapidjson::Value& array = object["curvePoints"];
-				for (int i = 0; i < array.Size(); ++i) {
+				/*for (int i = 0; i < array.Size(); ++i) {
 					m_rapidjson::Value& item = array[i];
 					float x = item["x"].GetDouble();
 					float y = item["y"].GetDouble();
 					float z = item["z"].GetDouble();
 
 					curvePoints.push_back(Vec3(x,y,z));
+				}*/
+
+				mCurveLine.pointNum = array.Size();
+				for (int i = 0; i < array.Size(); ++i) {
+					m_rapidjson::Value& item = array[i];
+					float x = item["x"].GetDouble();
+					float y = item["y"].GetDouble();
+					float z = item["z"].GetDouble();
+
+					if (i < MAX_CURVE_NUM) {
+						mCurveLine.points[i].x = x;
+						mCurveLine.points[i].y = y;
+						mCurveLine.points[i].z = z;
+					}
 				}
+
 			}
 		}
 	}
@@ -2024,7 +2084,7 @@ void ParticleEmitter::setFirePro_varietyValue_clear(int id, std::string valueTyp
 		auto vValue = getVarietyValueByType(firePro, valueType);
 		if (vValue) {
 			vValue->constValues.clear();
-			vValue->curvePoints.clear();
+			//vValue->curvePoints.clear();
 		}
 	}
 
@@ -2061,7 +2121,13 @@ void ParticleEmitter::setFirePro_varietyValue_pushCurveValue(int id, std::string
 			}
 				
 
-			vValue->curvePoints.push_back(Vec3(realX, value , randValue));
+			//vValue->curvePoints.push_back(Vec3(realX, value , randValue));
+			if (vValue->mCurveLine.pointNum < MAX_CURVE_NUM - 1) {
+				auto pointPtr = &vValue->mCurveLine.points[++vValue->mCurveLine.pointNum];
+				pointPtr->x = realX;
+				pointPtr->y = value;
+				pointPtr->z = randValue;
+			}
 		}
 	}
 
@@ -2178,13 +2244,57 @@ void ParticleEmitter::setFirePro_colorValue_pushCurveValue(int id, std::string v
 void ParticleEmitter::readJsonDataFromFile(std::string filename) {
 	//this->setPosition(Vec2::ZERO);
 	//CocosApiFactory::getInstance()->setPosition( this , Vec2::ZERO );
-	this->readJsonData(FileCenter::getInstance()->readJsonData(filename));
+	this->fileName = filename;
 
-	float start = filename.rfind("\/", filename.size());
-	if (start > -1) {
-		std::string path = filename.substr(0, start + 1);
-		ParticleEmitter::sourcePath = path;
-		//CCLOG("-------------------ParticleEmitter::sourcePath :%s", ParticleEmitter::sourcePath);
+	// 如果有缓存,从缓存取
+	bool isDealByCache = false;
+	auto map_itor = fireProVecCache.find(filename);
+	if (map_itor != fireProVecCache.end() && !ParticleEmitter::isUiEditorModel){
+		auto fireProList = &(*map_itor).second;
+
+		if(fireProList->size() > 0){
+			isDealByCache = true;
+			auto oldFireProVec = std::move(fireProList->back());
+			fireProList->pop_back();
+
+			this->fireProVec = oldFireProVec;
+
+			ParticleEmitter::fireProCacheSize--;
+
+
+			// 添加 childrenParMap
+			auto fireProItor = this->fireProVec->begin();
+			while (fireProItor != this->fireProVec->end()) {
+				auto itor = childrenParMap.find( (*fireProItor)->_id );
+				if (itor == childrenParMap.end()) {
+					childrenPar* cPar = new childrenPar();
+					if ((*fireProItor)->_parType == parType::render) {
+					}
+					else if ((*fireProItor)->_parType == parType::emitter) {
+						if (fileName != "") {
+							(*fireProItor)->_emitterFileName = fileName;
+						}
+					}
+					childrenParMap.insert(std::make_pair((*fireProItor)->_id, cPar));
+				}
+
+				fireProItor++;
+			}
+			
+		}
+	}
+
+	if (!isDealByCache){
+
+		// 没有则创建
+		this->readJsonData(FileCenter::getInstance()->readJsonData(filename));
+
+		float start = filename.rfind("\/", filename.size());
+		if (start > -1) {
+			std::string path = filename.substr(0, start + 1);
+			ParticleEmitter::sourcePath = path;
+			//CCLOG("-------------------ParticleEmitter::sourcePath :%s", ParticleEmitter::sourcePath);
+		}
 	}
 }
 

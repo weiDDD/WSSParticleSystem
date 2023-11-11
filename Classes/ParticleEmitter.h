@@ -122,7 +122,7 @@ struct emitterVarietyValue {
 		randConst1 = 0;
 		randConst2 = 0;
 
-		isSetCurveKB = false;
+		//isSetCurveKB = false;
 
 		//curvePoints.push_back(Vec3(0, 0, 0));
 		//curvePoints.push_back(Vec3(1, 10, 0));
@@ -147,9 +147,12 @@ struct emitterVarietyValue {
 	float randConst2;
 
 	// 曲线数据 ， x 横坐标 (发射周期  或  粒子生命 )，y 纵坐标 (具体值) ，z : y坐标的随机值 
-	std::vector<Vec3> curvePoints;
+	//std::vector<Vec3> curvePoints;
+
+	curveLine mCurveLine;
+
 	// 是否给KB赋值了,曲线点改变时，这个值为 false
-	bool isSetCurveKB;
+	//bool isSetCurveKB;
 	// 曲线数据的 k,b值
 	//std::vector<Vec2> curveKB;
 	// 发射时的粒子属性的曲线数据的  上下随机曲线的K，B值 , 因为发射时的粒子属性如果是曲线数据，那么render得到的数据是这个曲线中的一个值，所以需要保存一下这个上下随机曲线的KB值，保证性能
@@ -689,6 +692,10 @@ class ParticleEmitter : public Node
 		static ParticleEmitter* create();
 		static ParticleEmitter* create(bool isInstance);
 
+		// 搞一个静态的 firePro 发射属性存储器
+		static int fireProCacheSize;
+		static std::map<std::string, std::vector<std::vector<emitterFirePro*>* >> fireProVecCache;
+
 		ParticleEmitter* createEmitter();
 
 		// 为发射器设置一组测试的粒子效果数据
@@ -718,8 +725,8 @@ class ParticleEmitter : public Node
 		bool getIsActive() { return _isActive; }
 
 		emitterFirePro* getFireProById(int id) {
-			auto itor = fireProVec.begin();
-			while (itor != fireProVec.end()) {
+			auto itor = fireProVec->begin();
+			while (itor != fireProVec->end()) {
 				if ((*itor)->_id == id) {
 					return (*itor);
 				}
@@ -728,8 +735,8 @@ class ParticleEmitter : public Node
 			return nullptr;
 		}
 		emitterFirePro* getFirstFirePro() {
-			auto itor = fireProVec.begin();
-			while (itor != fireProVec.end()) {
+			auto itor = fireProVec->begin();
+			while (itor != fireProVec->end()) {
 				return (*itor);
 				itor++;
 			}
@@ -772,7 +779,7 @@ class ParticleEmitter : public Node
 		void getFatherScale();
 
 		/////--------------发射器数据
-		std::vector<emitterFirePro*> fireProVec;
+		std::vector<emitterFirePro*>* fireProVec;
 
 		static void setSourcePath(std::string path);
 		static std::string sourcePath;
@@ -788,6 +795,7 @@ class ParticleEmitter : public Node
 			_isChildEmitter = flag;
 		}
 	private:
+		std::string fileName;
 
 		// 是否在发射完后自动死亡
 		bool _isAutoRemoveOnFinish;

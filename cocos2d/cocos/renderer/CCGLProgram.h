@@ -314,7 +314,20 @@ public:
     /**
     @}
     */
+    static GLProgram* createWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& compileTimeDefines);
+    bool initWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& compileTimeDefines);
     
+
+    /** @{
+     Create or Initializes the GLProgram with a vertex and fragment with contents of filenames, with shader headers definition(eg. #version ... or #extension ...), with compileTimeDefines(eg. #define ...).
+     * @js init
+     * @lua init
+     */
+    static GLProgram* createWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& compileTimeHeaders, const std::string& compileTimeDefines);
+    bool initWithFilenames(const std::string& vShaderFilename, const std::string& fShaderFilename, const std::string& compileTimeHeaders, const std::string& compileTimeDefines);
+    /**
+    @}
+    */
     /**@{ Get the uniform or vertex attribute by string name in shader, return null if it does not exist.*/
     Uniform* getUniform(const std::string& name);
     VertexAttrib* getVertexAttrib(const std::string& name);

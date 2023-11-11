@@ -19,6 +19,8 @@ namespace PRender {
 
 #define P_PI 3.1415926
 
+#define MAX_CURVE_NUM 20
+
 	struct mVec2{
 		mVec2() {
 			x = 0;
@@ -37,6 +39,23 @@ namespace PRender {
 		float y;
 	};
 
+	// 曲线点数据
+	// 发射器属性不用k,b因为线路不确定;粒子属性用k,b因为线路确定
+	struct curvePoint {
+		float x;
+		float y;
+		float z; // z为y上的随机值
+		float k; // k为上一个点到这个点的斜率
+		float b;
+	};
+	// 曲线线数据
+	struct curveLine {
+		curveLine() {
+			pointNum = 0;
+		}
+		int pointNum;
+		curvePoint points[MAX_CURVE_NUM];
+	};
 
 
 	// 粒子属性的类型
@@ -56,10 +75,10 @@ namespace PRender {
 			pType = particlePropertyType::constValue;
 			constValue = 0;
 			delta = 0;
-			curvePoints;
-			isSetCurveKB = false;
+			//curvePoints;
+			//isSetCurveKB = false;
 
-			curveKbFirstPoint = nullptr;
+			//curveKbFirstPoint = nullptr;
 		}
 		~particleVarietyValue() {
 		}
@@ -78,22 +97,24 @@ namespace PRender {
 		// 常值每秒间隔
 		float delta;
 		// 曲线数据，横坐标为粒子生命周期 , 这个值应该 不是指针，这个值在 particleEmitter中的setParticleVarietyValue函数传入，
-		std::vector<Vec2> curvePoints;
+		//std::vector<Vec2> curvePoints;
+		// 曲线数据
+		curveLine mCurveLine;
 
 		// 首地址 & 大小
-		Vec2* curvePointFirstPoint;
-		int curvePointSize;
+		//Vec2* curvePointFirstPoint;
+		//int curvePointSize;
 
-		float curveLeftPointX;
-		float curveRightPointX;
+		//float curveLeftPointX;
+		//float curveRightPointX;
 
 		// 是否给KB赋值了,曲线点改变时，这个值为 false
-		bool isSetCurveKB;
+		//bool isSetCurveKB;
 		// 曲线数据的 k,b值
-		std::vector<Vec2> curveKB;
+		//std::vector<Vec2> curveKB;
 
 		// 首地址 & 大小
-		Vec2* curveKbFirstPoint;
+		//Vec2* curveKbFirstPoint;
 
 	};
 
@@ -111,6 +132,14 @@ namespace PRender {
 		Vec3 colorRand;
 		Color3B realColorY;   //+ colorRand 后的值
 	};
+	// 颜色曲线
+	struct colorCurveLine {
+		colorCurveLine() {
+			pointNum = 0;
+		}
+		int pointNum;
+		colorCurvePoint points[MAX_CURVE_NUM];
+	};
 
 	// 颜色属性值
 	struct particleColorValue {
@@ -118,7 +147,7 @@ namespace PRender {
 			pType = particlePropertyType::none;
 			constColor = Color3B(0, 0, 0);
 			deltaColor = Color3B(0, 0, 0);
-			isSetRealColorY = false;
+			//isSetRealColorY = false;
 		}
 
 		// 刷新一次地址的指针，因为当这个结构体被拷贝时会导致指针改变，curveKbFirstPoint指向不正确的地址
@@ -135,15 +164,19 @@ namespace PRender {
 		// 常值每秒间隔
 		Color3B deltaColor;
 		// 曲线数据，横坐标为粒子的生命周期
-		std::vector<colorCurvePoint> curveColors;
+		//std::vector<colorCurvePoint> curveColors;
+
+		// 颜色曲线
+		colorCurveLine curveLine;
+
 		// 是否设置了 realColorY 
-		bool isSetRealColorY;
+		//bool isSetRealColorY;
 
 		//// 一些 方便数据
-		float curveLeftPointX;
-		float curveRightPointX;
-		colorCurvePoint* curveColorsFirstPtr;
-		int curveColorsSize;
+		//float curveLeftPointX;
+		//float curveRightPointX;
+		//colorCurvePoint* curveColorsFirstPtr;
+		//int curveColorsSize;
 
 	};
 
@@ -383,14 +416,18 @@ namespace PRender {
 		std::string vshName = "";
 		std::string fshName = "";
 		void setShaderFile(std::string vName, std::string fName){
-			vshName = vName;
-			fshName = fName;
+			if (vshName != vName || fshName != fName) {
+				vshName = vName;
+				fshName = fName;
 
-			auto pProgram = GLProgram::createWithFilenames(vshName, fshName);
-			///创建shaderstate  shader状态
-			auto glprogramstate = GLProgramState::getOrCreateWithGLProgram(pProgram);
-			///设置shader
-			setGLProgramState(glprogramstate);
+				auto glprogramstate = GLProgramState::getOrCreateWithShaders(vshName, fshName, "");
+			
+				//auto pProgram = GLProgram::createWithFilenames(vshName, fshName);
+				///创建shaderstate  shader状态
+				//auto glprogramstate = GLProgramState::getOrCreateWithGLProgram(pProgram);
+				///设置shader
+				setGLProgramState(glprogramstate);
+			}
 		}
 
 		////设置第二重纹理
@@ -476,6 +513,9 @@ namespace PRender {
 		//
 		// 所有要显示的粒子的数据
 		particleProperty* _particles;
+		// 所有粒子数据的索引列表 [提升性能，避免拷贝]
+		int* _particleIdxList;
+
 		// 当前允许的最大粒子数量，这个值一定是 <= _allocatedParticles
 		int _totalParticles;
 		// 已经分配了内存的粒子数量，
@@ -500,6 +540,9 @@ namespace PRender {
 
 		cocos2d::Mat4 cacheTransform;
 		bool _isSetCacheTransform;
+
+		// 是否设置shader参数
+		bool _isSetShaderArg; 
 	};
 
 }

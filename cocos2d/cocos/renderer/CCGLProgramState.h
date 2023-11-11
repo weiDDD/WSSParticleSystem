@@ -200,6 +200,9 @@ public:
     /** gets-or-creates an instance of GLProgramState for a given GLProgramName */
     static GLProgramState* getOrCreateWithGLProgramName(const std::string &glProgramName );
 
+    /** gets-or-creates an instance of GLProgramState for given shaders */
+    static GLProgramState* getOrCreateWithShaders(const std::string& vertexShader, const std::string& fragShader, const std::string& compileTimeDefines);
+
     /** @{
      Apply GLProgram, attributes and uniforms.
      `apply` function will apply all the states, include GLProgram, attributes and uniforms.

@@ -342,92 +342,45 @@ float UpdateHelper::getValueFromEmitterVarietyValue(emitterVarietyValue& value ,
 		// 发射器中的曲线类型，横坐标为发射器的周期
 		// 当前的时间
 		float nowTimeInDuration = firePro._elapsed;
-		// 设置KB
-		if (!value.isSetCurveKB) {
-			value.isSetCurveKB = true;
-
-			/*int kbSize = value.curveKB.size();
-			if (kbSize > 0) {
-				value.curveKB.clear();
-				kbSize = 0;
-			}*/
-			/*if (kbSize == 0) {
-				int size = (value.curvePoints).size();
-				for (int i = 0; i < size - 1; ++i) {
-					Vec3 left = (value.curvePoints)[i];
-					Vec3 right = (value.curvePoints)[i + 1];
-					float k = (right.y - left.y) / (right.x - left.x);
-					float b = left.y - k*left.x;
-					value.curveKB.push_back(Vec2(k, b));
-				}
-			}*/
-			// 上下随机线的KB
-			/*int randUpKbSize = value.randUpCurveKB.size();
-			if (randUpKbSize > 0) {
-				value.randUpCurveKB.clear();
-				randUpKbSize = 0;
-			}*/
-			/*if (randUpKbSize == 0) {
-
-				int size = (value.curvePoints).size();
-				for (int i = 0; i < size - 1; ++i) {
-					Vec3 left = (value.curvePoints)[i];
-					Vec3 right = (value.curvePoints)[i + 1];
-					float k = (right.y + right.z - left.y - left.z) / (right.x - left.x);
-					float b = left.y + left.z - k*left.x;
-					value.randUpCurveKB.push_back(Vec2(k, b));
-				}
-			}*/
-			//
-			/*int randDownKbSize = value.randDownCurveKB.size();
-			if (randDownKbSize > 0) {
-				value.randDownCurveKB.clear();
-				randDownKbSize = 0;
-			}*/
-			/*if (randDownKbSize == 0) {
-
-				int size = (value.curvePoints).size();
-				for (int i = 0; i < size - 1; ++i) {
-					Vec3 left = (value.curvePoints)[i];
-					Vec3 right = (value.curvePoints)[i + 1];
-					float k = (right.y - right.z - left.y + left.z) / (right.x - left.x);
-					float b = left.y - left.z - k*left.x;
-					value.randDownCurveKB.push_back(Vec2(k, b));
-				}
-			}*/
-
-			
-		}
 
 		//获取曲线数据
-		int size = ((value).curvePoints).size();
+		//int size = ((value).curvePoints).size();
+		//for (int i = 0; i < size - 1; ++i) {
+		//	Vec3 lastPos = ((value).curvePoints)[i];
+		//	Vec3 pos = ((value).curvePoints)[i + 1];
+		//	float inDurationX = nowTimeInDuration / firePro._duration;
+		//	if (inDurationX < pos.x) {
+		//		//
+		//		float leftDownY = lastPos.y - lastPos.z;
+		//		float rightDownY = pos.y - pos.z;
+
+		//		float dx = inDurationX - lastPos.x;
+
+		//		float leftY = leftDownY + CCRANDOM_0_1() * 2 * lastPos.z;
+		//		float rightY = rightDownY + CCRANDOM_0_1() * 2 * pos.z;
+
+		//		//return downY + CCRANDOM_0_1() * (upY - downY);
+		//		return leftY + dx * ((rightY - leftY) / (pos.x - lastPos.x));
+		//	}
+		//}
+
+		int size = value.mCurveLine.pointNum;
 		for (int i = 0; i < size - 1; ++i) {
-			Vec3 lastPos = ((value).curvePoints)[i];
-			Vec3 pos = ((value).curvePoints)[i + 1];
+			auto lastPos = &value.mCurveLine.points[i];
+			auto pos = &value.mCurveLine.points[i + 1];
 			float inDurationX = nowTimeInDuration / firePro._duration;
-			if (inDurationX < pos.x) {
-				// 根据发射周期时间点对应的上下的随机线的值来 设置 发射开始时的粒子属性
-				/*float upK = ((value).randUpCurveKB)[i].x;
-				float upB = ((value).randUpCurveKB)[i].y;
-				float upY = upK*inDurationX + upB;
-
-				float downK = ((value).randDownCurveKB)[i].x;
-				float downB = ((value).randDownCurveKB)[i].y;
-				float downY = downK*inDurationX + downB;*/
-
+			if (inDurationX < pos->x) {
 				//
-				float leftDownY = lastPos.y - lastPos.z;
-				float leftUpY = lastPos.y + lastPos.z;
-				float rightDownY = pos.y - pos.z;
-				float rightUpY = pos.y + pos.z;
+				float leftDownY = lastPos->y - lastPos->z;
+				float rightDownY = pos->y - pos->z;
 
-				float dx = inDurationX - lastPos.x;
+				float dx = inDurationX - lastPos->x;
 
-				float leftY = leftDownY + CCRANDOM_0_1() * 2 * lastPos.z;
-				float rightY = rightDownY + CCRANDOM_0_1() * 2 * pos.z;
+				float leftY = leftDownY + CCRANDOM_0_1() * 2 * lastPos->z;
+				float rightY = rightDownY + CCRANDOM_0_1() * 2 * pos->z;
 
 				//return downY + CCRANDOM_0_1() * (upY - downY);
-				return leftY + dx * ((rightY - leftY) / (pos.x - lastPos.x));
+				return leftY + dx * ((rightY - leftY) / (pos->x - lastPos->x));
 			}
 		}
 
@@ -443,36 +396,38 @@ void UpdateHelper::setParticleVarietyValue(particleVarietyValue &pValue, emitter
 	if (eValue.pType == emitterPropertyType::curve)
 	{
 		pValue.pType = particlePropertyType::curve;
-		pValue.curvePoints.clear();
-		
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
-		pValue.curvePoints.swap(std::vector<Vec2>());
-#else
-		pValue.curvePoints.shrink_to_fit();
-#endif
-		pValue.isSetCurveKB = false;
+		pValue.mCurveLine.pointNum = 0;
 
-		//int index = 0;
+		int size = eValue.mCurveLine.pointNum;
 
-		auto itor = eValue.curvePoints.begin();
-		int size = eValue.curvePoints.size();
-		pValue.curvePoints.reserve(size);
-
+		curvePoint* lastPoint = nullptr;
 		for(int i=0;i< size; ++i){
-		//while (itor != eValue.curvePoints.end()) {
-			auto data = eValue.curvePoints[i];
-			float zz = data.z;
-			pValue.curvePoints.push_back(Vec2(data.x, data.y - zz + CCRANDOM_0_1() * 2 * zz));
-			//itor++;
-			//++index;
+			if (i < MAX_CURVE_NUM) {
+				auto data = &eValue.mCurveLine.points[i];
+				float zz = data->z;
+				//pValue.curvePoints.push_back(std::move(Vec2(data.x, data.y - zz + CCRANDOM_0_1() * 2 * zz)));
+
+				pValue.mCurveLine.pointNum++;
+				auto pPoint = &pValue.mCurveLine.points[i];
+				pPoint->x = data->x;
+				pPoint->y = data->y - zz + CCRANDOM_0_1() * 2 * zz;
+				pPoint->z = zz;
+
+				if (lastPoint) {
+					pPoint->k = (data->y - lastPoint->y) / (data->x - lastPoint->x);
+					//pPoint->b = zz;
+				}
+
+				lastPoint = pPoint;
+			}
 		}
 
 		// 
 
-		pValue.curvePointFirstPoint = &pValue.curvePoints[0];
+		/*pValue.curvePointFirstPoint = &pValue.curvePoints[0];
 		pValue.curvePointSize = pValue.curvePoints.size();
 		pValue.curveLeftPointX = pValue.curvePoints[0].x;
-		pValue.curveRightPointX = pValue.curvePoints[pValue.curvePoints.size()-1].x;
+		pValue.curveRightPointX = pValue.curvePoints[pValue.curvePoints.size()-1].x;*/
 
 	}
 	else {
@@ -580,17 +535,17 @@ void UpdateHelper::setParticleVarietyColorValue(particleColorValue &pValue, emit
 	if (eValue.pType == emitterPropertyType::curve)
 	{
 		pValue.pType = particlePropertyType::curve;
-		pValue.curveColors.clear();
+		pValue.curveLine.pointNum = 0;
+		//pValue.curveColors.clear();
 		//
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
-		pValue.curveColors.swap(std::vector<colorCurvePoint>());
-#else
-		pValue.curveColors.shrink_to_fit();
-#endif
+//#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
+//		pValue.curveColors.swap(std::vector<colorCurvePoint>());
+//#else
+//		pValue.curveColors.shrink_to_fit();
+//#endif
 
-		colorCurvePoint* itor = &eValue.curveColors[0];
+		/*colorCurvePoint* itor = &eValue.curveColors[0];
 		int size = eValue.curveColors.size();
-		//pValue.curveColors.reserve(size);
 		int index = 0;
 		for (itor; index < size; ++itor) {
 			colorCurvePoint colorPoint;
@@ -598,29 +553,35 @@ void UpdateHelper::setParticleVarietyColorValue(particleColorValue &pValue, emit
 			colorPoint.colorY = itor->colorY;
 			colorPoint.colorRand = itor->colorRand;
 
-			pValue.curveColors.push_back(colorPoint);
+			pValue.curveColors.push_back(std::move( colorPoint) );
 
 			++index;
 		}
-
-		/*auto itor = eValue.curveColors.begin();
-		while (itor != eValue.curveColors.end()) {
-			colorCurvePoint colorPoint;
-			colorPoint.x = (*itor).x;
-			colorPoint.colorY = (*itor).colorY;
-			colorPoint.colorRand = (*itor).colorRand;
-
-			pValue.curveColors.push_back(colorPoint);
-			++itor;
-		}*/
-
 
 		pValue.isSetRealColorY = false;
 
 		pValue.curveColorsFirstPtr = &pValue.curveColors[0];
 		pValue.curveColorsSize = pValue.curveColors.size();
 		pValue.curveLeftPointX = pValue.curveColors[0].x;
-		pValue.curveRightPointX = pValue.curveColors[pValue.curveColorsSize -1].x;
+		pValue.curveRightPointX = pValue.curveColors[pValue.curveColorsSize -1].x;*/
+
+		colorCurvePoint* itor = &eValue.curveColors[0];
+		int size = eValue.curveColors.size();
+		for (int i = 0; i < size; ++i, itor++) {
+			
+			if (i < MAX_CURVE_NUM) {
+				auto pointPtr = &pValue.curveLine.points[i];
+				pointPtr->x = itor->x;
+				pointPtr->colorY = itor->colorY;
+				pointPtr->colorRand = itor->colorRand;
+				pointPtr->realColorY.r = pointPtr->colorY.r + CCRANDOM_0_1() * 2 * pointPtr->colorRand.x - pointPtr->colorRand.x;
+				pointPtr->realColorY.g = pointPtr->colorY.g + CCRANDOM_0_1() * 2 * pointPtr->colorRand.y - pointPtr->colorRand.y;
+				pointPtr->realColorY.b = pointPtr->colorY.b + CCRANDOM_0_1() * 2 * pointPtr->colorRand.z - pointPtr->colorRand.z;
+
+				pValue.curveLine.pointNum++;
+			}
+		}
+
 	}
 	else {
 
@@ -909,7 +870,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------速度
 	// 设置粒子生命周期内的 值
-	if (firePro._moveSpeedOfLife.pType == emitterPropertyType::curve && firePro._moveSpeedOfLife.curvePoints.size() >= 2) {
+	if (firePro._moveSpeedOfLife.pType == emitterPropertyType::curve && firePro._moveSpeedOfLife.mCurveLine.pointNum >= 2) {
 		this->setParticleVarietyValue(particle->speed, firePro._moveSpeedOfLife, particle->timeToLive);
 	}
 	else {
@@ -918,7 +879,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	}
 
 	//////---------------------加速度
-	if (firePro._moveAccOfLife.pType == emitterPropertyType::curve && firePro._moveAccOfLife.curvePoints.size() >= 2) {
+	if (firePro._moveAccOfLife.pType == emitterPropertyType::curve && firePro._moveAccOfLife.mCurveLine.pointNum >= 2) {
 		this->setParticleVarietyValue(particle->acc, firePro._moveAccOfLife, particle->timeToLive);
 	}
 	else {
@@ -927,7 +888,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	}
 
 	//////---------------------移动角度
-	if (firePro._moveAngleOfLife.pType == emitterPropertyType::curve && firePro._moveAngleOfLife.curvePoints.size() >= 2) {
+	if (firePro._moveAngleOfLife.pType == emitterPropertyType::curve && firePro._moveAngleOfLife.mCurveLine.pointNum >= 2) {
 		this->setParticleVarietyValue(particle->moveAngle, firePro._moveAngleOfLife, particle->timeToLive);
 	}
 	else {
@@ -940,8 +901,8 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 			particle->moveAngle.constValue += particle->startToCenterAngle;
 		}
 		else if (particle->moveAngle.pType == particlePropertyType::curve) {
-			for (int i = 0; i < particle->moveAngle.curvePoints.size(); ++i) {
-				particle->moveAngle.curvePoints[i].y += particle->startToCenterAngle;
+			for (int i = 0; i < particle->moveAngle.mCurveLine.pointNum; ++i) {
+				particle->moveAngle.mCurveLine.points[i].y += particle->startToCenterAngle;
 			}
 		}
 	}
@@ -953,15 +914,15 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 				particle->moveAngle.constValue -= rotation;
 			}
 			else if (particle->moveAngle.pType == particlePropertyType::curve) {
-				for (int i = 0; i < particle->moveAngle.curvePoints.size(); ++i) {
-					particle->moveAngle.curvePoints[i].y -= rotation;
+				for (int i = 0; i < particle->moveAngle.mCurveLine.pointNum; ++i) {
+					particle->moveAngle.mCurveLine.points[i].y -= rotation;
 				}
 			}
 		}
 	}
 
 	//////---------------------角速度
-	if (firePro._moveAngleSpeedOfLife.pType == emitterPropertyType::curve && firePro._moveAngleSpeedOfLife.curvePoints.size() >= 2) {
+	if (firePro._moveAngleSpeedOfLife.pType == emitterPropertyType::curve && firePro._moveAngleSpeedOfLife.mCurveLine.pointNum >= 2) {
 		this->setParticleVarietyValue(particle->angleSpeed, firePro._moveAngleSpeedOfLife, particle->timeToLive);
 	}
 	else {
@@ -970,7 +931,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	}
 
 	//////---------------------重力X
-	if (firePro._gravityXOfLife.pType == emitterPropertyType::curve && firePro._gravityXOfLife.curvePoints.size() >= 2) {
+	if (firePro._gravityXOfLife.pType == emitterPropertyType::curve && firePro._gravityXOfLife.mCurveLine.pointNum >= 2) {
 		this->setParticleVarietyValue(particle->gravityX, firePro._gravityXOfLife, particle->timeToLive);
 	}
 	else {
@@ -980,7 +941,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 
 	//////---------------------重力Y
-	if (firePro._gravityYOfLife.pType == emitterPropertyType::curve && firePro._gravityYOfLife.curvePoints.size() >= 2) {
+	if (firePro._gravityYOfLife.pType == emitterPropertyType::curve && firePro._gravityYOfLife.mCurveLine.pointNum >= 2) {
 		this->setParticleVarietyValue(particle->gravityY, firePro._gravityYOfLife, particle->timeToLive);
 	}
 	else {
@@ -991,7 +952,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 	
 	//////---------------------大小
 	if (firePro._parType == parType::render) {
-		if (firePro._sizeOfLife.pType == emitterPropertyType::curve && firePro._sizeOfLife.curvePoints.size() >= 2) {
+		if (firePro._sizeOfLife.pType == emitterPropertyType::curve && firePro._sizeOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->size, firePro._sizeOfLife, particle->timeToLive);
 		}
 		else {
@@ -1002,7 +963,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------旋转角度
 	//if (firePro._parType == parType::render) {
-		if (firePro._rotationOfLife.pType == emitterPropertyType::curve && firePro._rotationOfLife.curvePoints.size() >= 2) {
+		if (firePro._rotationOfLife.pType == emitterPropertyType::curve && firePro._rotationOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->rotation, firePro._rotationOfLife, particle->timeToLive);
 		}
 		else {
@@ -1013,7 +974,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------旋转角度速度
 	//if (firePro._parType == parType::render) {
-		if (firePro._rotationSpeedOfLife.pType == emitterPropertyType::curve && firePro._rotationSpeedOfLife.curvePoints.size() >= 2) {
+		if (firePro._rotationSpeedOfLife.pType == emitterPropertyType::curve && firePro._rotationSpeedOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->rotationSpeed, firePro._rotationSpeedOfLife, particle->timeToLive);
 		}
 		else {
@@ -1024,7 +985,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------倾斜角X
 	if (firePro._parType == parType::render) {
-		if (firePro._skewXOfLife.pType == emitterPropertyType::curve && firePro._skewXOfLife.curvePoints.size() >= 2) {
+		if (firePro._skewXOfLife.pType == emitterPropertyType::curve && firePro._skewXOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->skewX, firePro._skewXOfLife, particle->timeToLive);
 		}
 		else {
@@ -1039,7 +1000,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------倾斜角X 速度
 	if (firePro._parType == parType::render) {
-		if (firePro._skewXSpeedOfLife.pType == emitterPropertyType::curve && firePro._skewXSpeedOfLife.curvePoints.size() >= 2) {
+		if (firePro._skewXSpeedOfLife.pType == emitterPropertyType::curve && firePro._skewXSpeedOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->skewXSpeed, firePro._skewXSpeedOfLife, particle->timeToLive);
 		}
 		else {
@@ -1050,7 +1011,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------倾斜角Y
 	if (firePro._parType == parType::render) {
-		if (firePro._skewYOfLife.pType == emitterPropertyType::curve && firePro._skewYOfLife.curvePoints.size() >= 2) {
+		if (firePro._skewYOfLife.pType == emitterPropertyType::curve && firePro._skewYOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->skewY, firePro._skewYOfLife, particle->timeToLive);
 		}
 		else {
@@ -1061,7 +1022,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------倾斜角Y 速度
 	if (firePro._parType == parType::render) {
-		if (firePro._skewYSpeedOfLife.pType == emitterPropertyType::curve && firePro._skewYSpeedOfLife.curvePoints.size() >= 2) {
+		if (firePro._skewYSpeedOfLife.pType == emitterPropertyType::curve && firePro._skewYSpeedOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->skewYSpeed, firePro._skewYSpeedOfLife, particle->timeToLive);
 		}
 		else {
@@ -1073,7 +1034,7 @@ void UpdateHelper::initParticlePro(ParticleEmitter* father, emitterFirePro& fire
 
 	//////---------------------不透明度
 	if (firePro._parType == parType::render) {
-		if (firePro._alphaOfLife.pType == emitterPropertyType::curve && firePro._alphaOfLife.curvePoints.size() >= 2) {
+		if (firePro._alphaOfLife.pType == emitterPropertyType::curve && firePro._alphaOfLife.mCurveLine.pointNum >= 2) {
 			this->setParticleVarietyValue(particle->alpha, firePro._alphaOfLife, particle->timeToLive);
 		}
 		else {

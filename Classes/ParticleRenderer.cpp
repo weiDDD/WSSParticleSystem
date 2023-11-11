@@ -26,68 +26,55 @@ static long getNowTime() {
 }
 
 void particleVarietyValue::refreshPointer() {
-	if (curveKB.size() > 0) {
+	/*if (curveKB.size() > 0) {
 		curveKbFirstPoint = &curveKB[0];
 	}
 	if (curvePoints.size() > 0) {
 		curvePointFirstPoint = &curvePoints[0];
-	}
+	}*/
 }
 
 void particleVarietyValue::resetData() {
-	//if (!isSetCurveKB) {
-		int kbSize = curveKB.size();
-		if (kbSize > 0) {
-			curveKB.clear();
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM != CC_PLATFORM_IOS)
-			//
-			curveKB.swap(std::vector<Vec2>());
-#else
-			curveKB.shrink_to_fit();
-#endif
-
-			kbSize = 0;
-			curveKbFirstPoint = nullptr;
-		}
-		
-
-	//}
+	
 }
 
 float particleVarietyValue::getParticleVarietyValue(float nowTime) {
-	if (pType == particlePropertyType::constValue) {
+	if (pType == 1) { // particlePropertyType::constValue
 		return constValue;
 	}
 	else if (pType == particlePropertyType::curve) {
 		// 曲线数据
 
-		if (!isSetCurveKB) {
-			isSetCurveKB = true;
+		//if (!isSetCurveKB) {
+		//	isSetCurveKB = true;
 
-			int kbSize = curveKB.size();
-			if (kbSize <= 0) {
+		//	int kbSize = curveKB.size();
+		//	if (kbSize <= 0) {
 
-				for (int i = 0; i < curvePointSize - 1; ++i) {
-					Vec2 left = curvePoints[i];
-					Vec2 right = curvePoints[i + 1];
+		//		for (int i = 0; i < curvePointSize - 1; ++i) {
+		//			Vec2 left = curvePoints[i];
+		//			Vec2 right = curvePoints[i + 1];
 
-					float k = (right.y - left.y) / ((right.x - left.x));
-					float b = 0;//left.y - k * left.x;
+		//			float k = (right.y - left.y) / ((right.x - left.x));
+		//			float b = 0;//left.y - k * left.x;
 
-					curveKB.emplace_back(Vec2(k, b));
-					++kbSize;
-				}
-			}
-			
-			if (kbSize > 0) {
-				curveKbFirstPoint = &curveKB[0];
-			}
-			
-		}
+		//			curveKB.emplace_back(Vec2(k, b));
+		//			++kbSize;
+		//		}
+		//	}
+		//	
+		//	if (kbSize > 0) {
+		//		curveKbFirstPoint = &curveKB[0];
+		//	}
+		//	
+		//}
 
 		// 当前的时间
 		nowTime = (nowTime < 0) ? 0 : nowTime;
 		nowTime = (nowTime > 100) ? 100 : nowTime;
+
+		int curveLeftPointX = mCurveLine.points[0].x;
+		int curveRightPointX = mCurveLine.points[mCurveLine.pointNum - 1].x;
 
 		//获取曲线数据，如果当前时间百分比 小于最左边的 那么 返回 constAndDelta 的数据；如果大于了最右边的 那么 返回 (n - right) % (right - left)
 		if (nowTime < curveLeftPointX) {
@@ -100,23 +87,13 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 				realNowTime = int(nowTime - curveRightPointX) % int(curveRightPointX - curveLeftPointX) + curveLeftPointX;
 			}
 
-			int index = 0;
-			Vec2* i = curvePointFirstPoint;
-			Vec2* lastI = i;
-			++i;
-			for (; index < curvePointSize - 1; ++i) {
-				//float leftPosX = i->x;
-				//float leftPosX = *(float*)(i + vec2xOffset);
-				if (realNowTime < i->x) {
-					Vec2* kbVec = curveKbFirstPoint + index;
-					//float k = kbVec->x;  // curveKB[index].x;  // 7.1
-					//float b = kbVec->y;  //curveKB[index].y;  // 3.7
-					//float realPY = kbVec->x * realNowTime + kbVec->y;
-					//return kbVec->x * realNowTime + kbVec->y;
-					return (realNowTime - lastI->x) * kbVec->x + lastI->y;
+
+			for (int i = 1; i < mCurveLine.pointNum; ++i) {
+				auto lastPoint = &mCurveLine.points[i - 1];
+				if (realNowTime < mCurveLine.points[i].x) {
+					
+					return (realNowTime - lastPoint->x) * mCurveLine.points[i].k + lastPoint->y;
 				}
-				lastI = i;
-				++index;
 			}
 			
 		}
@@ -126,9 +103,9 @@ float particleVarietyValue::getParticleVarietyValue(float nowTime) {
 
 
 void particleColorValue::refreshPointer() {
-	if (curveColors.size() > 0) {
-		curveColorsFirstPtr = &curveColors[0];
-	}
+	//if (curveColors.size() > 0) {
+	//	curveColorsFirstPtr = &curveColors[0];
+	//}
 }
 
 void particleColorValue::resetData() {
@@ -143,7 +120,7 @@ Color3B particleColorValue::getParticleVarietyValue(float nowTime) {
 	else if (pType == particlePropertyType::curve) {
 
 		// 曲线数据
-		if (!isSetRealColorY) {
+		/*if (!isSetRealColorY) {
 			int size = curveColors.size();
 			for (int i = 0; i < size; ++i) {
 				colorCurvePoint* curveColor = &curveColors[i];
@@ -153,7 +130,7 @@ Color3B particleColorValue::getParticleVarietyValue(float nowTime) {
 			}
 
 			isSetRealColorY = true;
-		}
+		}*/
 
 		// 当前的时间
 		//float nowTime = (p.live - p.timeToLive) / p.live * 100;  // 当前经过的时间 在全部总生命中的百分比
@@ -162,34 +139,32 @@ Color3B particleColorValue::getParticleVarietyValue(float nowTime) {
 
 		//获取曲线数据，如果当前时间百分比 小于最左边的 那么 返回 constAndDelta 的数据；如果大于了最右边的 那么 返回 (n - right) % (right - left)
 		//float leftX = curveColors[0].x;
+
+		float curveLeftPointX = curveLine.points[0].x;
+		float curveRightPointX = curveLine.points[curveLine.pointNum - 1].x;
+
 		if (nowTime < curveLeftPointX) {
 			return constColor;
 		}
 		else {
-			//int size = curveColors.size();
-
 			float realNowTime = nowTime;
-			//float rightX = curveColors[curveColorsSize - 1].x;
 			if (nowTime > curveRightPointX) {
 				//如果大于了最右边的
 				realNowTime = int(nowTime - curveRightPointX) % int(curveRightPointX - curveLeftPointX) + curveLeftPointX;
 			}
 
-			colorCurvePoint* colorPtr = curveColorsFirstPtr;
-			++colorPtr;
-			int index = 0;
-			for (colorPtr; index < curveColorsSize - 1; ++colorPtr) {
-				float rightPosX = colorPtr->x;
-				if (realNowTime < rightPosX) {
-					float leftPosX = (colorPtr -1)->x;
-					Color3B leftColor = (colorPtr -1)->realColorY;
-					Color3B rightColor = colorPtr->realColorY;
+			for (int i = 1; i < curveLine.pointNum; ++i) {
+				auto lastPoint = &curveLine.points[i - 1];
+				auto nowPoint = &curveLine.points[i];
+				if (realNowTime < nowPoint->x) {
+					float leftPosX = lastPoint->x;
+					Color3B leftColor = lastPoint->realColorY;
+					Color3B rightColor = nowPoint->realColorY;
 
-					float precent = (realNowTime - leftPosX) / (rightPosX - leftPosX);
+					float precent = (realNowTime - leftPosX) / (nowPoint->x - leftPosX);
 					return Color3B(leftColor.r + precent * (rightColor.r - leftColor.r), leftColor.g + precent * (rightColor.g - leftColor.g), leftColor.b + precent * (rightColor.b - leftColor.b));
 
 				}
-				++index;
 			}
 
 		}
@@ -202,7 +177,7 @@ Color3B particleColorValue::getParticleVarietyValue(float nowTime) {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-int ParticleRenderer::maxCacheSize = 300;
+int ParticleRenderer::maxCacheSize = 1000;
 int ParticleRenderer::cacheSize = 0;
 std::vector<ParticleRenderer*> ParticleRenderer::renderCache(maxCacheSize, nullptr);
 
@@ -228,6 +203,7 @@ ParticleRenderer::ParticleRenderer()
 , _emitterScaleY(1.0)
 , _renderMode(renderMode::TRIANGLES)
 , _isSetCacheTransform(false)
+, _isSetShaderArg(false)
 {
 	_positionType = positionType::RELATIVE;
 	isFlowCircleRadius = false;
@@ -248,6 +224,7 @@ ParticleRenderer::~ParticleRenderer() {
 	}
 	CC_SAFE_RELEASE(_texture);
 	CC_SAFE_FREE(_particles);
+	CC_SAFE_FREE(_particleIdxList);
 }
 
 ParticleRenderer* ParticleRenderer::create() {
@@ -367,9 +344,14 @@ bool ParticleRenderer::updateOneParticle(particleProperty& p, float dt , bool is
 		if (_particleIdx != _particleCount - 1)
 		{
 			//直线最后一个,并再更新一次,因为长度缩小,即将便利不到最后一个
-			_particles[_particleIdx] = _particles[_particleCount - 1];
+			//_particles[_particleIdx] = std::move(_particles[_particleCount - 1]);
 			// 刷新一下指针，因为这里做了拷贝操作，导致一些预先指针错乱
-			_particles[_particleIdx].refreshPointer();
+			//_particles[_particleIdx].refreshPointer();
+
+			int temp = _particleIdxList[_particleCount - 1];
+			_particleIdxList[_particleCount - 1] = _particleIdxList[_particleIdx];
+			_particleIdxList[_particleIdx] = temp;
+
 		}
 		--_particleCount;
 
@@ -404,7 +386,9 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 	//Mat4 worldToNodeTM = getWorldToNodeTransform();
 	
 	if (_emitter) {
-		_emitterPos = _emitter->convertToWorldSpace(Vec2::ZERO);
+		if (_positionType == positionType::FREE){
+			_emitterPos = _emitter->convertToWorldSpace(Vec2::ZERO);
+		}
 		//_emitterPos = _emitter->runningLayer->convertToNodeSpace(_emitterPos);
 		
 		_emitterScaleX = 1.0 / _emitter->getScaleX();
@@ -416,7 +400,8 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 	bool isHaveParLive = true;
 
 	while (_particleIdx < _particleCount) {
-		particleProperty* p = &_particles[_particleIdx];
+		int idx = _particleIdxList[_particleIdx];
+		particleProperty* p = &_particles[idx];
 
 		if (isUpdateRender) {
 			//p->timeToLive -= dt;
@@ -441,9 +426,9 @@ void ParticleRenderer::updateParticle(float dt , bool isUpdateRender/* = true*/)
 }
 
 void ParticleRenderer::update(float dt) {
-	float time1 = getNowTime();
+	//float time1 = getNowTime();
 	this->updateParticle(dt , true );
-	float time2 = getNowTime();
+	//float time2 = getNowTime();
 
 	//CCLOG("draw render time:%f",time2 - time1);
 }
@@ -451,7 +436,8 @@ void ParticleRenderer::update(float dt) {
 particleProperty* ParticleRenderer::getNewParticlePtr() {
 	if (_particleCount < _totalParticles)
 	{
-		return &_particles[_particleCount];
+		int idx = _particleIdxList[_particleCount];
+		return &_particles[idx];
 	}
 	return nullptr;
 }
@@ -464,6 +450,10 @@ bool ParticleRenderer::initWithTotalParticles(int totalParticleNum) {
 	// 分配内存
 	CC_SAFE_FREE(_particles);
 	_particles = (particleProperty*)calloc(_totalParticles, sizeof(particleProperty));
+	_particleIdxList = (int*)calloc(_totalParticles, sizeof(int));
+	for (int i = 0; i < _totalParticles; i++) {
+		_particleIdxList[i] = i;
+	}
 
 	if (!_particles) {
 		CCLOG("Particle system: not enough memory");
@@ -657,44 +647,46 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	auto glProgramState = getGLProgramState();
 	
 	/////遍历所有的参数map，将其设值
-	std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
-	while (floatItor != floatArgMap.end()){
-		std::string argKeyName = floatItor->first;
-		float value = floatItor->second;
-		glProgramState->setUniformFloat(argKeyName, value);
-		floatItor++;
-	}
+	if (_isSetShaderArg) {
+		std::map <std::string, float>::iterator floatItor = floatArgMap.begin();
+		while (floatItor != floatArgMap.end()) {
+			std::string argKeyName = floatItor->first;
+			float value = floatItor->second;
+			glProgramState->setUniformFloat(argKeyName, value);
+			floatItor++;
+		}
 
-	std::map <std::string, int>::iterator intItor = intArgMap.begin();
-	while (intItor != intArgMap.end()){
-		std::string argKeyName = intItor->first;
-		int value = intItor->second;
-		glProgramState->setUniformInt(argKeyName, value);
-		intItor++;
-	}
+		std::map <std::string, int>::iterator intItor = intArgMap.begin();
+		while (intItor != intArgMap.end()) {
+			std::string argKeyName = intItor->first;
+			int value = intItor->second;
+			glProgramState->setUniformInt(argKeyName, value);
+			intItor++;
+		}
 
-	std::map <std::string, Vec2>::iterator vec2Itor = vec2ArgMap.begin();
-	while (vec2Itor != vec2ArgMap.end()){
-		std::string argKeyName = vec2Itor->first;
-		Vec2 value = vec2Itor->second;
-		glProgramState->setUniformVec2(argKeyName, value);
-		vec2Itor++;
-	}
+		std::map <std::string, Vec2>::iterator vec2Itor = vec2ArgMap.begin();
+		while (vec2Itor != vec2ArgMap.end()) {
+			std::string argKeyName = vec2Itor->first;
+			Vec2 value = vec2Itor->second;
+			glProgramState->setUniformVec2(argKeyName, value);
+			vec2Itor++;
+		}
 
-	std::map <std::string, Vec3>::iterator vec3Itor = vec3ArgMap.begin();
-	while (vec3Itor != vec3ArgMap.end()){
-		std::string argKeyName = vec3Itor->first;
-		Vec3 value = vec3Itor->second;
-		glProgramState->setUniformVec3(argKeyName, value);
-		vec3Itor++;
-	}
+		std::map <std::string, Vec3>::iterator vec3Itor = vec3ArgMap.begin();
+		while (vec3Itor != vec3ArgMap.end()) {
+			std::string argKeyName = vec3Itor->first;
+			Vec3 value = vec3Itor->second;
+			glProgramState->setUniformVec3(argKeyName, value);
+			vec3Itor++;
+		}
 
-	std::map <std::string, Vec4>::iterator vec4Itor = vec4ArgMap.begin();
-	while (vec4Itor != vec4ArgMap.end()){
-		std::string argKeyName = vec4Itor->first;
-		Vec4 value = vec4Itor->second;
-		glProgramState->setUniformVec4(argKeyName, value);
-		vec4Itor++;
+		std::map <std::string, Vec4>::iterator vec4Itor = vec4ArgMap.begin();
+		while (vec4Itor != vec4ArgMap.end()) {
+			std::string argKeyName = vec4Itor->first;
+			Vec4 value = vec4Itor->second;
+			glProgramState->setUniformVec4(argKeyName, value);
+			vec4Itor++;
+		}
 	}
 
 
@@ -708,14 +700,16 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	}
 
 	// 数组 , 这个必须放到apply的后面那个
-	std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
-	while (floatVecItor != floatVecArgMap.end()) {
-		std::string argKeyName = floatVecItor->first;
-		floatVec value = (floatVec)floatVecItor->second;
-		GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
+	if (_isSetShaderArg) {
+		std::map <std::string, floatVec>::iterator floatVecItor = floatVecArgMap.begin();
+		while (floatVecItor != floatVecArgMap.end()) {
+			std::string argKeyName = floatVecItor->first;
+			floatVec value = (floatVec)floatVecItor->second;
+			GLint loc = glGetUniformLocation(getGLProgram()->getProgram(), argKeyName.c_str()); //glProgramState->getGLProgram()->getUniformLocation(argKeyName);
 
-		glUniform1fv(loc, (GLsizei)value.size, (const GLfloat *)value.vec); // 设置1个float类型的v（代表数组）
-		floatVecItor++;
+			glUniform1fv(loc, (GLsizei)value.size, (const GLfloat*)value.vec); // 设置1个float类型的v（代表数组）
+			floatVecItor++;
+		}
 	}
 
 	
@@ -733,21 +727,6 @@ void ParticleRenderer::onDraw(const Mat4& transform, uint32_t flags) {
 	}
 
 	GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX);
-
-	// 应用transform
-	//unsigned int start = 0;
-	//unsigned int end = _totalParticles;
-	//for (unsigned int i = start; i<end; i++)
-	//{
-	//	// bottom-left vertex:
-	//	transform.transformPoint(_quads[i].bl.vertices, &_quads[i].bl.vertices);
-	//	// bottom-right vertex:
-	//	transform.transformPoint(_quads[i].br.vertices, &_quads[i].br.vertices);
-	//	// top-left vertex:
-	//	transform.transformPoint(_quads[i].tl.vertices, &_quads[i].tl.vertices);
-	//	// top-right vertex:
-	//	transform.transformPoint(_quads[i].tr.vertices, &_quads[i].tr.vertices);
-	//}
 
 	// 绑定到VBO的数据
 	glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
@@ -1128,10 +1107,15 @@ void ParticleRenderer::setTotalParticles(int tp) {
 		// 分配内存
 		CC_SAFE_FREE(_particles);
 		_particles = (particleProperty*)calloc(_totalParticles, sizeof(particleProperty));
+		_particleIdxList = (int*)calloc(_totalParticles, sizeof(int));
+		for (int i = 0; i < _totalParticles; i++) {
+			_particleIdxList[i] = i;
+		}
 
 		if (!_particles) {
 			CCLOG("Particle system: not enough memory");
 			this->release();
+			return;
 		}
 		_allocatedParticles = tp;
 
@@ -1176,6 +1160,7 @@ void ParticleRenderer::setTotalParticles(int tp) {
 
 void ParticleRenderer::setFloatArg(std::string argKeyName, float value){
 	std::map<std::string, float>::iterator itor = floatArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增
 	if (itor == floatArgMap.end()){
 		floatArgMap.insert(std::make_pair(argKeyName, value));
@@ -1186,6 +1171,7 @@ void ParticleRenderer::setFloatArg(std::string argKeyName, float value){
 }
 void ParticleRenderer::setIntArg(std::string argKeyName, int value){
 	std::map<std::string, int>::iterator itor = intArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增
 	if (itor == intArgMap.end()){
 		intArgMap.insert(std::make_pair(argKeyName, value));
@@ -1197,6 +1183,7 @@ void ParticleRenderer::setIntArg(std::string argKeyName, int value){
 
 void ParticleRenderer::setVec2Arg(std::string argKeyName, Vec2 value){
 	std::map<std::string, Vec2>::iterator itor = vec2ArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增
 	if (itor == vec2ArgMap.end()){
 		vec2ArgMap.insert(std::make_pair(argKeyName, value));
@@ -1208,6 +1195,7 @@ void ParticleRenderer::setVec2Arg(std::string argKeyName, Vec2 value){
 
 void ParticleRenderer::setVec3Arg(std::string argKeyName, Vec3 value){
 	std::map<std::string, Vec3>::iterator itor = vec3ArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增
 	if (itor == vec3ArgMap.end()){
 		vec3ArgMap.insert(std::make_pair(argKeyName, value));
@@ -1219,6 +1207,7 @@ void ParticleRenderer::setVec3Arg(std::string argKeyName, Vec3 value){
 
 void ParticleRenderer::setVec4Arg(std::string argKeyName, Vec4 value){
 	std::map<std::string, Vec4>::iterator itor = vec4ArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增
 	if (itor == vec4ArgMap.end()){
 		vec4ArgMap.insert(std::make_pair(argKeyName, value));
@@ -1230,6 +1219,7 @@ void ParticleRenderer::setVec4Arg(std::string argKeyName, Vec4 value){
 
 void ParticleRenderer::setIntVecArg(std::string argKeyName, const int* ptr, ssize_t size) {
 	std::map<std::string, intVec>::iterator itor = intVecArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增,有则修改
 	if (itor == intVecArgMap.end()) {
 		intVecArgMap.insert(std::make_pair(argKeyName, intVec(ptr, size)));
@@ -1241,6 +1231,7 @@ void ParticleRenderer::setIntVecArg(std::string argKeyName, const int* ptr, ssiz
 
 void ParticleRenderer::setIntVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size) {
 	std::map<std::string, intVec>::iterator itor = intVecArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增,有则修改
 	//const float* fPtr = (const float*)ptr;
 	const ssize_t s = size;
@@ -1266,6 +1257,7 @@ void ParticleRenderer::setIntVecArgLua(std::string argKeyName, const cocos2d::Va
 // 
 void ParticleRenderer::setFloatVecArg(std::string argKeyName, float* ptr, ssize_t size) {
 	std::map<std::string, floatVec>::iterator itor = floatVecArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增,有则修改
 	const float* fPtr = (const float*)ptr;
 	if (itor == floatVecArgMap.end()) {
@@ -1279,6 +1271,7 @@ void ParticleRenderer::setFloatVecArg(std::string argKeyName, float* ptr, ssize_
 
 void ParticleRenderer::setFloatVecArgLua(std::string argKeyName, const cocos2d::ValueVector &ptr, ssize_t size) {
 	std::map<std::string, floatVec>::iterator itor = floatVecArgMap.find(argKeyName);
+	_isSetShaderArg = true;
 	///没有找到则新增,有则修改
 	//const float* fPtr = (const float*)ptr;
 	const ssize_t s = size;
@@ -1316,4 +1309,5 @@ void ParticleRenderer::clearAllArgMap(){
 
 void ParticleRenderer::clearData() {
 	_isSetCacheTransform = false;
+	_isSetShaderArg = false;
 }

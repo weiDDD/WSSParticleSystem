@@ -559,8 +559,8 @@ Widget* ParticleUiView::addOneToMoreParPanel(std::string showWord , std::string 
 void ParticleUiView::initMoreParPanel() {
 	if (singlePar) {
 
-		auto itor = singlePar->fireProVec.begin();
-		while (itor != singlePar->fireProVec.end()) {
+		auto itor = singlePar->fireProVec->begin();
+		while (itor != singlePar->fireProVec->end()) {
 			Widget* item = nullptr;
 			if ((*itor)->_parType == parType::render) {
 				item = this->addOneToMoreParPanel("render" , (*itor)->_tagName, (*itor)->_id , (*itor)->_localZorder);
@@ -1814,9 +1814,17 @@ void ParticleUiView::showFireStartProValuePanel(singleProType proType, emitterPr
 		this->hideMoreConstantWidgetVec();
 
 		// 初始化值
-		if (nowEditingEmitterVarietyValue->curvePoints.size() == 0) {
-			nowEditingEmitterVarietyValue->curvePoints.push_back(Vec3(0, 0, 0));
-			nowEditingEmitterVarietyValue->curvePoints.push_back(Vec3(1, 10, 0));
+		if (nowEditingEmitterVarietyValue->mCurveLine.pointNum == 0) {
+			nowEditingEmitterVarietyValue->mCurveLine.pointNum = 2;
+			auto point1 = &nowEditingEmitterVarietyValue->mCurveLine.points[0];
+			point1->x = 0;
+			point1->y = 0;
+			point1->z = 0;
+			auto point2 = &nowEditingEmitterVarietyValue->mCurveLine.points[1];
+			point2->x = 1;
+			point2->y = 10;
+			point2->z = 0;
+
 		}
 		 
 		this->hideFireStartCurvePoints();
@@ -2512,8 +2520,8 @@ void ParticleUiView::addMoreConstantWidgetVec(float value) {
 void ParticleUiView::showFireStartCurvePoints() {
 	isOpenFireStartCurvePanel = true;
 
-	auto curvePoints = nowEditingEmitterVarietyValue->curvePoints; 
-	auto itor = curvePoints.begin();
+	auto curvePoints = &nowEditingEmitterVarietyValue->mCurveLine; 
+	//auto itor = curvePoints.begin();
 	
 	auto curvePanel = seekByName(singleRootNode, "curveMap_fireStart"); 
 	curvePanel->setSwallowTouches(true);
@@ -2521,12 +2529,12 @@ void ParticleUiView::showFireStartCurvePoints() {
 	Vec2 curvePanelPos = Vec2(curvePanelSize.width / 2, curvePanelSize.height / 2);
 	// 找到最大高度
 	fireStartCurvePointMaxHeight = 0;
-	while (itor != curvePoints.end()) {
-		if ( fabsf((*itor).y) > fireStartCurvePointMaxHeight) {
-			fireStartCurvePointMaxHeight = (*itor).y * ((*itor).y / fabsf((*itor).y));
+	for (int i = 0; i < curvePoints->pointNum; ++i) {
+		if (fabsf(curvePoints->points[i].y) > fireStartCurvePointMaxHeight) {
+			fireStartCurvePointMaxHeight = curvePoints->points[i].y * (curvePoints->points[i].y / fabsf(curvePoints->points[i].y));
 		}
-		itor++;
 	}
+
 	// 文本设置
 	char maxStr[20];
 	char minStr[20];
@@ -2539,9 +2547,12 @@ void ParticleUiView::showFireStartCurvePoints() {
 	((Text*)seekByName(singleRootNode, "rightXWord_fireStart"))->setString(durationStr);
 
 	// 加点
-	itor = curvePoints.begin();
-	while (itor != curvePoints.end()) {
-		Vec2 inPanelPos = Vec2(curvePanelPos.x - curvePanelSize.width/2 + (*itor).x * curvePanelSize.width , curvePanelPos.y + ((*itor).y / fireStartCurvePointMaxHeight) * curvePanelSize.height/2 );
+	//itor = curvePoints.begin();
+	//while (itor != curvePoints.end()) {
+
+	for (int i = 0; i < curvePoints->pointNum; ++i) {
+		auto itor = &curvePoints->points[i];
+		Vec2 inPanelPos = Vec2(curvePanelPos.x - curvePanelSize.width/2 + itor->x * curvePanelSize.width , curvePanelPos.y + (itor->y / fireStartCurvePointMaxHeight) * curvePanelSize.height/2 );
 		
 		// 加一个 在曲线面板中的点 按钮
 		auto curvePoint = ui::Button::create(
@@ -2554,7 +2565,6 @@ void ParticleUiView::showFireStartCurvePoints() {
 		curvePanel->addChild(curvePoint);
 		curvePoint->addTouchEventListener(CC_CALLBACK_2(ParticleUiView::fireStartCurvePointCall, this));
 
-		itor++;
 	}
 
 	// 加线 ，连接点的线 ， 
@@ -2593,7 +2603,7 @@ void ParticleUiView::showFireStartCurvePoints() {
 		sprintf(name , "fireStartCurveRandEditBox_%d" , i);
 		editBox->setName(name);
 		char value[20];
-		sprintf(value, "%.2f", curvePoints.at(i).z);
+		sprintf(value, "%.2f", curvePoints->points[i].z); // curvePoints.at(i).z);
 		editBox->setText(value);
 		editBox->setDelegate(this);
 		curvePanel->addChild(editBox);
@@ -2687,7 +2697,14 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 			curvePoint->addTouchEventListener(CC_CALLBACK_2(ParticleUiView::fireStartCurvePointCall, this));
 			
 			fireStartCurvePointBtnVec.insert(fireStartCurvePointBtnVec.begin() + i ,curvePoint);
-			nowEditingEmitterVarietyValue->curvePoints.insert(nowEditingEmitterVarietyValue->curvePoints.begin() + i , Vec3(value.x , value.y , 0));
+			//nowEditingEmitterVarietyValue->curvePoints.insert(nowEditingEmitterVarietyValue->curvePoints.begin() + i , Vec3(value.x , value.y , 0));
+
+			nowEditingEmitterVarietyValue->mCurveLine.pointNum++;
+			auto itor = &nowEditingEmitterVarietyValue->mCurveLine.points[nowEditingEmitterVarietyValue->mCurveLine.pointNum - 1];
+			itor->x = value.x;
+			itor->y = value.y;
+			itor->z = 0;
+
 			break;
 		}
 
@@ -2749,7 +2766,7 @@ void ParticleUiView::addFireStartCurvePoints(Vec2 pos) {
 		editBox->setName(name);
 
 		char value[20];
-		sprintf(value, "%.2f", nowEditingEmitterVarietyValue->curvePoints.at(i).z);
+		sprintf(value, "%.2f", nowEditingEmitterVarietyValue->mCurveLine.points[i].z); //curvePoints.at(i).z);
 		editBox->setText(value);
 
 		editBox->setDelegate(this);
@@ -2797,7 +2814,9 @@ void ParticleUiView::deleteFireStartCurvePoints(ui::Button* btn) {
 			fireStartCurveLines.pop_back();
 
 			// 删掉对应数据
-			nowEditingEmitterVarietyValue->curvePoints.erase(nowEditingEmitterVarietyValue->curvePoints.begin() + index);
+			//nowEditingEmitterVarietyValue->curvePoints.erase(nowEditingEmitterVarietyValue->curvePoints.begin() + index);
+
+			nowEditingEmitterVarietyValue->mCurveLine.pointNum--;
 
 			// 删掉对应 随机值 编辑框
 			fireStartCurveRandEditBoxVec.at(index)->removeFromParent();
@@ -2830,18 +2849,22 @@ void ParticleUiView::refreshFireStartCurvePoints(float maxHeight) {
 
 	
 	// 最先更新数据
-	if (fireStartCurvePointBtnVec.size() == nowEditingEmitterVarietyValue->curvePoints.size()) {
+	if (fireStartCurvePointBtnVec.size() == nowEditingEmitterVarietyValue->mCurveLine.pointNum) {
 		for (int i = 0; i < fireStartCurvePointBtnVec.size(); ++i) {
 			Vec2 pos = fireStartCurvePointBtnVec.at(i)->getPosition();
 			float height = (pos.y - curvePanelSize.height / 2) / (curvePanelSize.height / 2) * fireStartCurvePointMaxHeight;
 			if (fabsf(height) > maxHeight) {
 				height = height / fabsf(height) * maxHeight;
 			}
-			nowEditingEmitterVarietyValue->curvePoints.at(i) = Vec3(pos.x / curvePanelSize.width, height, nowEditingEmitterVarietyValue->curvePoints.at(i).z );
+			//nowEditingEmitterVarietyValue->curvePoints.at(i) = Vec3(pos.x / curvePanelSize.width, height, nowEditingEmitterVarietyValue->curvePoints.at(i).z );
+
+			auto itor = &nowEditingEmitterVarietyValue->mCurveLine.points[i];
+			itor->x = pos.x / curvePanelSize.width;
+			itor->y = height;
 		}
 
 	}
-	nowEditingEmitterVarietyValue->isSetCurveKB = false;
+	//nowEditingEmitterVarietyValue->isSetCurveKB = false;
 	
 
 	// 更新 曲线 的 点按钮
@@ -2849,7 +2872,10 @@ void ParticleUiView::refreshFireStartCurvePoints(float maxHeight) {
 	auto itor = fireStartCurvePointBtnVec.begin();
 	int index = 0;
 	while (itor != fireStartCurvePointBtnVec.end()) {
-		Vec2 inPanelPos = Vec2(nowEditingEmitterVarietyValue->curvePoints.at(index).x * curvePanelSize.width, curvePanelPos.y + (nowEditingEmitterVarietyValue->curvePoints.at(index).y / maxHeight) * curvePanelSize.height / 2);
+		//Vec2 inPanelPos = Vec2(nowEditingEmitterVarietyValue->curvePoints.at(index).x * curvePanelSize.width, curvePanelPos.y + (nowEditingEmitterVarietyValue->curvePoints.at(index).y / maxHeight) * curvePanelSize.height / 2);
+
+		auto ptr = &nowEditingEmitterVarietyValue->mCurveLine.points[index];
+		Vec2 inPanelPos = Vec2(ptr->x * curvePanelSize.width, curvePanelPos.y + (ptr->y / maxHeight) * curvePanelSize.height / 2);
 		(*itor)->setPosition(inPanelPos);
 
 		index++;
@@ -2902,9 +2928,10 @@ void ParticleUiView::showParLifeCurvePoints() {
 	Vec2 curvePanelPos = Vec2(curvePanelSize.width / 2, curvePanelSize.height / 2);
 
 	// 设置 启用 复选框 是否选中，如果曲线数据大于等于2 则是启用，否则是停用
-	auto curvePoints = nowEditingEmitterVarietyValue->curvePoints;
+	//auto curvePoints = nowEditingEmitterVarietyValue->curvePoints;
+	auto curvePoints = &nowEditingEmitterVarietyValue->mCurveLine;
 
-	if (curvePoints.size() >= 2) {
+	if (curvePoints->pointNum >= 2) {
 		((CheckBox*)seekByName(singleRootNode, "isOpenParLifeProCheckBox"))->setSelectedState(true);
 		nowEditingEmitterVarietyValue->pType = emitterPropertyType::curve;
 	}
@@ -2920,19 +2947,19 @@ void ParticleUiView::showParLifeCurvePoints() {
 	parLifeCurvePointLeftPrecent = 0;
 	int rightPrecent = 0;
 	parLifeCurvePointRightPrecent = 0;
-	auto itor = curvePoints.begin();
-	while (itor != curvePoints.end()) {
-		if (fabsf((*itor).y) > parLifeCurvePointMaxHeight) {
-			parLifeCurvePointMaxHeight = (*itor).y * ((*itor).y / fabsf((*itor).y));
+	//auto itor = curvePoints.begin();
+	//while (itor != curvePoints.end()) {
+	for (int i = 0; i < curvePoints->pointNum; ++i) {
+		auto itor = &curvePoints->points[i];
+		if (fabsf(itor->y) > parLifeCurvePointMaxHeight) {
+			parLifeCurvePointMaxHeight = itor->y * (itor->y / fabsf(itor->y));
 		}
-		if ((*itor).x < leftPrecent) {
-			leftPrecent = (*itor).x;
+		if (itor->x < leftPrecent) {
+			leftPrecent = itor->x;
 		}
-		if ((*itor).x > rightPrecent) {
-			rightPrecent = (*itor).x;
+		if (itor->x > rightPrecent) {
+			rightPrecent = itor->x;
 		}
-
-		itor++;
 	}
 	parLifeCurvePointLeftPrecent = leftPrecent;
 	parLifeCurvePointRightPrecent = rightPrecent;
@@ -2952,10 +2979,12 @@ void ParticleUiView::showParLifeCurvePoints() {
 	((ExEditBox*)seekByName(singleRootNode, "rightXInput_parLife"))->setText(rightPrecentStr);
 
 	// 加点
-	itor = curvePoints.begin();
-	while (itor != curvePoints.end()) {
-		float xPos = ((*itor).x - parLifeCurvePointLeftPrecent) / (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent);
-		Vec2 inPanelPos = Vec2(curvePanelPos.x - curvePanelSize.width / 2 + xPos * curvePanelSize.width, curvePanelPos.y + ((*itor).y / parLifeCurvePointMaxHeight) * curvePanelSize.height / 2);
+	//itor = curvePoints.begin();
+	//while (itor != curvePoints.end()) {
+	for (int i = 0; i < curvePoints->pointNum; ++i) {
+		auto itor = &curvePoints->points[i];
+		float xPos = (itor->x - parLifeCurvePointLeftPrecent) / (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent);
+		Vec2 inPanelPos = Vec2(curvePanelPos.x - curvePanelSize.width / 2 + xPos * curvePanelSize.width, curvePanelPos.y + (itor->y / parLifeCurvePointMaxHeight) * curvePanelSize.height / 2);
 
 		// 加一个 在曲线面板中的点 按钮
 		auto curvePoint = ui::Button::create(
@@ -2967,8 +2996,6 @@ void ParticleUiView::showParLifeCurvePoints() {
 		curvePoint->setSwallowTouches(false);
 		curvePanel->addChild(curvePoint);
 		curvePoint->addTouchEventListener(CC_CALLBACK_2(ParticleUiView::parLifeCurvePointCall, this));
-
-		itor++;
 	}
 
 	// 加线 ，连接点的线 ， 
@@ -3005,7 +3032,7 @@ void ParticleUiView::showParLifeCurvePoints() {
 		sprintf(name, "parLifeCurveRandEditBox_%d", i);
 		editBox->setName(name);
 		char value[20];
-		sprintf(value, "%.2f", curvePoints.at(i).z);
+		sprintf(value, "%.2f", curvePoints->points[i].z); // curvePoints.at(i).z);
 		editBox->setText(value);
 		editBox->setDelegate(this);
 		curvePanel->addChild(editBox);
@@ -3098,7 +3125,13 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 			curvePoint->addTouchEventListener(CC_CALLBACK_2(ParticleUiView::parLifeCurvePointCall, this));
 
 			parLifeCurvePointBtnVec.insert(parLifeCurvePointBtnVec.begin() + i, curvePoint);
-			nowEditingEmitterVarietyValue->curvePoints.insert(nowEditingEmitterVarietyValue->curvePoints.begin() + i, Vec3(value.x, value.y, 0));
+			//nowEditingEmitterVarietyValue->curvePoints.insert(nowEditingEmitterVarietyValue->curvePoints.begin() + i, Vec3(value.x, value.y, 0));
+			
+			nowEditingEmitterVarietyValue->mCurveLine.pointNum++;
+			auto itor = &nowEditingEmitterVarietyValue->mCurveLine.points[nowEditingEmitterVarietyValue->mCurveLine.pointNum - 1];
+			itor->x = value.x;
+			itor->y = value.y;
+			itor->z = 0;
 			break;
 		}
 
@@ -3160,7 +3193,7 @@ void ParticleUiView::addParLifeCurvePoints(Vec2 pos) {
 		editBox->setName(name);
 
 		char value[20];
-		sprintf(value, "%.2f", nowEditingEmitterVarietyValue->curvePoints.at(i).z);
+		sprintf(value, "%.2f", nowEditingEmitterVarietyValue->mCurveLine.points[i].z); //nowEditingEmitterVarietyValue->curvePoints.at(i).z);
 		editBox->setText(value);
 
 		editBox->setDelegate(this);
@@ -3208,7 +3241,9 @@ void ParticleUiView::deleteParLifeCurvePoints(ui::Button* btn) {
 			parLifeCurveLines.pop_back();
 
 			// 删掉对应数据
-			nowEditingEmitterVarietyValue->curvePoints.erase(nowEditingEmitterVarietyValue->curvePoints.begin() + index);
+			//nowEditingEmitterVarietyValue->curvePoints.erase(nowEditingEmitterVarietyValue->curvePoints.begin() + index);
+
+			nowEditingEmitterVarietyValue->mCurveLine.pointNum--;
 
 			// 删掉对应 随机值 编辑框
 			parLifeCurveRandEditBoxVec.at(index)->removeFromParent();
@@ -3243,25 +3278,28 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 	// 先找到老的 左右两点的边界
 	float oldLeftPrecent = 10000;
 	float oldRightPrecent = 0;
-	auto curvePoints = nowEditingEmitterVarietyValue->curvePoints;
+	//auto curvePoints = nowEditingEmitterVarietyValue->curvePoints;
+	auto curvePoints = &nowEditingEmitterVarietyValue->mCurveLine;
 	{
-		auto itor = curvePoints.begin();
-		while (itor != curvePoints.end()) {
-			if (fabsf((*itor).y) > parLifeCurvePointMaxHeight) {
-				parLifeCurvePointMaxHeight = (*itor).y * ((*itor).y / fabsf((*itor).y));
+		//auto itor = curvePoints.begin();
+		//while (itor != curvePoints.end()) {
+
+		for(int i = 0;i < curvePoints->pointNum; i++){
+			auto itor = &curvePoints->points[i];
+			if (fabsf(itor->y) > parLifeCurvePointMaxHeight) {
+				parLifeCurvePointMaxHeight = itor->y * (itor->y / fabsf(itor->y));
 			}
-			if ((*itor).x < oldLeftPrecent) {
-				oldLeftPrecent = (*itor).x;
+			if (itor->x < oldLeftPrecent) {
+				oldLeftPrecent = itor->x;
 			}
-			if ((*itor).x > oldRightPrecent) {
-				oldRightPrecent = (*itor).x;
+			if (itor->x > oldRightPrecent) {
+				oldRightPrecent = itor->x;
 			}
-			itor++;
 		}
 	}
 
 	// 最先更新数据
-	if (parLifeCurvePointBtnVec.size() == nowEditingEmitterVarietyValue->curvePoints.size()) {
+	if (parLifeCurvePointBtnVec.size() == nowEditingEmitterVarietyValue->mCurveLine.pointNum) {
 		for (int i = 0; i < parLifeCurvePointBtnVec.size(); ++i) {
 			Vec2 pos = parLifeCurvePointBtnVec.at(i)->getPosition();
 			float height = (pos.y - curvePanelSize.height / 2) / (curvePanelSize.height / 2) * parLifeCurvePointMaxHeight;
@@ -3271,19 +3309,27 @@ void ParticleUiView::refreshParLifeCurvePoints(float maxHeight) {
 			//float xPos = oldLeftPrecent + (pos.x / curvePanelSize.width) * (oldRightPrecent - oldLeftPrecent);
 			float xPos = pos.x / curvePanelSize.width;
 			xPos = parLifeCurvePointLeftPrecent + xPos * (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent);
-			nowEditingEmitterVarietyValue->curvePoints.at(i) = Vec3( xPos , height, nowEditingEmitterVarietyValue->curvePoints.at(i).z);
+			//nowEditingEmitterVarietyValue->curvePoints.at(i) = Vec3( xPos , height, nowEditingEmitterVarietyValue->curvePoints.at(i).z);
+		
+			auto itor = &nowEditingEmitterVarietyValue->mCurveLine.points[i];
+			itor->x = xPos;
+			itor->y = height;
 		}
 
 	}
-	nowEditingEmitterVarietyValue->isSetCurveKB = false;
+	//nowEditingEmitterVarietyValue->isSetCurveKB = false;
 
 	// 更新 曲线 的 点按钮
 
 	auto itor = parLifeCurvePointBtnVec.begin();
 	int index = 0;
 	while (itor != parLifeCurvePointBtnVec.end()) {
-		float xPos = (nowEditingEmitterVarietyValue->curvePoints.at(index).x - parLifeCurvePointLeftPrecent) / (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent);
-		Vec2 inPanelPos = Vec2(xPos * curvePanelSize.width, curvePanelPos.y + (nowEditingEmitterVarietyValue->curvePoints.at(index).y / maxHeight) * curvePanelSize.height / 2);
+		//float xPos = (nowEditingEmitterVarietyValue->curvePoints.at(index).x - parLifeCurvePointLeftPrecent) / (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent);
+		//Vec2 inPanelPos = Vec2(xPos * curvePanelSize.width, curvePanelPos.y + (nowEditingEmitterVarietyValue->curvePoints.at(index).y / maxHeight) * curvePanelSize.height / 2);
+		
+		float xPos = (nowEditingEmitterVarietyValue->mCurveLine.points[index].x - parLifeCurvePointLeftPrecent) / (parLifeCurvePointRightPrecent - parLifeCurvePointLeftPrecent);
+		auto ptr = &nowEditingEmitterVarietyValue->mCurveLine.points[index];
+		Vec2 inPanelPos = Vec2(xPos * curvePanelSize.width, curvePanelPos.y + (ptr->y / maxHeight) * curvePanelSize.height / 2);
 		(*itor)->setPosition(inPanelPos);
 
 		index++;
@@ -4647,15 +4693,19 @@ void ParticleUiView::editBoxTextChanged(ExEditBox* editBox, const std::string& t
 			// 获得 _ 后面的下标
 			std::string indexStr = editBoxName.substr(start + 1, -1);
 			int index = std::stoi(indexStr);
-			nowEditingEmitterVarietyValue->curvePoints.at(index).z = value;
-			nowEditingEmitterVarietyValue->isSetCurveKB = false;
+			//nowEditingEmitterVarietyValue->curvePoints.at(index).z = value;
+			//nowEditingEmitterVarietyValue->isSetCurveKB = false;
+
+			nowEditingEmitterVarietyValue->mCurveLine.points[index].z = value;
 		}
 		if (name == "parLifeCurveRandEditBox") {
 			// 获得 _ 后面的下标
 			std::string indexStr = editBoxName.substr(start + 1, -1);
 			int index = std::stoi(indexStr);
-			nowEditingEmitterVarietyValue->curvePoints.at(index).z = value;
-			nowEditingEmitterVarietyValue->isSetCurveKB = false;
+			//nowEditingEmitterVarietyValue->curvePoints.at(index).z = value;
+			//nowEditingEmitterVarietyValue->isSetCurveKB = false;
+
+			nowEditingEmitterVarietyValue->mCurveLine.points[index].z = value;
 		}
 		
 
@@ -5553,10 +5603,21 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 			this->showDiyFireAreaPoint();
 		}
 		if (name == "isOpenParLifeProCheckBox") {
-			if (nowEditingEmitterVarietyValue->curvePoints.size() < 2) {
+			/*if (nowEditingEmitterVarietyValue->curvePoints.size() < 2) {
 				nowEditingEmitterVarietyValue->curvePoints.clear();
 				nowEditingEmitterVarietyValue->curvePoints.push_back(Vec3(0, 0, 0));
 				nowEditingEmitterVarietyValue->curvePoints.push_back(Vec3(100, 10, 0));
+			}*/
+			if (nowEditingEmitterVarietyValue->mCurveLine.pointNum < 2) {
+				nowEditingEmitterVarietyValue->mCurveLine.pointNum = 2;
+				auto point1 = &nowEditingEmitterVarietyValue->mCurveLine.points[0];
+				auto point2 = &nowEditingEmitterVarietyValue->mCurveLine.points[1];
+				point1->x = 0;
+				point1->y = 0;
+				point1->z = 0;
+				point2->x = 100;
+				point2->y = 10;
+				point2->z = 0;
 			}
 			this->hideParLifeCurvePoints();
 			this->showParLifeCurvePoints();
@@ -5661,7 +5722,8 @@ void ParticleUiView::checkBoxEvent(Ref* pSender, ui::CheckBox::EventType type) {
 		}
 		if (name == "isOpenParLifeProCheckBox") {
 			
-			nowEditingEmitterVarietyValue->curvePoints.clear();
+			//nowEditingEmitterVarietyValue->curvePoints.clear();
+			nowEditingEmitterVarietyValue->mCurveLine.pointNum = 0;
 			
 			this->hideParLifeCurvePoints();
 			this->showParLifeCurvePoints();
